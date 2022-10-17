@@ -9,7 +9,7 @@ CUIWindow::CUIWindow()  :
 {
 	m_WindowTypeName = "UIWindow";
 	m_Size = Vector2((float)CDevice::GetInst()->GetResolution().Width,
-		CDevice::GetInst()->GetResolution().Height);
+		(float)CDevice::GetInst()->GetResolution().Height);
 }
 
 CUIWindow::CUIWindow(const CUIWindow& Window)	:

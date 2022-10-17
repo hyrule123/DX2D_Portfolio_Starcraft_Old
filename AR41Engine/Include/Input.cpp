@@ -4,7 +4,6 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
 #include "Scene/CameraManager.h"
-#include "Scene/SceneCollision.h"
 #include "Component/CameraComponent.h"
 
 #pragma comment(lib, "dinput8.lib")
@@ -12,16 +11,13 @@
 DEFINITION_SINGLE(CInput)
 
 CInput::CInput() :
-	m_MouseLDown(false),
-	m_MouseLPush(false),
-	m_MouseLUp(false),
+	m_MouseButtonStatus(),
 	m_InputSystem(InputSystem_Type::DInput),
 	m_Input(nullptr),
 	m_Keyboard(nullptr),
 	m_Mouse(nullptr),
 	m_KeyArray{},
-	m_MouseState{},
-	m_CollisionWidget(false)
+	m_MouseState{}
 {
 }
 
@@ -143,9 +139,6 @@ void CInput::Update(float DeltaTime)
 
 	UpdateMouse(DeltaTime);
 
-	// 마우스와 Widget과의 충돌처리를 진행한다.
-	m_CollisionWidget = CSceneManager::GetInst()->GetScene()->GetCollisionManager()->CollisionWidget();
-
 	UpdateKeyState(DeltaTime);
 
 	UpdateBindKey(DeltaTime);
@@ -237,25 +230,25 @@ void CInput::UpdateKeyState(float DeltaTime)
 
 		if (m_MouseState.rgbButtons[0] & 0x80)
 		{
-			if (!m_MouseLDown && !m_MouseLPush)
+			if (!(m_MouseButtonStatus & MouseLDown) && !(m_MouseButtonStatus & MouseLPush))
 			{
-				m_MouseLDown = true;
-				m_MouseLPush = true;
+				m_MouseButtonStatus |= MouseLDown;
+				m_MouseButtonStatus |= MouseLPush;
 			}
 
 			else
-				m_MouseLDown = false;
+				m_MouseButtonStatus &= ~MouseLDown;
 		}
 
-		else if (m_MouseLPush)
+		else if (m_MouseButtonStatus & MouseLPush)
 		{
-			m_MouseLDown = false;
-			m_MouseLPush = false;
-			m_MouseLUp = true;
+			m_MouseButtonStatus &= ~MouseLDown;
+			m_MouseButtonStatus &= ~MouseLPush;
+			m_MouseButtonStatus |= MouseLUp;
 		}
 
-		else if (m_MouseLUp)
-			m_MouseLUp = false;
+		else if (m_MouseButtonStatus & MouseLUp)
+			m_MouseButtonStatus |= MouseLUp;
 
 		break;
 	case InputSystem_Type::Window:
@@ -280,25 +273,25 @@ void CInput::UpdateKeyState(float DeltaTime)
 
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		{
-			if (!m_MouseLDown && !m_MouseLPush)
+			if (!(m_MouseButtonStatus & MouseLDown) && !(m_MouseButtonStatus & MouseLPush))
 			{
-				m_MouseLDown = true;
-				m_MouseLPush = true;
+				m_MouseButtonStatus |= MouseLDown;
+				m_MouseButtonStatus |= MouseLPush;
 			}
 
 			else
-				m_MouseLDown = false;
+				m_MouseButtonStatus &= ~MouseLDown;
 		}
 
-		else if (m_MouseLPush)
+		else if (m_MouseButtonStatus & MouseLPush)
 		{
-			m_MouseLDown = false;
-			m_MouseLPush = false;
-			m_MouseLUp = true;
+			m_MouseButtonStatus &= ~MouseLDown;
+			m_MouseButtonStatus &= ~MouseLPush;
+			m_MouseButtonStatus |= MouseLUp;
 		}
 
-		else if (m_MouseLUp)
-			m_MouseLUp = false;
+		else if (m_MouseButtonStatus & MouseLUp)
+			m_MouseButtonStatus |= MouseLUp;
 		break;
 	}
 
@@ -344,7 +337,7 @@ void CInput::UpdateKeyState(float DeltaTime)
 			break;
 		}
 
-		
+
 
 		// 키를 눌렀을 경우
 		if (KeyPush)

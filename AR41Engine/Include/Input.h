@@ -20,6 +20,16 @@ enum class Input_Type
 	End
 };
 
+enum MouseButtonStatus : UINT8
+{
+	MouseLUp = 1 << 0,
+	MouseLDown = 1 << 1,
+	MouseLPush = 1 << 2,
+	MouseRUp = 1 << 3,
+	MouseRDown = 1 << 4,
+	MouseRPush = 1 << 5
+};
+
 struct KeyState
 {
 	unsigned char	key;
@@ -89,26 +99,23 @@ private:
 	Vector2	m_MousePos;			// 윈도우 창에서의 위치
 	Vector2	m_MouseWorldPos;	// 월드공간에서의 마우스 위치 2D 전용.
 	Vector2	m_MouseMove;
-	bool	m_MouseLDown;
-	bool	m_MouseLPush;
-	bool	m_MouseLUp;
+	UINT8 m_MouseButtonStatus;	//마우스 클릭 저장용 비트플래그 변수
 	bool	m_ShowCursor;
-	bool	m_CollisionWidget;
 
 public:
 	bool GetMouseLDown()	const
 	{
-		return m_MouseLDown;
+		return (m_MouseButtonStatus & MouseLDown);
 	}
 
 	bool GetMouseLPush()	const
 	{
-		return m_MouseLPush;
+		return (m_MouseButtonStatus & MouseLPush);
 	}
 
 	bool GetMouseLUp()	const
 	{
-		return m_MouseLUp;
+		return (m_MouseButtonStatus & MouseLUp);
 	}
 
 	const Vector2& GetMousePos()	const
