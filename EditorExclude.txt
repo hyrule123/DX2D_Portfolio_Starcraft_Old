@@ -1,0 +1,5 @@
+.idb
+.pdb
+.ini
+EditorDefaultScene.cpp
+EditorDefaultScene.h
