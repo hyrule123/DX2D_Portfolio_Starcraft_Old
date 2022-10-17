@@ -99,7 +99,7 @@ bool CPlayer2D::Init()
 
 	CMaterial* Material = m_Sprite->GetMaterial(0);
 
-	Material->SetOpacity(0.5f);
+	//Material->SetOpacity(0.5f);
 	//Material->SetRenderState("DepthDisable");
 
 	m_RightChild->SetRelativePosition(150.f, 0.f);
@@ -111,13 +111,11 @@ bool CPlayer2D::Init()
 
 	CAnimation2D* Anim = m_Sprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	Anim->AddAnimation("Run", "PlayerRun");
-	Anim->SetLoop("Run", true);
+	Anim->AddAnimation("Marine", "PlayerMarine");
+	Anim->SetLoop("Marine", true);
+	Anim->SetPlayTime("Marine", 10.f);
 
-	Anim->AddAnimation("Idle", "PlayerIdle");
-	Anim->SetLoop("Idle", true);
-
-	Anim->SetCurrentAnimation("Idle");
+	Anim->SetCurrentAnimation("PlayerMarine");
 
 	return true;
 }

@@ -91,7 +91,7 @@ bool CTexture::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPat
 
 	// 확장자를 대문자로 만들어준다.
 	_strupr_s(FileExt);
-
+	
 	DirectX::ScratchImage* Image = new DirectX::ScratchImage;
 
 	if (strcmp(FileExt, ".DDS") == 0)

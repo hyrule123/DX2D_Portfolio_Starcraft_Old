@@ -55,6 +55,7 @@ public:
     bool InitFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
     void AddFrame(const Vector2& Start, const Vector2& End);
     void AddFrame(float StartX, float StartY, float EndX, float EndY);
+    void AddFrameByTileNumber(int TileRowNum, int TileColNum);
     void AddFrameAll(int Count, const Vector2& Start, const Vector2& End);
     void AddFrameAll(int Count, float StartX, float StartY, float EndX,
         float EndY);

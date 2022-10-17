@@ -154,6 +154,39 @@ void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, floa
 	m_vecFrameData.push_back(Data);
 }
 
+void CAnimationSequence2D::AddFrameByTileNumber(int TileRowNum, int TileColNum)
+{
+	if (!m_Texture)
+	{
+		assert(0);
+		return;
+	}
+
+	m_vecFrameData.clear();
+	
+	int TileWidth = m_Texture->GetWidth() / TileRowNum;
+	int TileHeight = m_Texture->GetHeight() / TileColNum;
+
+	for (int i = 0; i < TileColNum; ++i)
+	{
+		for (int j = 0; j < TileRowNum; ++j)
+		{
+			Animation2DFrameData Data;
+
+			Data.Start.x = (float)i * TileHeight;
+			Data.Start.y = (float)j * TileWidth;
+
+			Data.End.x = (float)Data.Start.x + TileWidth;
+			Data.End.y = (float)Data.Start.y + TileHeight;
+
+			m_vecFrameData.push_back(Data);
+		}
+	}
+
+	
+
+}
+
 void CAnimationSequence2D::AddFrameAll(int Count, const Vector2& Start, const Vector2& End)
 {
 	for (int i = 0; i < Count; ++i)

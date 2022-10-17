@@ -38,13 +38,10 @@ void CDefaultSetting::CreateCDO()
 void CDefaultSetting::LoadResource()
 {
     CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "PlayerRun", "PlayerSprite", TEXT("Player.png"));
+        "PlayerMarine", "Marine", TEXT("_SCAssets\\Unit\\Terran\\marine.bmp"));
 
-    for (int i = 0; i < 14; ++i)
-    {
-        CResourceManager::GetInst()->AddAnimationSequence2DFrame("PlayerRun",
-            Vector2(i * 45.f, 60.f), Vector2((i + 1) * 45.f, 120.f));
-    }
+
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("PlayerMarine", 17, 14);
 
     std::vector<const TCHAR*>   vecFileName;
 

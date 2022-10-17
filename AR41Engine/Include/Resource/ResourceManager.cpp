@@ -210,6 +210,11 @@ bool CResourceManager::AddAnimationSequence2DFrame(const std::string& Name, floa
 	return m_AnimationManager->AddSequence2DFrame(Name, StartX, StartY, EndX, EndY);
 }
 
+bool CResourceManager::AddAnimationSequence2DFrameByTileNumber(const std::string& Name, int TileRowNum, int TileColNum)
+{
+	return m_AnimationManager->AddAnimationSequence2DFrameByTileNumber(Name, TileRowNum, TileColNum);
+}
+
 bool CResourceManager::AddAnimationSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End)
 {
 	return m_AnimationManager->AddSequence2DFrameAll(Name, Count, Start, End);
