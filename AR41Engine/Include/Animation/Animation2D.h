@@ -43,6 +43,21 @@ protected:
 
 public:
 	class CScene* GetScene()	const;
+	const std::string& GetAnimationClassName()	const
+	{
+		return m_ClassName;
+	}
+
+	void GetAnimationNames(std::vector<std::string>& vecNames)
+	{
+		auto	iter = m_mapAnimation.begin();
+		auto	iterEnd = m_mapAnimation.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			vecNames.push_back(iter->first);
+		}
+	}
 
 public:
 	void Start();

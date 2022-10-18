@@ -21,7 +21,6 @@
 #include "Setting/EngineShareSetting.h"
 #include "Scene/EditorDefaultScene.h"
 #include "Window/Animation2DWindow.h"
-#include "Window/Anim2DSeqEditorWindow.h"
 #include "Window/ResourceWindow.h"
 
 CEditorManager::CEditorManager()
@@ -60,7 +59,6 @@ bool CEditorManager::Init(HINSTANCE hInst)
     CEditorGUIManager::GetInst()->CreateEditorWindow<CDetailWindow>("DetailWindow");
     CEditorGUIManager::GetInst()->CreateEditorWindow<CAnimation2DWindow>("Animation2DWindow");
     CEditorGUIManager::GetInst()->CreateEditorWindow<CResourceWindow>("ResourceWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CAnim2DSeqEditorWindow>("AnimSeqEditorWindow");
 
     // SceneInfo »ý¼º
     CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>();

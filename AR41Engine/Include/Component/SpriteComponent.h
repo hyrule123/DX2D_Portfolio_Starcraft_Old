@@ -18,6 +18,15 @@ protected:
     CSharedPtr<CAnimation2D> m_Animation;
 
 public:
+    std::string GetAnimationName()  const
+    {
+        if (!m_Animation)
+            return "None";
+
+        return m_Animation->GetAnimationClassName();
+    }
+
+public:
     bool SetTexture(class CTexture* Texture);
     bool SetTexture(const std::string& Name, const TCHAR* FileName,
         const std::string& PathName = TEXTURE_PATH);

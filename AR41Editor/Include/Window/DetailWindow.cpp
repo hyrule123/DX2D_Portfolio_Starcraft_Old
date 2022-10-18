@@ -13,6 +13,11 @@
 #include "Component/TargetArm.h"
 #include "Engine.h"
 #include "PathManager.h"
+#include "DetailWindow/CameraWidgetList.h"
+#include "DetailWindow/TargetArmWidgetList.h"
+#include "DetailWindow/SpriteComponentWidgetList.h"
+#include "DetailWindow/SceneComponentWidgetList.h"
+#include "DetailWindow/PrimitiveWidgetList.h"
 
 CDetailWindow::CDetailWindow()
 {
@@ -21,49 +26,12 @@ CDetailWindow::CDetailWindow()
 CDetailWindow::~CDetailWindow()
 {
 	ClearWidget();
+	
+	size_t	Size = m_vecComponentWidgetList.size();
 
+	for (size_t i = 0; i < Size; ++i)
 	{
-		size_t	Size = m_vecSceneComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecSceneComponent[i]);
-		}
-
-		m_vecSceneComponent.clear();
-	}
-
-	{
-		size_t	Size = m_vecSpriteComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecSpriteComponent[i]);
-		}
-
-		m_vecSpriteComponent.clear();
-	}
-
-	{
-		size_t	Size = m_vecCameraComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecCameraComponent[i]);
-		}
-
-		m_vecCameraComponent.clear();
-	}
-
-	{
-		size_t	Size = m_vecTargetArmComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecTargetArmComponent[i]);
-		}
-
-		m_vecTargetArmComponent.clear();
+		AddWidget(m_vecComponentWidgetList[i]);
 	}
 }
 
@@ -85,10 +53,10 @@ void CDetailWindow::SetSelectComponent(CSceneComponent* Component)
 
 bool CDetailWindow::Init()
 {
-	CreateSceneComponentWidget();
-	CreateSpriteComponentWidget();
-	CreateCameraComponentWidget();
-	CreateTargetArmComponentWidget();
+	for (int i = 0; i < (int)ESceneComponentType::Max; ++i)
+	{
+		CreateEditorWidgetList((ESceneComponentType)i);
+	}
 
 	// 위젯 한번 지워주기
 	ClearWidget();
@@ -110,136 +78,126 @@ void CDetailWindow::Update(float DeltaTime)
 	}
 }
 
-void CDetailWindow::CreateSceneComponentWidget()
-{
-}
-
-void CDetailWindow::CreateSpriteComponentWidget()
-{
-	CEditorTree<void*>* Category = CreateWidget<CEditorTree<void*>>("SpriteComponent");
-
-	Category->SetHideName("SpriteComponent");
-
-	Category->SetSize(400.f, 300.f);
-
-	Category->AddItem(nullptr, "Sprite");
-
-	Category->CreateWidget<CEditorImage>("Sprite", "SpriteImage");
-
-	Category->CreateWidget<CEditorSameLine>("Sprite", "Line");
-
-	CEditorButton* LoadButton = Category->CreateWidget<CEditorButton>("Sprite", "Load");
-
-	LoadButton->SetClickCallback<CDetailWindow>(this, &CDetailWindow::LoadButtonClick);
-
-	m_vecSpriteComponent.push_back(Category);
-}
-
-void CDetailWindow::CreateCameraComponentWidget()
-{
-}
-
-void CDetailWindow::CreateTargetArmComponentWidget()
-{
-}
-
 void CDetailWindow::ChangeWidget(CSceneComponent* Component)
 {
 	if (Component->GetComponentTypeName() == "SceneComponent")
 	{
-		size_t	Size = m_vecSceneComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecSceneComponent[i]);
-		}
+		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::Scene]);
 	}
 
 	else if (Component->GetComponentTypeName() == "SpriteComponent")
 	{
-		size_t	Size = m_vecSpriteComponent.size();
+		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::Sprite]);
 
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecSpriteComponent[i]);
-		}
-
-		if (Component)
-		{
-			CTexture* Texture = ((CSpriteComponent*)Component)->GetTexture();
-
-			CEditorTree<void*>* Category = (CEditorTree<void*>*)m_vecSpriteComponent[0];
-
-			CEditorImage* ImageWidget = Category->FindWidget<CEditorImage>("SpriteImage");
-
-			ImageWidget->SetTexture(Texture);
-		}
+		((CSpriteComponentWidgetList*)m_vecComponentWidgetList[(int)ESceneComponentType::Sprite])->SetSpriteContent((CSpriteComponent*)Component);
 	}
 
 	else if (Component->GetComponentTypeName() == "CameraComponent")
 	{
-		size_t	Size = m_vecCameraComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecCameraComponent[i]);
-		}
+		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::Camera]);
 	}
 
 	else if (Component->GetComponentTypeName() == "TargetArmComponent")
 	{
-		size_t	Size = m_vecTargetArmComponent.size();
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			AddWidget(m_vecTargetArmComponent[i]);
-		}
+		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::TargetArm]);
 	}
 }
 
 void CDetailWindow::LoadButtonClick()
 {
-	OPENFILENAME	ofn = {};
+	//OPENFILENAME	ofn = {};
 
-	TCHAR	FullPath[MAX_PATH] = {};
+	//TCHAR	FullPath[MAX_PATH] = {};
 
-	TCHAR	Filter[] = TEXT("모든 파일\0*.*\0PNG\0*.png\0JPG\0*.jpg\0BMP\0*.bmp");
+	//TCHAR	Filter[] = TEXT("모든 파일\0*.*\0PNG\0*.png\0JPG\0*.jpg\0BMP\0*.bmp");
 
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = CEngine::GetInst()->GetWindowHandle();
-	ofn.lpstrFilter = Filter;
-	ofn.lpstrFile = FullPath;
-	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrInitialDir = CPathManager::GetInst()->FindPath(TEXTURE_PATH)->Path;
+	//ofn.lStructSize = sizeof(OPENFILENAME);
+	//ofn.hwndOwner = CEngine::GetInst()->GetWindowHandle();
+	//ofn.lpstrFilter = Filter;
+	//ofn.lpstrFile = FullPath;
+	//ofn.nMaxFile = MAX_PATH;
+	//ofn.lpstrInitialDir = CPathManager::GetInst()->FindPath(TEXTURE_PATH)->Path;
 
-	if (GetOpenFileName(&ofn) != 0)
+	//if (GetOpenFileName(&ofn) != 0)
+	//{
+	//	CEditorTree<void*>* Category = (CEditorTree<void*>*)m_vecSpriteComponent[0];
+
+	//	CEditorImage* ImageWidget = Category->FindWidget<CEditorImage>("SpriteImage");
+
+	//	if (ImageWidget)
+	//	{
+	//		TCHAR	wTexName[256] = {};
+
+	//		_wsplitpath_s(FullPath, 0, 0, 0, 0, wTexName, 256, 0, 0);
+
+	//		char	TexName[256] = {};
+
+	//		int Length = (int)WideCharToMultiByte(CP_ACP, 0, wTexName, -1, nullptr, 0, nullptr, nullptr);
+
+	//		WideCharToMultiByte(CP_ACP, 0, wTexName, -1, TexName, Length, nullptr, nullptr);
+
+	//		ImageWidget->SetTextureFullPath(TexName, FullPath);
+
+	//		// 선택한 SpriteComponent의 Texture를 교체한다.
+	//		if (m_SelectComponent)
+	//		{
+	//			((CSpriteComponent*)m_SelectComponent.Get())->SetTextureFullPath(TexName, FullPath);
+
+	//			// Animation을 제거한다.
+	//			((CSpriteComponent*)m_SelectComponent.Get())->ClearAnimation();
+	//		}
+	//	}
+	//}
+}
+
+void CDetailWindow::CreateEditorWidgetList(ESceneComponentType Type)
+{
+	CComponentWidgetList* WidgetList = nullptr;
+
+	switch (Type)
 	{
-		CEditorTree<void*>* Category = (CEditorTree<void*>*)m_vecSpriteComponent[0];
-
-		CEditorImage* ImageWidget = Category->FindWidget<CEditorImage>("SpriteImage");
-
-		if (ImageWidget)
-		{
-			TCHAR	wTexName[256] = {};
-
-			_wsplitpath_s(FullPath, 0, 0, 0, 0, wTexName, 256, 0, 0);
-
-			char	TexName[256] = {};
-
-			int Length = (int)WideCharToMultiByte(CP_ACP, 0, wTexName, -1, nullptr, 0, nullptr, nullptr);
-
-			WideCharToMultiByte(CP_ACP, 0, wTexName, -1, TexName, Length, nullptr, nullptr);
-
-			ImageWidget->SetTextureFullPath(TexName, FullPath);
-
-			// 선택한 SpriteComponent의 Texture를 교체한다.
-			if (m_SelectComponent)
-			{
-				((CSpriteComponent*)m_SelectComponent.Get())->SetTextureFullPath(TexName, FullPath);
-
-				// Animation을 제거한다.
-				((CSpriteComponent*)m_SelectComponent.Get())->ClearAnimation();
-			}
-		}
+	case ESceneComponentType::Scene:
+		WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Primitive:
+		WidgetList = CreateWidgetEmpty<CPrimitiveWidgetList>("PrimitiveComponent");
+		break;
+	case ESceneComponentType::Sprite:
+		WidgetList = CreateWidgetEmpty<CSpriteComponentWidgetList>("SpriteComponent");
+		break;
+	case ESceneComponentType::Camera:
+		WidgetList = CreateWidgetEmpty<CCameraWidgetList>("CameraComponent");
+		break;
+	case ESceneComponentType::TargetArm:
+		WidgetList = CreateWidgetEmpty<CTargetArmWidgetList>("TargetArmComponent");
+		break;
+	case ESceneComponentType::Collider:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Collider2D:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Box2D:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::OBB2D:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Sphere2D:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Pixel:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
+	case ESceneComponentType::Collider3D:
+		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
+		break;
 	}
+
+	if (!WidgetList)
+		return;
+
+	WidgetList->m_DetailWindow = this;
+
+	m_vecComponentWidgetList.push_back(WidgetList);
 }

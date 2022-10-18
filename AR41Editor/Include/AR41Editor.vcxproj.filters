@@ -31,6 +31,9 @@
     <Filter Include="06. Setting">
       <UniqueIdentifier>{5373fe42-9540-476c-a68c-ce9ba82cc5d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Window\01. DetailWindow">
+      <UniqueIdentifier>{4621b128-08a2-4b3a-9908-a7ee536d6e03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,8 +90,23 @@
     <ClCompile Include="Window\ResourceWindow.cpp">
       <Filter>03. Window</Filter>
     </ClCompile>
-    <ClCompile Include="Window\Anim2DSeqEditorWindow.cpp">
-      <Filter>03. Window</Filter>
+    <ClCompile Include="Window\DetailWindow\CameraWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\ComponentWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\SceneComponentWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\TargetArmWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\SpriteComponentWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\PrimitiveWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,8 +167,23 @@
     <ClInclude Include="Window\ResourceWindow.h">
       <Filter>03. Window</Filter>
     </ClInclude>
-    <ClInclude Include="Window\Anim2DSeqEditorWindow.h">
-      <Filter>03. Window</Filter>
+    <ClInclude Include="Window\DetailWindow\CameraWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\ComponentWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\SpriteComponentWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\SceneComponentWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\TargetArmWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\PrimitiveWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -121,6 +121,15 @@
     <Filter Include="07. Editor\03. Widget">
       <UniqueIdentifier>{202f58f5-5b00-497e-a640-ffc859556652}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\05. Animation">
+      <UniqueIdentifier>{2657ed3a-2668-4eeb-ab75-468d73d4bfbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\05. Animation\01. 2D">
+      <UniqueIdentifier>{c95aca3c-13f1-4c00-b0f3-84a667121f29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\05. Animation\02. 3D">
+      <UniqueIdentifier>{7d54a41a-ea7c-4950-8760-0ef0e51730f2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="08. Animation">
       <UniqueIdentifier>{52db85a9-84b1-4e60-b18b-c17a6222fa16}</UniqueIdentifier>
     </Filter>
@@ -183,15 +192,6 @@
     </Filter>
     <Filter Include="02. Resource\07. Font">
       <UniqueIdentifier>{f6e36326-7e28-4cc2-99b5-af0673bb857e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Resource\03. Texture\05. Animation">
-      <UniqueIdentifier>{2657ed3a-2668-4eeb-ab75-468d73d4bfbb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Resource\03. Texture\05. Animation\01. 2D">
-      <UniqueIdentifier>{c95aca3c-13f1-4c00-b0f3-84a667121f29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. Resource\03. Texture\05. Animation\02. 3D">
-      <UniqueIdentifier>{7d54a41a-ea7c-4950-8760-0ef0e51730f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -418,10 +418,10 @@
       <Filter>04. GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Animation\AnimationManager.h">
-      <Filter>02. Resource\03. Texture\05. Animation</Filter>
+      <Filter>02. Resource\05. Animation</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Animation\AnimationSequence2D.h">
-      <Filter>02. Resource\03. Texture\05. Animation\01. 2D</Filter>
+      <Filter>02. Resource\05. Animation\01. 2D</Filter>
     </ClInclude>
     <ClInclude Include="Animation\Animation2D.h">
       <Filter>08. Animation\01. 2D</Filter>
@@ -753,10 +753,10 @@
       <Filter>04. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Animation\AnimationManager.cpp">
-      <Filter>02. Resource\03. Texture\05. Animation</Filter>
+      <Filter>02. Resource\05. Animation</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Animation\AnimationSequence2D.cpp">
-      <Filter>02. Resource\03. Texture\05. Animation\01. 2D</Filter>
+      <Filter>02. Resource\05. Animation\01. 2D</Filter>
     </ClCompile>
     <ClCompile Include="Animation\Animation2D.cpp">
       <Filter>08. Animation\01. 2D</Filter>

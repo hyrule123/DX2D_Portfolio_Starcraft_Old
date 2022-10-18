@@ -175,3 +175,20 @@ enum class EProgressBarDir
 	TopToBottom,
 	BottomToTop
 };
+
+enum class ESceneComponentType
+{
+	Scene,
+	Primitive,
+	Sprite,
+	Camera,
+	TargetArm,
+	Collider,
+	Collider2D,
+	Box2D,
+	OBB2D,
+	Sphere2D,
+	Pixel,
+	Collider3D,
+	Max
+};

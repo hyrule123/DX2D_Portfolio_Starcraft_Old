@@ -71,8 +71,6 @@ VS_OUTPUT_COLOR SpriteColorVS(VS_INPUT_COLOR input)
     output.Pos = mul(float4(Pos, 1.f), g_matWVP);
     output.Color = input.Color;
     
-
-
     return output;
 }
 

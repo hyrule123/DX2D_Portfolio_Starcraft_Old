@@ -170,7 +170,6 @@ void CClassWindow::ComponentCreateCallback()
 		SelectComponent = SelectObject->GetRootComponent();
 	}
 
-	std::string	ParentName = SelectComponent->GetName() + "(" + SelectComponent->GetComponentTypeName() + ")";
 	std::string	Name;
 
 	CSceneComponent* NewComponent = nullptr;
@@ -199,9 +198,21 @@ void CClassWindow::ComponentCreateCallback()
 		NewComponent = (CSceneComponent*)SelectObject->CreateComponent<CCameraComponent>("CameraComponent");
 	}
 
-	SelectComponent->AddChild(NewComponent);
+	if (SelectComponent)
+	{
+		std::string	ParentName = SelectComponent->GetName() + "(" + SelectComponent->GetComponentTypeName() + ")";
+		
+		SelectComponent->AddChild(NewComponent);
 
-	ComponentWindow->AddItem((CComponent*)NewComponent, Name, ParentName);
+		ComponentWindow->AddItem((CComponent*)NewComponent, Name, ParentName);
+	}
+
+	else
+	{
+		std::string	ObjName = SelectObject->GetName() + "(" + SelectObject->GetObjectTypeName() + ")";
+
+		ComponentWindow->AddItem((CComponent*)NewComponent, Name, ObjName);
+	}
 }
 
 void CClassWindow::LoadGameObjectName()

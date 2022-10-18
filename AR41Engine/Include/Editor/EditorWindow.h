@@ -62,5 +62,23 @@ public:
 
 		return Widget;
 	}
+
+	template <typename T>
+	T* CreateWidgetEmpty(const std::string& Name, float Width = 100.f, float Height = 100.f)
+	{
+		T* Widget = new T;
+
+		Widget->SetName(Name);
+		Widget->m_Owner = this;
+		Widget->SetSize(Width, Height);
+
+		if (!Widget->Init())
+		{
+			SAFE_DELETE(Widget);
+			return nullptr;
+		}
+
+		return Widget;
+	}
 };
 
