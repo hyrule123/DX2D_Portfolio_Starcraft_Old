@@ -172,9 +172,10 @@ void CAnimationSequence2D::AddFrameByTileNumber(int TileRowNum, int TileColNum)
 		for (int j = 0; j < TileRowNum; ++j)
 		{
 			Animation2DFrameData Data;
-
-			Data.Start.x = (float)i * TileHeight;
-			Data.Start.y = (float)j * TileWidth;
+			
+			Data.Start.x = (float)j * TileWidth;
+			Data.Start.y = (float)i * TileHeight;
+			
 
 			Data.End.x = (float)Data.Start.x + TileWidth;
 			Data.End.y = (float)Data.Start.y + TileHeight;

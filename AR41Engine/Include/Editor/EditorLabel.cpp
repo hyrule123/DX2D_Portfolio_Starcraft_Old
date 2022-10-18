@@ -12,6 +12,8 @@ CEditorLabel::~CEditorLabel()
 
 bool CEditorLabel::Init()
 {
+	SetColor(50, 50, 50, 255);
+
 	return true;
 }
 

@@ -76,7 +76,7 @@ bool CPlayer2D::Init()
 
 	m_Sprite->AddChild(m_RightChild);
 
-	m_Sprite->GetMaterial(0)->SetBaseColorUnsignedChar(255, 255, 0, 255);
+	//m_Sprite->GetMaterial(0)->SetBaseColorUnsignedChar(255, 255, 0, 255);
 
 	m_Sprite->AddChild(m_Arm);
 	m_Arm->AddChild(m_Camera);
@@ -111,11 +111,11 @@ bool CPlayer2D::Init()
 
 	CAnimation2D* Anim = m_Sprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	Anim->AddAnimation("Marine", "PlayerMarine");
-	Anim->SetLoop("Marine", true);
-	Anim->SetPlayTime("Marine", 10.f);
+	Anim->AddAnimation("ultra", "ultra");
+	Anim->SetLoop("ultra", true);
+	Anim->SetPlayTime("ultra", 30.f);
 
-	Anim->SetCurrentAnimation("PlayerMarine");
+	Anim->SetCurrentAnimation("ultra");
 
 	return true;
 }

@@ -38,10 +38,10 @@ void CDefaultSetting::CreateCDO()
 void CDefaultSetting::LoadResource()
 {
     CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "PlayerMarine", "Marine", TEXT("_SCAssets\\Unit\\Terran\\marine.bmp"));
+        "ultra", "ultra", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
 
 
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("PlayerMarine", 17, 14);
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("ultra", 17, 16);
 
     std::vector<const TCHAR*>   vecFileName;
 

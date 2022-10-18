@@ -216,7 +216,9 @@ bool CAnimationManager::LoadSequence2D(const std::string& Name, const char* Full
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (!Sequence)
-		return false;
+	{
+		//Sequence = CreateAnimationSequence2D();
+	}
 
 	return Sequence->Load(FullPath);
 }

@@ -46,9 +46,18 @@ public:
 		m_Name = Name;
 	}
 
-	void SetHideName(const std::string& Name)
+	void SetHideName(const std::string& Name = "")
 	{
-		m_Name = "##" + Name;
+		if (Name == "")
+		{
+			m_Name = "##" + m_Name;
+		}
+		else
+		{
+			m_Name = "##" + Name;
+		}
+
+		
 
 		TCHAR	wName[256] = {};
 

@@ -87,6 +87,9 @@
     <ClCompile Include="Window\ResourceWindow.cpp">
       <Filter>03. Window</Filter>
     </ClCompile>
+    <ClCompile Include="Window\Anim2DSeqEditorWindow.cpp">
+      <Filter>03. Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -144,6 +147,9 @@
       <Filter>03. Window</Filter>
     </ClInclude>
     <ClInclude Include="Window\ResourceWindow.h">
+      <Filter>03. Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\Anim2DSeqEditorWindow.h">
       <Filter>03. Window</Filter>
     </ClInclude>
   </ItemGroup>
