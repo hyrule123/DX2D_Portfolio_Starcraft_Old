@@ -89,7 +89,11 @@ public:	// ===================== Animation =========================
 	bool AddAnimationSequence2DFrame(const std::string& Name, const Vector2& Start, const Vector2& End);
 	bool AddAnimationSequence2DFrame(const std::string& Name, float StartX, float StartY, float EndX,
 		float EndY);
-	bool AddAnimationSequence2DFrameByTileNumber(const std::string& Name, int TileRowNum, int TileColNum);
+	bool AddAnimationSequence2DFrameByTileNumber(const std::string& Name, EAnimation2DType Type,
+		int TileRowNum, int TileColNum,
+		int ColStart = -1, int ColSize = -1,
+		int RowStart = -1, int RowSize = -1
+	);
 	bool AddAnimationSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End);
 	bool AddAnimationSequence2DFrameAll(const std::string& Name, int Count, float StartX, float StartY, float EndX,
 		float EndY);

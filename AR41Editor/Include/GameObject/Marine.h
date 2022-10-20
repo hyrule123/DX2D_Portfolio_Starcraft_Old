@@ -1,24 +1,21 @@
 #pragma once
-
-#include "GameObject/GameObject.h"
-
-class CPlayer2D :
+#include "GameObject\GameObject.h"
+class CMarine :
     public CGameObject
 {
 	friend class CScene;
 
 protected:
-	CPlayer2D();
-	CPlayer2D(const CPlayer2D& Obj);
-	virtual ~CPlayer2D();
+	CMarine();
+	CMarine(const CMarine& Obj);
+	virtual ~CMarine();
 
 private:
-	CSharedPtr<class CSpriteComponent>	m_Sprite;
-	CSharedPtr<class CSceneComponent>	m_RightChild;
-	CSharedPtr<class CSpriteComponent>	m_SpriteChild;
+	CSharedPtr<class CSceneComponent> m_UnitRoot;
+	CSharedPtr<class CUnitSpriteComponent>	m_MainSprite;
 	CSharedPtr<class CCameraComponent>	m_Camera;
 	CSharedPtr<class CTargetArm>		m_Arm;
-	CSharedPtr<class CColliderOBB2D>	m_Body;
+	CSharedPtr<class CColliderOBB2D>	m_Coll;
 
 
 public:
@@ -26,7 +23,7 @@ public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
-	virtual CPlayer2D* Clone()    const;
+	virtual CMarine* Clone()    const;
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 

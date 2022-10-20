@@ -210,9 +210,13 @@ bool CResourceManager::AddAnimationSequence2DFrame(const std::string& Name, floa
 	return m_AnimationManager->AddSequence2DFrame(Name, StartX, StartY, EndX, EndY);
 }
 
-bool CResourceManager::AddAnimationSequence2DFrameByTileNumber(const std::string& Name, int TileRowNum, int TileColNum)
+bool CResourceManager::AddAnimationSequence2DFrameByTileNumber(const std::string& Name, EAnimation2DType Type,
+	int TileRowNum, int TileColNum,
+	int ColStart, int ColSize,
+	int RowStart, int RowSize
+)
 {
-	return m_AnimationManager->AddAnimationSequence2DFrameByTileNumber(Name, TileRowNum, TileColNum);
+	return m_AnimationManager->AddAnimationSequence2DFrameByTileNumber(Name, Type, TileRowNum, TileColNum, ColStart, ColSize, RowStart, RowSize);
 }
 
 bool CResourceManager::AddAnimationSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End)

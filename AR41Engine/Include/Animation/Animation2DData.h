@@ -44,6 +44,7 @@ private:
 	std::vector<Animation2DNotify*>	m_vecNotify;
 
 public:
+	void Update(float DeltaTime);
 	void SetSequence(CAnimationSequence2D* Sequence);
 	void Save(FILE* File);
 	void Load(FILE* File);

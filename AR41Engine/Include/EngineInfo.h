@@ -213,7 +213,8 @@ struct Animation2DCBuffer
 	int Anim2DType;
 	int Anim2DEnable;
 	int	Anim2DFrame;
-	Vector3 Anim2DEmpty;
+	int Anim2DXFlip;
+	Vector2 Anim2DEmpty;
 };
 
 struct CollisionChannel

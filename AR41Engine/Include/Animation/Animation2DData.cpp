@@ -41,6 +41,82 @@ CAnimation2DData::~CAnimation2DData()
 	}
 }
 
+void CAnimation2DData::Update(float DeltaTime)
+{
+	m_Time += DeltaTime * m_PlayScale;
+
+	bool	AnimEnd = false;
+
+	m_FrameTime = m_PlayTime /
+		m_Sequence->GetFrameCount();
+
+	if (m_Time >= m_FrameTime)
+	{
+		m_Time -= m_FrameTime;
+
+		if (m_Reverse)
+		{
+			--m_Frame;
+
+			if (m_Frame < 0)
+				AnimEnd = true;
+		}
+
+		else
+		{
+			++m_Frame;
+
+			if (m_Frame ==
+				m_Sequence->GetFrameCount())
+				AnimEnd = true;
+		}
+	}
+
+	size_t	Size = m_vecNotify.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		if (!m_vecNotify[i]->Call &&
+			m_vecNotify[i]->Frame ==
+			m_Frame)
+		{
+			m_vecNotify[i]->Call = true;
+			m_vecNotify[i]->Function();
+		}
+	}
+
+	if (AnimEnd)
+	{
+		if (m_Loop)
+		{
+			if (m_Reverse)
+				m_Frame = m_Sequence->GetFrameCount() - 1;
+
+			else
+				m_Frame = 0;
+
+			Size = m_vecNotify.size();
+
+			for (size_t i = 0; i < Size; ++i)
+			{
+				m_vecNotify[i]->Call = false;
+			}
+		}
+
+		else
+		{
+			if (m_Reverse)
+				m_Frame = 0;
+
+			else
+				m_Frame = m_Sequence->GetFrameCount() - 1;
+		}
+
+		if (m_EndFunction)
+			m_EndFunction();
+	}
+}
+
 void CAnimation2DData::SetSequence(CAnimationSequence2D* Sequence)
 {
 	if (Sequence)

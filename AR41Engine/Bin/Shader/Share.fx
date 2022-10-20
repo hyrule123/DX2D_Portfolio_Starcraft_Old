@@ -40,16 +40,20 @@ cbuffer Animation2D : register(b2)
     float g_Anim2DImageWidth;
     float g_Anim2DImageHeight;
     float2 g_Anim2DFrameStart;
+      
     float2 g_Anim2DFrameEnd;
     int g_Anim2DType;
     int g_Anim2DEnable;
+    
     int g_Anim2DFrame;
-    float3 g_Anim2DEmpty;
+    int g_Anim2DXFlip;
+    float2 g_Anim2DEmpty;
 };
 
 #define Anim2D_Atlas 0
-#define Anim2D_Frame 1
-#define Anim2D_Array 2
+#define Anim2D_Array 1
+#define Anim2D_Frame 2
+
 
 float2 UpdateAnimation2D(float2 UV)
 {
@@ -58,19 +62,30 @@ float2 UpdateAnimation2D(float2 UV)
     
     float2 Result = (float2) 0;
     
-    if (g_Anim2DType == Anim2D_Atlas)
+    if (g_Anim2DType <= Anim2D_Array)
     {
-        if (UV.x == 0.f)
-            Result.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
+        if(g_Anim2DXFlip == 1)
+        {
+            if (UV.x == 0.f)
+                Result.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
+            else
+                Result.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
+   
+        }
         else
-            Result.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
-    
+        {
+            if (UV.x == 0.f)
+                Result.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
+            else
+                Result.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
+        }
+        
         if (UV.y == 0.f)
             Result.y = g_Anim2DFrameStart.y / g_Anim2DImageHeight;
         else
             Result.y = g_Anim2DFrameEnd.y / g_Anim2DImageHeight;
+
     }
-    
     else
         Result = UV;
         

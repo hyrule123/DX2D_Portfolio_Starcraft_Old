@@ -45,5 +45,10 @@ public:
 	{
 		m_BufferData.Anim2DFrame = Frame;
 	}
+
+	void SetXFlip(bool FlipXEnable)
+	{
+		m_BufferData.Anim2DXFlip = FlipXEnable ? 1 : 0;
+	}
 };
 

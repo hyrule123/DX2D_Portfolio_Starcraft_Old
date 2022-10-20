@@ -26,6 +26,13 @@ public:
         return m_Animation->GetAnimationClassName();
     }
 
+    CAnimation2D* GetAnimation()    const
+    {
+        return m_Animation;
+    }
+
+    void GetAnimationNames(std::vector<std::string>& vecNames);
+
 public:
     bool SetTexture(class CTexture* Texture);
     bool SetTexture(const std::string& Name, const TCHAR* FileName,
@@ -52,22 +59,33 @@ public:
 
 public:
     template <typename T>
-    T* SetAnimation(const std::string& Name)
-    {
-        T* Anim = new T;
+    inline T* SetAnimation(const std::string& Name);
 
-        Anim->SetName(Name);
-        Anim->m_Owner = this;
-
-        if (!Anim->Init())
-        {
-            SAFE_DELETE(Anim);
-            return nullptr;
-        }
-
-        m_Animation = Anim;
-
-        return Anim;
-    }
+    //Array 방식을 사용하는 애니메이션에서 Row의 번호를 결정할 때 사용하는 메소드.
+    //방향 같이 특정한 Row 번호를 전달해야 하는 경우 재정의해서 사용한다.
+    virtual inline int GetRowIndex() const;
 };
 
+template <typename T>
+inline T* CSpriteComponent::SetAnimation(const std::string& Name)
+{
+    T* Anim = new T;
+
+    Anim->SetName(Name);
+    Anim->m_Owner = this;
+
+    if (!Anim->Init())
+    {
+        SAFE_DELETE(Anim);
+        return nullptr;
+    }
+
+    m_Animation = Anim;
+
+    return Anim;
+}
+
+inline int CSpriteComponent::GetRowIndex() const
+{
+    return 0;
+}

@@ -177,8 +177,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\UnitRootComponent.cpp" />
+    <ClCompile Include="Component\UnitSpriteComponent.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="GameObject\Bullet.cpp" />
+    <ClCompile Include="GameObject\Marine.cpp" />
     <ClCompile Include="GameObject\Monster.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
     <ClCompile Include="main.cpp" />
@@ -203,9 +206,12 @@
     <ClCompile Include="Window\TransformWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\UnitRootComponent.h" />
+    <ClInclude Include="Component\UnitSpriteComponent.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorManager.h" />
     <ClInclude Include="GameObject\Bullet.h" />
+    <ClInclude Include="GameObject\Marine.h" />
     <ClInclude Include="GameObject\Monster.h" />
     <ClInclude Include="GameObject\Player2D.h" />
     <ClInclude Include="resource.h" />

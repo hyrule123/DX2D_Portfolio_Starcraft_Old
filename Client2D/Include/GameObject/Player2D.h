@@ -20,6 +20,7 @@ private:
 	CSharedPtr<class CTargetArm>		m_Arm;
 	CSharedPtr<class CColliderOBB2D>	m_Body;
 
+
 public:
 	virtual void Start();
 	virtual bool Init();

@@ -20,7 +20,7 @@ CComponent::CComponent(const CComponent& Obj)	:
 	m_ComponentTypeName = Obj.m_ComponentTypeName;
 	m_SerialNumber = Obj.m_SerialNumber;
 }
-
+ 
 CComponent::~CComponent()
 {
 }

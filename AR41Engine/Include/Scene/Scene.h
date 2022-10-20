@@ -72,6 +72,20 @@ public:
 		return CDO;
 	}
 
+	template <typename T>
+	static T* CreateComponentCDO(const std::string& Name)
+	{
+		T* CDO = new T;
+
+		CDO->Init();
+
+		CComponent::AddComponentCDO(Name, CDO);
+
+		return CDO;
+	}
+
+
+
 private:
 	bool		m_Change;
 	bool		m_Start;

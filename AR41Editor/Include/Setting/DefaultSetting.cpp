@@ -6,6 +6,9 @@
 #include "Scene/Scene.h"
 #include "Input.h"
 #include "CollisionManager.h"
+#include "../GameObject/Marine.h"
+#include "../Component/UnitRootComponent.h"
+#include "../Component/UnitSpriteComponent.h"
 
 CDefaultSetting::CDefaultSetting()
 {
@@ -31,6 +34,10 @@ void CDefaultSetting::CreateCDO()
     CScene::CreateObjectCDO<CPlayer2D>("Player2D");
     CScene::CreateObjectCDO<CMonster>("Monster");
     CScene::CreateObjectCDO<CBullet>("Bullet");
+    CScene::CreateObjectCDO<CMarine>("Marine");
+
+    CScene::CreateComponentCDO<CUnitRootComponent>("UnitRootComponent");
+    CScene::CreateComponentCDO<CUnitSpriteComponent>("UnitSpriteComponent");
 
     CScene::CreateUIWindowCDO<CStartSceneUI>("StartSceneUI");
 }
@@ -38,10 +45,9 @@ void CDefaultSetting::CreateCDO()
 void CDefaultSetting::LoadResource()
 {
     CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "ultra", "ultra", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
+        "UltraIdle", "UltraLisk", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
 
-
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("ultra", 17, 16);
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::Array, 17, 16, 0, 1);
 
     std::vector<const TCHAR*>   vecFileName;
 

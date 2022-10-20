@@ -6,6 +6,7 @@
 class CAnimation2D :
     public CRef
 {
+	friend class CUnitSpriteComponent;
     friend class CSpriteComponent;
 	friend class CSceneManager;
 	friend class CScene;
@@ -60,7 +61,7 @@ public:
 	}
 
 public:
-	void Start();
+	virtual void Start();
     virtual bool Init();
 	virtual void Update(float DeltaTime);
 	bool AddAnimation(const std::string& Name, const std::string& SequenceName,

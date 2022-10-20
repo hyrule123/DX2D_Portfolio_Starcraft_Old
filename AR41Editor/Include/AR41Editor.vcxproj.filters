@@ -34,6 +34,12 @@
     <Filter Include="03. Window\01. DetailWindow">
       <UniqueIdentifier>{4621b128-08a2-4b3a-9908-a7ee536d6e03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. GameObject\01.Component">
+      <UniqueIdentifier>{0e8a7bab-585e-40f6-a618-61f2339f1e3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. GameObject\02.Animation">
+      <UniqueIdentifier>{b19ec11c-c585-4aa1-8c0b-08ca86742202}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,9 +58,6 @@
       <Filter>04. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Player2D.cpp">
-      <Filter>04. GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Bullet.cpp">
       <Filter>04. GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Window\ObjectWindow.cpp">
@@ -107,6 +110,18 @@
     </ClCompile>
     <ClCompile Include="Window\DetailWindow\PrimitiveWidgetList.cpp">
       <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Marine.cpp">
+      <Filter>04. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\UnitRootComponent.cpp">
+      <Filter>04. GameObject\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Bullet.cpp">
+      <Filter>04. GameObject\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\UnitSpriteComponent.cpp">
+      <Filter>04. GameObject\01.Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +199,15 @@
     </ClInclude>
     <ClInclude Include="Window\DetailWindow\PrimitiveWidgetList.h">
       <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Marine.h">
+      <Filter>04. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\UnitRootComponent.h">
+      <Filter>04. GameObject\01.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\UnitSpriteComponent.h">
+      <Filter>04. GameObject\01.Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

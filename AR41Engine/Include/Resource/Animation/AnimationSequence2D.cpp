@@ -7,7 +7,11 @@
 
 CAnimationSequence2D::CAnimationSequence2D()	:
 	m_Scene(nullptr),
-	m_Anim2DType(EAnimation2DType::Atlas)
+	m_Anim2DType(EAnimation2DType::Atlas),
+	m_ColStart(-1),
+	m_RowStart(-1),
+	m_ColSize(-1),
+	m_RowSize(-1)
 {
 	SetTypeID<CAnimationSequence2D>();
 }
@@ -23,6 +27,7 @@ CAnimationSequence2D::CAnimationSequence2D(const CAnimationSequence2D& Anim)	:
 CAnimationSequence2D::~CAnimationSequence2D()
 {
 }
+
 
 bool CAnimationSequence2D::Init(CTexture* Texture)
 {
@@ -154,22 +159,89 @@ void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, floa
 	m_vecFrameData.push_back(Data);
 }
 
-void CAnimationSequence2D::AddFrameByTileNumber(int TileRowNum, int TileColNum)
+void CAnimationSequence2D::AddFrameByTileNumber
+(
+	EAnimation2DType Type,
+	int TileRowNum, int TileColNum,
+	int ColStart, int ColSize,
+	int RowStart, int RowSize
+)
 {
+
+	//예외처리
 	if (!m_Texture)
 	{
 		assert(0);
 		return;
 	}
+	else if (m_Anim2DType == EAnimation2DType::Frame)
+	{
+		assert(0);
+		return;
+	}
+		
+
+
+	//시작 행렬 번호를 지정했을 경우 여기서 설정
+	int RStart = 0;
+	int RSize = TileRowNum;
+	int CStart = 0;
+	int CSize = TileColNum;
+
+	if (RowStart != -1)
+	{
+		if (RowStart < 0)
+		{
+			assert(0);
+			return;
+		}
+		RStart = RowStart;
+	}
+	if (RowSize != -1)
+	{
+		if (RowSize > TileRowNum)
+		{
+			assert(0);
+			return;
+		}
+
+		RSize = RowSize;
+	}
+	if (ColStart != -1)
+	{
+		if (ColStart < 0)
+		{
+			assert(0);
+			return;
+		}
+
+		ColStart = ColStart;
+	}
+	if (ColSize != -1)
+	{
+		if (ColSize > TileColNum)
+		{
+			assert(0);
+			return;
+		}
+
+		CSize = ColSize;
+	}
+	if (CStart > CSize || RStart > RSize)
+	{
+		assert(0);
+		return;
+	}
+
 
 	m_vecFrameData.clear();
 	
 	int TileWidth = m_Texture->GetWidth() / TileRowNum;
 	int TileHeight = m_Texture->GetHeight() / TileColNum;
 
-	for (int i = 0; i < TileColNum; ++i)
+	for (int i = CStart; i < CSize; ++i)
 	{
-		for (int j = 0; j < TileRowNum; ++j)
+		for (int j = RStart; j < RSize; ++j)
 		{
 			Animation2DFrameData Data;
 			
@@ -184,8 +256,13 @@ void CAnimationSequence2D::AddFrameByTileNumber(int TileRowNum, int TileColNum)
 		}
 	}
 
-	
+	m_RowStart = RStart;
+	m_ColStart = CStart;
 
+	m_RowSize = RSize;
+	m_ColSize = CSize;
+
+	m_Anim2DType = Type;
 }
 
 void CAnimationSequence2D::AddFrameAll(int Count, const Vector2& Start, const Vector2& End)

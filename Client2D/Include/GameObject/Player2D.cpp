@@ -111,11 +111,11 @@ bool CPlayer2D::Init()
 
 	CAnimation2D* Anim = m_Sprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	Anim->AddAnimation("ultra", "ultra");
-	Anim->SetLoop("ultra", true);
-	Anim->SetPlayTime("ultra", 30.f);
+	Anim->AddAnimation("UltraIdle", "UltraIdle");
+	Anim->SetLoop("UltraIdle", true);
+	Anim->SetPlayTime("UltraIdle", 30.f);
 
-	Anim->SetCurrentAnimation("ultra");
+	Anim->SetCurrentAnimation("UltraIdle");
 
 	return true;
 }

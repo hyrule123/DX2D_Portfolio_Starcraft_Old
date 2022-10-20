@@ -30,6 +30,10 @@ CEngine::CEngine()	:
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(61771);
+	m_ClearColor[0] = 0.3f;
+	m_ClearColor[1] = 0.3f;
+	m_ClearColor[2] = 0.3f;
+	m_ClearColor[3] = 1.f;
 }
 
 CEngine::~CEngine()

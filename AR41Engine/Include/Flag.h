@@ -90,8 +90,9 @@ enum class ERenderStateType : unsigned char
 enum class EAnimation2DType : unsigned int
 {
 	Atlas,
-	Frame,
-	Array
+	Array,
+	Frame
+	
 };
 
 enum class ECollision_Channel

@@ -15,6 +15,7 @@
 #include "../GameObject\Player2D.h"
 #include "../GameObject\Bullet.h"
 #include "../GameObject\Monster.h"
+#include "../GameObject/Marine.h"
 #include "ObjectWindow.h"
 #include "ComponentWindow.h"
 #include "Editor/EditorGUIManager.h"
@@ -144,6 +145,9 @@ void CClassWindow::ObjectCreateCallback()
 
 	else if (m_SelectObjectItem == "Monster")
 		Obj = Scene->CreateObject<CMonster>(m_SelectObjectItem);
+
+	else if (m_SelectObjectItem == "Marine")
+		Obj = Scene->CreateObject<CMarine>(m_SelectObjectItem);
 
 	if (Window)
 	{

@@ -75,78 +75,7 @@ void CAnimation2D::Update(float DeltaTime)
 		m_CurAnimation->m_Sequence->GetFrameCount() == 0)
 		return;
 
-	m_CurAnimation->m_Time += DeltaTime * m_CurAnimation->m_PlayScale;
-
-	bool	AnimEnd = false;
-
-	m_CurAnimation->m_FrameTime = m_CurAnimation->m_PlayTime / 
-		m_CurAnimation->m_Sequence->GetFrameCount();
-
-	if (m_CurAnimation->m_Time >= m_CurAnimation->m_FrameTime)
-	{
-		m_CurAnimation->m_Time -= m_CurAnimation->m_FrameTime;
-
-		if (m_CurAnimation->m_Reverse)
-		{
-			--m_CurAnimation->m_Frame;
-
-			if (m_CurAnimation->m_Frame < 0)
-				AnimEnd = true;
-		}
-
-		else
-		{
-			++m_CurAnimation->m_Frame;
-
-			if (m_CurAnimation->m_Frame ==
-				m_CurAnimation->m_Sequence->GetFrameCount())
-				AnimEnd = true;
-		}
-	}
-
-	size_t	Size = m_CurAnimation->m_vecNotify.size();
-
-	for (size_t i = 0; i < Size; ++i)
-	{
-		if (!m_CurAnimation->m_vecNotify[i]->Call &&
-			m_CurAnimation->m_vecNotify[i]->Frame ==
-			m_CurAnimation->m_Frame)
-		{
-			m_CurAnimation->m_vecNotify[i]->Call = true;
-			m_CurAnimation->m_vecNotify[i]->Function();
-		}
-	}
-
-	if (AnimEnd)
-	{
-		if (m_CurAnimation->m_Loop)
-		{
-			if (m_CurAnimation->m_Reverse)
-				m_CurAnimation->m_Frame = m_CurAnimation->m_Sequence->GetFrameCount() - 1;
-
-			else
-				m_CurAnimation->m_Frame = 0;
-
-			Size = m_CurAnimation->m_vecNotify.size();
-
-			for (size_t i = 0; i < Size; ++i)
-			{
-				m_CurAnimation->m_vecNotify[i]->Call = false;
-			}
-		}
-
-		else
-		{
-			if (m_CurAnimation->m_Reverse)
-				m_CurAnimation->m_Frame = 0;
-
-			else
-				m_CurAnimation->m_Frame = m_CurAnimation->m_Sequence->GetFrameCount() - 1;
-		}
-
-		if (m_CurAnimation->m_EndFunction)
-			m_CurAnimation->m_EndFunction();
-	}
+	m_CurAnimation->Update(DeltaTime);
 }
 
 bool CAnimation2D::AddAnimation(const std::string& Name, 
@@ -396,13 +325,38 @@ void CAnimation2D::SetShader()
 		return;
 
 	CAnimation2DConstantBuffer* Buffer = CResourceManager::GetInst()->GetAnim2DConstantBuffer();
-
-	const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(m_CurAnimation->m_Frame);
+	
 
 	EAnimation2DType	Type = m_CurAnimation->m_Sequence->GetAnim2DType();
 
 	if (Type == EAnimation2DType::Atlas)
 	{
+		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(m_CurAnimation->m_Frame);
+
+		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
+			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
+		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
+	}
+	else if (Type == EAnimation2DType::Array)
+	{
+		int CalcedFrame = (m_CurAnimation->m_Frame + m_CurAnimation->m_Sequence->GetColStart()) * (m_CurAnimation->m_Sequence->GetRowNum());
+
+		int Direction = (int)m_Owner->GetRowIndex();
+
+
+		if (Direction > 16)
+		{
+			Direction = 31 - Direction;
+			Buffer->SetXFlip(true);
+		}
+		else
+			Buffer->SetXFlip(false);
+
+		CalcedFrame += Direction;
+		
+			
+		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(CalcedFrame);
+
 		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
 			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
 		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
