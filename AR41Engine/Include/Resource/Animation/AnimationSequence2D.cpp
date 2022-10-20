@@ -190,7 +190,7 @@ void CAnimationSequence2D::AddFrameByTileNumber
 
 	if (RowStart != -1)
 	{
-		if (RowStart < 0)
+		if (RowStart < 0 || RowStart > TileRowNum)
 		{
 			assert(0);
 			return;
@@ -209,13 +209,13 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	}
 	if (ColStart != -1)
 	{
-		if (ColStart < 0)
+		if (ColStart < 0 || ColStart > TileColNum)
 		{
 			assert(0);
 			return;
 		}
 
-		ColStart = ColStart;
+		CStart = ColStart;
 	}
 	if (ColSize != -1)
 	{
@@ -227,11 +227,6 @@ void CAnimationSequence2D::AddFrameByTileNumber
 
 		CSize = ColSize;
 	}
-	if (CStart > CSize || RStart > RSize)
-	{
-		assert(0);
-		return;
-	}
 
 
 	m_vecFrameData.clear();
@@ -239,18 +234,21 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	int TileWidth = m_Texture->GetWidth() / TileRowNum;
 	int TileHeight = m_Texture->GetHeight() / TileColNum;
 
-	for (int i = CStart; i < CSize; ++i)
+	int CEnd = CStart + CSize;
+	int REnd = RStart + RSize;
+
+	for (int i = CStart; i < CEnd; ++i)
 	{
-		for (int j = RStart; j < RSize; ++j)
+		for (int j = RStart; j < REnd; ++j)
 		{
 			Animation2DFrameData Data;
 			
-			Data.Start.x = (float)j * TileWidth;
-			Data.Start.y = (float)i * TileHeight;
+			Data.Start.x = (float)(j * TileWidth);
+			Data.Start.y = (float)(i * TileHeight);
 			
 
-			Data.End.x = (float)Data.Start.x + TileWidth;
-			Data.End.y = (float)Data.Start.y + TileHeight;
+			Data.End.x = Data.Start.x + (float)TileWidth;
+			Data.End.y = Data.Start.y + (float)TileHeight;
 
 			m_vecFrameData.push_back(Data);
 		}

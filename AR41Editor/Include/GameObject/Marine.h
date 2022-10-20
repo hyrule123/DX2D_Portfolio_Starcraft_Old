@@ -16,6 +16,7 @@ private:
 	CSharedPtr<class CCameraComponent>	m_Camera;
 	CSharedPtr<class CTargetArm>		m_Arm;
 	CSharedPtr<class CColliderOBB2D>	m_Coll;
+	CSharedPtr<class CAnimation2D> m_Anim;
 
 
 public:

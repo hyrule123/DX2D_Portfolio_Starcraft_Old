@@ -339,7 +339,7 @@ void CAnimation2D::SetShader()
 	}
 	else if (Type == EAnimation2DType::Array)
 	{
-		int CalcedFrame = (m_CurAnimation->m_Frame + m_CurAnimation->m_Sequence->GetColStart()) * (m_CurAnimation->m_Sequence->GetRowNum());
+		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->m_Sequence->GetRowNum());
 
 		int Direction = (int)m_Owner->GetRowIndex();
 

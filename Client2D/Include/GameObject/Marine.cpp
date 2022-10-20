@@ -104,15 +104,22 @@ bool CMarine::Init()
 	//Material->SetRenderState("DepthDisable");
 
 
-	CAnimation2D* Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
+	m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	Anim->AddAnimation("UltraIdle", "UltraIdle");
-	Anim->SetLoop("UltraIdle", true);
-	Anim->SetPlayTime("UltraIdle", 30.f);
+	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
+	m_Anim->SetLoop("UltraIdle", true);
+	m_Anim->SetPlayTime("UltraIdle", 30.f);
 
-	Anim->SetCurrentAnimation("UltraIdle");
+	m_Anim->AddAnimation("UltraMove", "UltraMove");
+	m_Anim->SetLoop("UltraMove", true);
+	m_Anim->SetPlayTime("UltraMove", 1.f);
 
+	
+	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
+	m_Anim->SetLoop("UltraAttack", true);
+	m_Anim->SetPlayTime("UltraAttack", 0.5f);
 
+	m_Anim->SetCurrentAnimation("UltraAttack");
 
 	return true;
 }
@@ -149,11 +156,15 @@ void CMarine::Load(FILE* File)
 void CMarine::MoveUp()
 {
 	m_UnitRoot->AddWorldPosition(m_UnitRoot->GetWorldAxis(AXIS_Y) * 300.f * g_DeltaTime);
+
+	m_Anim->ChangeAnimation("UltraMove");
 }
 
 void CMarine::MoveDown()
 {
 	m_UnitRoot->AddWorldPosition(m_UnitRoot->GetWorldAxis(AXIS_Y) * -300.f * g_DeltaTime);
+
+	m_Anim->ChangeAnimation("UltraMove");
 }
 
 void CMarine::Rotation()
@@ -168,6 +179,8 @@ void CMarine::RotationInv()
 
 void CMarine::Fire()
 {
+	m_Anim->ChangeAnimation("UltraAttack");
+
 	CBullet* Bullet = m_Scene->CreateObject<CBullet>("Bullet");
 
 	Bullet->SetWorldPosition(GetWorldPos());
