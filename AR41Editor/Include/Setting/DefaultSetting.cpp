@@ -49,6 +49,7 @@ void CDefaultSetting::LoadResource()
 
     CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
 
+
     if (!UltraTex)
         assert(0);
     CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::Array, 17, 16, 0, 1);

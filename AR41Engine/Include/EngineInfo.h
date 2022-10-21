@@ -175,7 +175,13 @@ struct MaterialCBuffer
 	Vector4 SpecularColor;
 	Vector4 EmissiveColor;
 	float Opacity;
-	Vector3 Empty;
+	Vector3 ColorKey;
+
+	MaterialCBuffer():
+		ColorKey(-1.f, -1.f, -1.f),
+		Opacity()
+	{
+	}
 };
 
 struct HierarchyName

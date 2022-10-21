@@ -43,5 +43,10 @@ public:
 	{
 		m_BufferData.Opacity = Opacity;
 	}
+
+	void SetColorKey(const Vector3& Color)
+	{
+		m_BufferData.ColorKey = Color;
+	}
 };
 

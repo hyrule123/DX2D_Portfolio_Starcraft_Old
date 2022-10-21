@@ -26,7 +26,7 @@ cbuffer Material : register(b1)
     float4 g_MtrlSpecularColor;
     float4 g_MtrlEmissiveColor;
     float g_MtrlOpacity;
-    float3 g_MtrlEmpty;
+    float3 g_MtrlColorKey;
 };
 
 SamplerState g_PointSmp : register(s0);

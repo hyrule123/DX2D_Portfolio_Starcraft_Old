@@ -51,6 +51,7 @@ protected:
     Vector4     m_SpecularColor;
     Vector4     m_EmissiveColor;    // 자체적으로 빛을 발산하는 물체일 경우
     float       m_Opacity;          // 불투명도.
+    Vector3     m_ColorKey;
     class CMaterialConstantBuffer* m_CBuffer;
     CSharedPtr<CRenderState>    m_RenderState[3];
 
@@ -73,6 +74,9 @@ public:
         unsigned char a);
     void SetOpacity(float Opacity);
     void AddOpacity(float Opacity);
+    void SetColorKey(const Vector3& Color);
+    void SetColorKey(float r, float g, float b);
+    void SetColorKeyUnsignedChar(unsigned char r, unsigned char g, unsigned char b);
 
     // === Texture 추가 ===
     void AddTexture(int Register, int ShaderBufferType, const std::string& Name,

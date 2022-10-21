@@ -78,6 +78,7 @@ PS_OUTPUT_SINGLE SpriteColorPS(VS_OUTPUT_COLOR input)
 {
     PS_OUTPUT_SINGLE output = (PS_OUTPUT_SINGLE) 0;
     
+    
     output.Color = input.Color;
     
     return output;
@@ -103,7 +104,19 @@ PS_OUTPUT_SINGLE SpritePS(VS_OUTPUT_UV input)
 {
     PS_OUTPUT_SINGLE output = (PS_OUTPUT_SINGLE) 0;
 
+
     float4  TextureColor = g_BaseTexture.Sample(g_PointSmp, input.UV);
+    
+    //컬러키를 설정 안했으면 기본값으로 음수가 들어가있음.
+    if (g_MtrlColorKey.r >= 0.f)
+    {
+        if (
+        g_MtrlColorKey.r == TextureColor.r &&
+        g_MtrlColorKey.g == TextureColor.g &&
+        g_MtrlColorKey.b == TextureColor.b
+        )
+            discard;
+    }
     
     output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb;
 

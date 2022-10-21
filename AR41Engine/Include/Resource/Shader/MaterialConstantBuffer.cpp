@@ -23,6 +23,7 @@ bool CMaterialConstantBuffer::Init()
 	return true;
 }
 
+
 void CMaterialConstantBuffer::UpdateBuffer()
 {
 	m_Buffer->UpdateBuffer(&m_BufferData);

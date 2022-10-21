@@ -169,6 +169,27 @@ void CMaterial::AddOpacity(float Opacity)
 	m_CBuffer->SetOpacity(m_Opacity);
 }
 
+void CMaterial::SetColorKey(const Vector3& Color)
+{
+	m_ColorKey = Color;
+
+	m_CBuffer->SetColorKey(m_ColorKey);
+}
+
+void CMaterial::SetColorKey(float r, float g, float b)
+{
+	m_ColorKey = Vector3(r, g, b);
+
+	m_CBuffer->SetColorKey(m_ColorKey);
+}
+
+void CMaterial::SetColorKeyUnsignedChar(unsigned char r, unsigned char g, unsigned char b)
+{
+	m_ColorKey = Vector3(r / 255.f, g / 255.f, b / 255.f);
+
+	m_CBuffer->SetColorKey(m_ColorKey);
+}
+
 void CMaterial::AddTexture(int Register, int ShaderBufferType, 
 	const std::string& Name, CTexture* Texture)
 {

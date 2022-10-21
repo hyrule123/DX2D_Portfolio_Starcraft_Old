@@ -10,6 +10,7 @@ public:
 	CAnimation2DConstantBuffer(const CAnimation2DConstantBuffer& Buffer);
 	virtual ~CAnimation2DConstantBuffer();
 
+
 private:
 	Animation2DCBuffer	m_BufferData;
 

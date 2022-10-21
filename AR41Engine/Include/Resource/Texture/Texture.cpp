@@ -277,6 +277,7 @@ bool CTexture::CreateResource(int Index)
 	m_vecTextureInfo[Index]->Width = (unsigned int)m_vecTextureInfo[Index]->Image->GetImages()[0].width;
 	m_vecTextureInfo[Index]->Height = (unsigned int)m_vecTextureInfo[Index]->Image->GetImages()[0].height;
 
+
 	return true;
 }
 

@@ -39,6 +39,7 @@ bool CUnitSpriteComponent::Init()
 	if (!CSpriteComponent::Init())
 		return false;
 
+	m_vecMaterial[0]->SetColorKeyUnsignedChar(0, 0, 0);
 
 	return true;
 }
