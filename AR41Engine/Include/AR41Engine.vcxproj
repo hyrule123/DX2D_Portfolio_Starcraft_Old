@@ -89,6 +89,9 @@
     <ClInclude Include="Resource\Font\Font.h" />
     <ClInclude Include="Resource\Font\FontCollection.h" />
     <ClInclude Include="Resource\Font\FontManager.h" />
+    <ClInclude Include="Resource\Map\MapManager.h" />
+    <ClInclude Include="Resource\Map\StormLib.h" />
+    <ClInclude Include="Resource\Map\StormPort.h" />
     <ClInclude Include="Resource\Material\Material.h" />
     <ClInclude Include="Resource\Material\MaterialManager.h" />
     <ClInclude Include="Resource\Mesh\Mesh.h" />
@@ -196,6 +199,7 @@
     <ClCompile Include="Resource\Font\Font.cpp" />
     <ClCompile Include="Resource\Font\FontCollection.cpp" />
     <ClCompile Include="Resource\Font\FontManager.cpp" />
+    <ClCompile Include="Resource\Map\MapManager.cpp" />
     <ClCompile Include="Resource\Material\Material.cpp" />
     <ClCompile Include="Resource\Material\MaterialManager.cpp" />
     <ClCompile Include="Resource\Mesh\Mesh.cpp" />

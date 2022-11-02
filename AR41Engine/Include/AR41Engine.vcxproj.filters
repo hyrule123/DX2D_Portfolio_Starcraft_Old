@@ -193,6 +193,9 @@
     <Filter Include="02. Resource\07. Font">
       <UniqueIdentifier>{f6e36326-7e28-4cc2-99b5-af0673bb857e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\08. Maps">
+      <UniqueIdentifier>{e3fa128b-825f-418b-b440-e056666ffb87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -555,6 +558,15 @@
     <ClInclude Include="Editor\EditorGroup.h">
       <Filter>07. Editor\03. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Map\StormLib.h">
+      <Filter>02. Resource\08. Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Map\StormPort.h">
+      <Filter>02. Resource\08. Maps</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Map\MapManager.h">
+      <Filter>02. Resource\08. Maps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -865,6 +877,9 @@
     </ClCompile>
     <ClCompile Include="Editor\EditorGroup.cpp">
       <Filter>07. Editor\03. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Map\MapManager.cpp">
+      <Filter>02. Resource\08. Maps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
