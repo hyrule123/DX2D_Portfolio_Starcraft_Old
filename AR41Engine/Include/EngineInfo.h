@@ -35,6 +35,14 @@
 
 extern float g_DeltaTime;
 
+#ifdef _UNICODE
+#define lfopen_s _wfopen_s
+typedef std::wstring tstring;
+#else
+#define lfopen_s fopen_s
+typedef std::string tstring;
+#endif
+
 #define	ROOT_PATH		"Root"
 #define	SHADER_PATH		"Shader"
 #define	TEXTURE_PATH	"Texture"

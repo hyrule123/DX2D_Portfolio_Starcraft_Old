@@ -73,8 +73,6 @@ bool CResourceManager::Init()
 
 	m_MapManager->Init();
 
-	m_MapManager->LoadMapDataFromFile(TEXT("≈ı»•1.3.scx"));
-
 	return true;
 }
 

@@ -4,18 +4,7 @@
 #include "../ResourceManager.h"
 
 
-//타일셋 종류
-enum class TileSets
-{
-	Badlands,
-	SpacePlatform,
-	Installation,
-	AshWorld,
-	JungleWorld,
-	Desert,
-	Ice,
-	Twilight
-};
+
 
 typedef struct Chunk
 {
@@ -50,18 +39,28 @@ private:
 	CMapManager();
 	~CMapManager();
 
+	
+	std::wstring m_MapName;
+
+	//로드된 맵 데이터를 보관하는 변수
 	Chunk m_MapDataChunk[EMapDataTypeEnd];
-	UINT8 m_LoadCheck;
+
+	//로드 완료 비교용
+	unsigned int m_LoadRef;
+
+	//로드 완료 기록용
+	unsigned int m_LoadCheck;
 
 private:
 	void ReadMapData(char* Data, DWORD Size);
 	void ResetMapData();
 
+	//로드된 맵 데이터를 읽어서 타일맵을 생성.
+	bool LoadMap();
 
 public:
 	bool Init();
-	bool LoadAll();
-
+	inline bool LoadComplete();
 
 
 
@@ -75,7 +74,13 @@ public:
 	//							- 아카이브 내부의 파일명(맵만 뽑아낼것이므로 "staredit\\scenario.chk"로 고정
 	//   char * szFileName     - Name of the target disk file.
 
-	inline char* GetCurrentMapBuffer() const;
 	int LoadMapDataFromFile(const TCHAR* FileName, const char* PathName = MAP_PATH);
 
 };
+
+
+
+inline bool CMapManager::LoadComplete()
+{
+	return (m_LoadCheck == m_LoadRef);
+}
