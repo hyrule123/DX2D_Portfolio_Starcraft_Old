@@ -11,8 +11,8 @@
 #include "../UI/UIButton.h"
 #include "../UI/UIImage.h"
 #include "../UI/UIWindow.h"
+#include "../CDOManager.h"
 
-std::unordered_map<std::string, CSceneInfo*> CScene::m_mapSceneInfoCDO;
 
 CScene::CScene()	:
 	m_Change(false),
@@ -62,84 +62,7 @@ CScene::~CScene()
 	SAFE_DELETE(m_SceneInfo);
 }
 
-void CScene::CreateCDO()
-{
-	// ==================== SceneInfo ====================
-	CSceneInfo* Info = new CSceneInfo;
 
-	Info->Init();
-
-	CScene::AddSceneInfoCDO("SceneInfo", Info);
-
-
-	// ==================== GameObject ====================
-	CGameObject* ObjCDO = new CGameObject;
-
-	ObjCDO->Init();
-
-	CGameObject::AddObjectCDO("GameObject", ObjCDO);
-
-
-	// ==================== Component ====================
-	CComponent* ComCDO = new CSceneComponent;
-
-	ComCDO->Init();
-
-	CComponent::AddComponentCDO("SceneComponent", ComCDO);
-
-	ComCDO = new CSpriteComponent;
-
-	ComCDO->Init();
-
-	CComponent::AddComponentCDO("SpriteComponent", ComCDO);
-
-	ComCDO = new CCameraComponent;
-
-	ComCDO->Init();
-
-	CComponent::AddComponentCDO("CameraComponent", ComCDO);
-
-	ComCDO = new CTargetArm;
-
-	ComCDO->Init();
-
-	CComponent::AddComponentCDO("TargetArm", ComCDO);
-
-	ComCDO = new CColliderBox2D;
-
-	ComCDO->Init();
-
-	CComponent::AddComponentCDO("Box2D", ComCDO);
-
-
-	// ==================== Animation ====================
-	CAnimation2D* AnimCDO = new CAnimation2D;
-
-	AnimCDO->Init();
-
-	CAnimation2D::AddAnimationCDO("Animation2D", AnimCDO);
-
-
-	// ==================== UI ====================
-	CUIWindow* UIWindowCDO = new CUIWindow;
-
-	UIWindowCDO->Init();
-
-	CUIWindow::AddUIWindowCDO("UIWindow", UIWindowCDO);
-
-	CUIWidget* UIWidgetCDO = new CUIButton;
-
-	UIWidgetCDO->Init();
-
-	CUIWidget::AddUIWidgetCDO("UIButton", UIWidgetCDO);
-
-	UIWidgetCDO = new CUIImage;
-
-	UIWidgetCDO->Init();
-
-	CUIWidget::AddUIWidgetCDO("UIImage", UIWidgetCDO);
-
-}
 
 void CScene::Start()
 {
@@ -248,13 +171,15 @@ void CScene::Save(const char* FullPath)
 	fwrite(m_Name.c_str(), 1, Length, File);
 
 	// SceneInfo 저장
+	size_t TypeID = m_SceneInfo->GetTypeID();
 	m_SceneInfo->Save(File);
+
+	//매니저는 타입을 명확하게 알고있으므로 TypeID X
 	m_CameraManager->Save(File);
 	m_CollisionManager->Save(File);
 	m_Viewport->Save(File);
 
 	int	ObjCount = (int)m_ObjList.size();
-
 	fwrite(&ObjCount, 4, 1, File);
 
 	auto	iter = m_ObjList.begin();
@@ -262,12 +187,9 @@ void CScene::Save(const char* FullPath)
 
 	for (; iter != iterEnd; ++iter)
 	{
-		std::string	ClassTypeName = (*iter)->GetObjectTypeName();
-
-		Length = (int)ClassTypeName.length();
-
-		fwrite(&Length, 4, 1, File);
-		fwrite(ClassTypeName.c_str(), 1, Length, File);
+		//게임오브젝트의 TypeID를 저장. 불러오기 시 사용
+		size_t TypeID = (*iter)->GetTypeID();
+		fwrite(&TypeID, sizeof(TypeID), 1, File);
 
 		(*iter)->Save(File);
 	}
@@ -307,23 +229,13 @@ void CScene::Load(const char* FullPath)
 
 	m_Name = Name;
 
-	// SceneInfo 저장
-	Length = 0;
-	char	SceneInfoName[256] = {};
-
-	fread(&Length, 4, 1, File);
-	fread(SceneInfoName, 1, Length, File);
-
-	LoadSize += 4 + Length;
-
-	if (m_LoadingCallback)
-		m_LoadingCallback(LoadSize / (float)FileSize);
-
+	// SceneInfo 불러오기
 	SAFE_DELETE(m_SceneInfo);
 
-	CSceneInfo* CDO = FindSceneInfoCDO(SceneInfoName);
+	size_t TypeID = 0;
+	fread(&TypeID, sizeof(size_t), 1, File);
 
-	m_SceneInfo = CDO->Clone();
+	m_SceneInfo = static_cast<CSceneInfo*>(CCDOManager::GetInst()->CloneCDO(TypeID));
 
 	m_SceneInfo->m_Owner = this;
 
@@ -424,13 +336,13 @@ void CScene::Load(const char* FullPath)
 
 		CurPos = NextPos;
 
-		CGameObject* ObjCDO = CGameObject::FindCDO(ObjClassTypeName);
+		TypeID = 0;
+		fread(&TypeID, sizeof(size_t), 1, File);
+		CGameObject* ObjCDO = static_cast<CGameObject*>(CCDOManager::GetInst()->CloneCDO(TypeID));
 
-		CGameObject* NewObj = ObjCDO->Clone();
+		ObjCDO->SetScene(this);
 
-		NewObj->SetScene(this);
-
-		NewObj->Load(File);
+		ObjCDO->Load(File);
 
 		NextPos = (int)ftell(File);
 
@@ -446,7 +358,7 @@ void CScene::Load(const char* FullPath)
 
 		CurPos = NextPos;
 
-		m_ObjList.push_back(NewObj);
+		m_ObjList.push_back(ObjCDO);
 	}
 
 	m_SceneInfo->LoadComplete();

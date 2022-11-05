@@ -29,6 +29,7 @@ CResourceManager::~CResourceManager()
 
 bool CResourceManager::Init()
 {
+
 	m_ShaderManager = new CShaderManager;
 
 	m_ShaderManager->Init();

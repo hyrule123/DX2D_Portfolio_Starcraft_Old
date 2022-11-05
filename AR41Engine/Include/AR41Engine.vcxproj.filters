@@ -214,7 +214,7 @@
     <Filter Include="02. Resource\08. Map">
       <UniqueIdentifier>{88a52d1e-2c26-451d-afbb-c33465f48cec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Resource\09. CDO">
+    <Filter Include="01. Manager\11. CDO">
       <UniqueIdentifier>{c888dde4-6b3a-4892-b4d9-2307a93669f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -631,7 +631,10 @@
       <Filter>02. Resource\08. Map</Filter>
     </ClInclude>
     <ClInclude Include="CDOManager.h">
-      <Filter>02. Resource\09. CDO</Filter>
+      <Filter>01. Manager\11. CDO</Filter>
+    </ClInclude>
+    <ClInclude Include="CDO.h">
+      <Filter>01. Manager\11. CDO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -987,7 +990,10 @@
       <Filter>02. Resource\08. Map</Filter>
     </ClCompile>
     <ClCompile Include="CDOManager.cpp">
-      <Filter>02. Resource\09. CDO</Filter>
+      <Filter>01. Manager\11. CDO</Filter>
+    </ClCompile>
+    <ClCompile Include="CDO.cpp">
+      <Filter>01. Manager\11. CDO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

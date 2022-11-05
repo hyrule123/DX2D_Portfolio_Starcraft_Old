@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../EngineInfo.h"
+#include "../CDO.h"
 
-class CSceneInfo
+class CSceneInfo : public CCDO
 {
 	friend class CScene;
 	friend class CSceneManager;

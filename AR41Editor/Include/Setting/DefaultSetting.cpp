@@ -1,4 +1,7 @@
 #include "DefaultSetting.h"
+#include "CDOManager.h"
+
+
 #include "../GameObject/Player2D.h"
 #include "../GameObject/Monster.h"
 #include "../GameObject/Bullet.h"
@@ -9,6 +12,8 @@
 #include "../GameObject/Marine.h"
 #include "../Component/UnitRootComponent.h"
 #include "../Component/UnitSpriteComponent.h"
+
+
 
 CDefaultSetting::CDefaultSetting()
 {
@@ -31,15 +36,24 @@ void CDefaultSetting::Init()
 
 void CDefaultSetting::CreateCDO()
 {
-    CScene::CreateObjectCDO<CPlayer2D>("Player2D");
-    CScene::CreateObjectCDO<CMonster>("Monster");
-    CScene::CreateObjectCDO<CBullet>("Bullet");
-    CScene::CreateObjectCDO<CMarine>("Marine");
+    CCDOManager::GetInst()->CreateCDO<CPlayer2D>("Player2D");
+    CCDOManager::GetInst()->CreateCDO<CMonster>("Monster");
+    CCDOManager::GetInst()->CreateCDO<CBullet>("Bullet");
+    CCDOManager::GetInst()->CreateCDO<CMarine>("Marine");
 
-    CScene::CreateComponentCDO<CUnitRootComponent>("UnitRootComponent");
-    CScene::CreateComponentCDO<CUnitSpriteComponent>("UnitSpriteComponent");
+    CCDOManager::GetInst()->CreateCDO<CUnitRootComponent>("UnitRootComponent");
+    CCDOManager::GetInst()->CreateCDO<CUnitSpriteComponent>("UnitSpriteComponent");
+    CCDOManager::GetInst()->CreateCDO<CStartSceneUI>("StartSceneUI");
 
-    CScene::CreateUIWindowCDO<CStartSceneUI>("StartSceneUI");
+    //CScene::CreateObjectCDO<CPlayer2D>("Player2D");
+    //CScene::CreateObjectCDO<CMonster>("Monster");
+    //CScene::CreateObjectCDO<CBullet>("Bullet");
+    //CScene::CreateObjectCDO<CMarine>("Marine");
+
+    //CScene::CreateComponentCDO<CUnitRootComponent>("UnitRootComponent");
+    //CScene::CreateComponentCDO<CUnitSpriteComponent>("UnitSpriteComponent");
+
+    //CScene::CreateUIWindowCDO<CStartSceneUI>("StartSceneUI");
 }
 
 void CDefaultSetting::LoadResource()

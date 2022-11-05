@@ -8,7 +8,7 @@ class CAnimationSequence2D :
 {
     friend class CAnimationManager;
 
-private:
+protected:
     CAnimationSequence2D();
     CAnimationSequence2D(const CAnimationSequence2D& Anim);
     ~CAnimationSequence2D();

@@ -19,6 +19,7 @@ private:
 	CAnimationManager* m_AnimationManager;
 	CSoundManager* m_SoundManager;
 	CFontManager* m_FontManager;
+
 	
 
 public:

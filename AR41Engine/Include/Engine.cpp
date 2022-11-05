@@ -9,6 +9,7 @@
 #include "Editor/EditorGUIManager.h"
 #include "CollisionManager.h"
 #include "Thread/ThreadManager.h"
+#include "CDOManager.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
@@ -119,6 +120,11 @@ bool CEngine::Init(HINSTANCE hInst, const TCHAR* Title,
 	
 	// 스레드 관리자 초기화
 	if (!CThreadManager::GetInst()->Init())
+		return false;
+
+
+	//CDO 관리자 초기화
+	if (!CCDOManager::GetInst()->Init())
 		return false;
 
 

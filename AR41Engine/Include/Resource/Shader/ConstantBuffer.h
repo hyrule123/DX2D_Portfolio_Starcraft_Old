@@ -7,7 +7,7 @@ class CConstantBuffer	:
 {
 	friend class CShaderManager;
 
-private:
+protected:
 	CConstantBuffer();
 	~CConstantBuffer();
 

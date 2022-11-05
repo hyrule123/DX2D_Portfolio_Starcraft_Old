@@ -1,122 +1,93 @@
 #pragma once
 
 #include "EngineInfo.h"
+#include "CDO.h"
+
+//Object, SceneInfo, UIWindow, UIWidget, 
 
 class CCDOManager
 {
-	friend class CResourceManager;
+
+public:
+	bool Init();
 
 private:
-	CCDOManager();
-	~CCDOManager();
-
-	void Init();
-	void CreateObjectCDO();
-	void CreateSceneInfoCDO();
-	void CreateComponentCDO();
-	void Create();
-
-private:
-	static std::unordered_map<size_t, void*>	m_mapCDO;
-
-
-public:
-	static void AddCDO()
-
-
-public:
-	static void AddComponentCDO(const std::string& Name, CComponent* CDO)
-	{
-		m_mapComponentCDO.insert(std::make_pair(Name, CDO));
-	}
-
-	static CComponent* FindCDO(const std::string& Name)
-	{
-		auto	iter = m_mapComponentCDO.find(Name);
-
-		if (iter == m_mapComponentCDO.end())
-			return nullptr;
-
-		return iter->second;
-	}
-
-public:
-	inline static void AddObjectCDO(const std::string& Name, class CGameObject* CDO);
-	inline static CGameObject* FindObjectCDO(const std::string& Name);
-
-
-private:
-	static void CreateCDO();
-
-public:
+	static std::unordered_map<size_t, CCDO*>	m_mapCDO;
 
 	template <typename T>
-	static T* CreateObjectCDO()
-	{
-		T* CDO = new T;
+	static T* FindCDO();
 
-		
+	static CCDO* FindCDO(size_t hash_code);
 
-		CGameObject::AddObjectCDO(Name, (CGameObject*)CDO);
+	static CCDO* FindCDO(const std::string& Name);
 
-		return CDO;
-	}
-
-
-
-	static void AddSceneInfoCDO(const std::string& Name, CSceneInfo* Info)
-	{
-		m_mapSceneInfoCDO.insert(std::make_pair(Name, Info));
-	}
-
-	static CSceneInfo* FindSceneInfoCDO(const std::string& Name)
-	{
-		auto	iter = m_mapSceneInfoCDO.find(Name);
-
-		if (iter == m_mapSceneInfoCDO.end())
-			return nullptr;
-
-		return iter->second;
-	}
+public:
+	template <typename T>
+	static bool CreateCDO(const std::string& Name = "");
 
 	template <typename T>
-	static T* CreateUIWindowCDO(const std::string& Name)
-	{
-		T* CDO = new T;
+	static T* CloneCDO();
 
-		CDO->Init();
+	static class CCDO* CloneCDO(const std::string& Name);
 
-		CUIWindow::AddUIWindowCDO(Name, (CUIWindow*)CDO);
+	static class CCDO* CloneCDO(size_t hash_code);
 
-		return CDO;
-	}
 
-	template <typename T>
-	static T* CreateUIWidgetCDO(const std::string& Name)
-	{
-		T* CDO = new T;
-
-		CDO->Init();
-
-		CUIWidget::AddUIWidgetCDO(Name, (CUIWidget*)CDO);
-
-		return CDO;
-	}
-
+	DECLARE_SINGLE(CCDOManager);
 };
 
 
-inline void CCDOManager::AddObjectCDO(const std::string& Name, CGameObject* CDO)
-{
-	m_mapObjectCDO.insert(std::make_pair(Name, CDO));
-}
 
-inline CGameObject* CCDOManager::FindObjectCDO(const std::string& Name)
+template<typename T>
+inline T* CCDOManager::CloneCDO()
 {
-	auto	iter = m_mapObjectCDO.find(Name);
+	auto iter = m_mapCDO.find(typeid(T).hash_code());
 
-	if (iter == m_mapObjectCDO.end())
+	if (iter == m_mapCDO.end())
 		return nullptr;
 
-	return iter->second;
+	return static_cast<T*>(iter->second->Clone());
+}
+
+
+
+template<typename T>
+inline bool CCDOManager::CreateCDO(const std::string& Name)
+{
+
+	size_t hashcode = typeid(T).hash_code();
+
+	//이미 만들어져 있으면 return
+	if (m_mapCDO.find(hashcode) != m_mapCDO.end())
+		return true;
+
+	T* CDO = new T;
+
+	CDO->SetTypeID<T>();
+	if (!Name.empty())
+		CDO->SetName(Name);
+
+	if (!CDO->Init())
+	{
+		delete CDO;
+		return false;
+	}
+
+
+	m_mapCDO.insert(std::make_pair(hashcode, static_cast<CCDO*>(CDO)));
+
+	return true;
+}
+
+
+
+template<typename T>
+inline T* CCDOManager::FindCDO()
+{
+	auto iter = m_mapCDO.find(typeid(T).hash_code());
+	
+	if (iter == m_mapCDO.end())
+		return nullptr;
+
+	return static_cast<T*>(iter->second());
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "EngineInfo.h"
+#include "CDO.h"
 
-class CRef
+class CRef: public CCDO
 {
 public:
 	CRef();
@@ -11,9 +11,6 @@ public:
 
 protected:
 	int		m_RefCount;
-	std::string	m_Name;
-	std::string	m_TypeName;
-	size_t	m_TypeID;
 	bool	m_Enable;	// 활성, 비활성
 	bool	m_Active;	// 살아 있는지 죽었는지
 
@@ -38,24 +35,15 @@ public:
 		return m_Active;
 	}
 
-	size_t GetTypeID()	const
-	{
-		return m_TypeID;
-	}
-
-	const std::string& GetTypeName()	const
-	{
-		return m_TypeName;
-	}
-
-	const std::string& GetName()	const
-	{
-		return m_Name;
-	}
 
 	void SetEnable(bool Enable)
 	{
 		m_Enable = Enable;
+	}
+	template <typename T>
+	bool CheckTypeID()	const
+	{
+		return m_TypeID == typeid(T).hash_code();
 	}
 
 	virtual void Destroy()
@@ -63,28 +51,7 @@ public:
 		m_Active = false;
 	}
 
-	void SetName(const std::string& Name)
-	{
-		m_Name = Name;
-	}
 
-	template <typename T>
-	bool CheckTypeID()	const
-	{
-		return m_TypeID == typeid(T).hash_code();
-	}
-
-public:
-	template <typename T>
-	void SetTypeID()
-	{
-		// 타입 이름을 문자열로 얻어온다.
-		m_TypeName = typeid(T).name();
-		m_TypeName.erase(0, 6);
-
-		// 타입의 고유한 번호를 얻어온다.
-		m_TypeID = typeid(T).hash_code();
-	}
 
 public:
 	virtual void Save(FILE* File);
