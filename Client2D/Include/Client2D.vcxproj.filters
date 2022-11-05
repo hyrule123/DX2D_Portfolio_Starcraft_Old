@@ -57,6 +57,12 @@
     <ClCompile Include="UI\StartSceneUI.cpp">
       <Filter>05. UI</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\LoadingSceneInfo.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\LoadingUI.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -87,6 +93,12 @@
       <Filter>04. Setting</Filter>
     </ClInclude>
     <ClInclude Include="UI\StartSceneUI.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\LoadingSceneInfo.h">
+      <Filter>02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\LoadingUI.h">
       <Filter>05. UI</Filter>
     </ClInclude>
   </ItemGroup>

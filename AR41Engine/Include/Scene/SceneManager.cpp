@@ -130,6 +130,8 @@ bool CSceneManager::ChangeScene()
 			m_Scene = m_NextScene;
 			m_NextScene = nullptr;
 
+			m_Scene->GetSceneInfo()->SceneChangeComplete();
+
 			return true;
 		}
 	}

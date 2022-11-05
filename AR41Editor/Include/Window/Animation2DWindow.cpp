@@ -27,6 +27,9 @@
 #include "Component/CameraComponent.h"
 #include "Component/TargetArm.h"
 
+#include "DetailWindow.h"
+#include "DetailWindow/SpriteComponentWidgetList.h"
+
 CAnimation2DWindow::CAnimation2DWindow()
 {
 }
@@ -76,7 +79,7 @@ bool CAnimation2DWindow::Init()
 
 	m_Animation2DSequenceList->SetSize(300.f, 300.f);
 	m_Animation2DSequenceList->SetPageItemCount(6);
-	m_Animation2DClassList->SetSelectCallback<CAnimation2DWindow>(this, &CAnimation2DWindow::SequenceSelectCallback);
+	m_Animation2DSequenceList->SetSelectCallback<CAnimation2DWindow>(this, &CAnimation2DWindow::SequenceSelectCallback);
 
 	Line = CreateWidget<CEditorSameLine>("Line");
 
@@ -343,7 +346,15 @@ void CAnimation2DWindow::LoadAnimation2DSequenceList()
 		if (strcmp(Ext, ".SQC") != 0)
 			continue;
 
+		Length = (int)strlen(Name);
+		Name[Length - 1] = 0;
+		Name[Length - 2] = 0;
+		Name[Length - 3] = 0;
+		Name[Length - 4] = 0;
+
 		m_Animation2DSequenceList->AddItem(Name);
+
+		CResourceManager::GetInst()->LoadSequence2D(Name, FullPath);
 	}
 }
 
@@ -496,6 +507,18 @@ void CAnimation2DWindow::Animation2DSelectCallback(int Index,
 
 void CAnimation2DWindow::SequenceSelectCallback(int Index, const std::string& Item)
 {
+	m_Animation2DSequenceSelectName = Item;
+
+	CDetailWindow* DetailWindow = CEditorGUIManager::GetInst()->FindEditorWindow<CDetailWindow>("DetailWindow");
+
+	if (DetailWindow->GetSelectComponent()->GetComponentTypeName() !=
+		"SpriteComponent")
+		return;
+
+	CSpriteComponentWidgetList* SpriteWidget =
+		(CSpriteComponentWidgetList*)DetailWindow->GetComponentWidgetList("SpriteComponent");
+
+	SpriteWidget->SetSelectAnimationSequence2DName(Item);
 }
 
 void CAnimation2DWindow::FrameSelectCallback(int Index, const std::string& Item)

@@ -12,3 +12,8 @@ bool CComponentWidgetList::Init()
 {
     return true;
 }
+
+void CComponentWidgetList::Render()
+{
+    CEditorGroup::Render();
+}

@@ -28,5 +28,8 @@ public:
 	virtual CStartSceneUI* Clone();
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
+
+private:
+	void StartButtonClick();
 };
 

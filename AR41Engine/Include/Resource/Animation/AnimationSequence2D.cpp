@@ -414,39 +414,80 @@ bool CAnimationSequence2D::Load(const char* FullPath)
 
 		else
 		{
-			std::vector<const TCHAR*>	vecFileName;
-			std::string	ResultPathName;
-
-			for (int i = 0; i < TextureCount; ++i)
+			if (ImageType == EImageType::Frame)
 			{
-				TCHAR* FileName = new TCHAR[MAX_PATH];
-				char	PathName[MAX_PATH] = {};
+				std::vector<const TCHAR*>	vecFileName;
+				std::string	ResultPathName;
 
-				fread(FileName, sizeof(TCHAR), MAX_PATH, File);
-				fread(PathName, sizeof(char), MAX_PATH, File);
+				for (int i = 0; i < TextureCount; ++i)
+				{
+					TCHAR* FileName = new TCHAR[MAX_PATH];
+					char	PathName[MAX_PATH] = {};
 
-				ResultPathName = PathName;
+					fread(FileName, sizeof(TCHAR), MAX_PATH, File);
+					fread(PathName, sizeof(char), MAX_PATH, File);
 
-				vecFileName.push_back(FileName);
-			}
+					ResultPathName = PathName;
 
-			if (m_Scene)
-			{
-				m_Scene->GetResource()->LoadTexture(TexName, vecFileName, ResultPathName);
+					vecFileName.push_back(FileName);
+				}
 
-				m_Texture = m_Scene->GetResource()->FindTexture(TexName);
+				if (m_Scene)
+				{
+					m_Scene->GetResource()->LoadTexture(TexName, vecFileName, ResultPathName);
+
+					m_Texture = m_Scene->GetResource()->FindTexture(TexName);
+				}
+
+				else
+				{
+					CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
+
+					m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
+				}
+
+				for (int i = 0; i < TextureCount; ++i)
+				{
+					SAFE_DELETE_ARRAY(vecFileName[i]);
+				}
 			}
 
 			else
 			{
-				CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
+				std::vector<const TCHAR*>	vecFileName;
+				std::string	ResultPathName;
 
-				m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
-			}
+				for (int i = 0; i < TextureCount; ++i)
+				{
+					TCHAR* FileName = new TCHAR[MAX_PATH];
+					char	PathName[MAX_PATH] = {};
 
-			for (int i = 0; i < TextureCount; ++i)
-			{
-				SAFE_DELETE_ARRAY(vecFileName[i]);
+					fread(FileName, sizeof(TCHAR), MAX_PATH, File);
+					fread(PathName, sizeof(char), MAX_PATH, File);
+
+					ResultPathName = PathName;
+
+					vecFileName.push_back(FileName);
+				}
+
+				if (m_Scene)
+				{
+					m_Scene->GetResource()->LoadTextureArray(TexName, vecFileName, ResultPathName);
+
+					m_Texture = m_Scene->GetResource()->FindTexture(TexName);
+				}
+
+				else
+				{
+					CResourceManager::GetInst()->LoadTextureArray(TexName, vecFileName, ResultPathName);
+
+					m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
+				}
+
+				for (int i = 0; i < TextureCount; ++i)
+				{
+					SAFE_DELETE_ARRAY(vecFileName[i]);
+				}
 			}
 		}
 	}

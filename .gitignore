@@ -373,6 +373,9 @@ FodyWeavers.xsd
 ## HLSL Compiled Shader
 *.cso
 
+## Winmerge
+*.bak
+
 
 # Include External Libraries
 ##DirectXTex

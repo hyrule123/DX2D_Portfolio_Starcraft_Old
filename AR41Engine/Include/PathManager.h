@@ -25,7 +25,6 @@ public:
 		const std::string& BasePathName = ROOT_PATH);
 	const PathInfo* FindPath(const std::string& Name);
 
-
 	DECLARE_SINGLE(CPathManager)
 };
 

@@ -60,6 +60,9 @@
     <ClCompile Include="GameObject\Player2D.cpp">
       <Filter>04. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\Bullet.cpp">
+      <Filter>04. GameObject</Filter>
+    </ClCompile>
     <ClCompile Include="Window\ObjectWindow.cpp">
       <Filter>03. Window</Filter>
     </ClCompile>
@@ -109,6 +112,15 @@
       <Filter>03. Window\01. DetailWindow</Filter>
     </ClCompile>
     <ClCompile Include="Window\DetailWindow\PrimitiveWidgetList.cpp">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\LoadingSceneInfo.cpp">
+      <Filter>02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\LoadingUI.cpp">
+      <Filter>05. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DetailWindow\TileMapWidgetList.cpp">
       <Filter>03. Window\01. DetailWindow</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Marine.cpp">
@@ -198,6 +210,15 @@
       <Filter>03. Window\01. DetailWindow</Filter>
     </ClInclude>
     <ClInclude Include="Window\DetailWindow\PrimitiveWidgetList.h">
+      <Filter>03. Window\01. DetailWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\LoadingSceneInfo.h">
+      <Filter>02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\LoadingUI.h">
+      <Filter>05. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DetailWindow\TileMapWidgetList.h">
       <Filter>03. Window\01. DetailWindow</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\Marine.h">

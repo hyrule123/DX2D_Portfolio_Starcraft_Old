@@ -11,6 +11,7 @@
 #include "Component/SpriteComponent.h"
 #include "Component/CameraComponent.h"
 #include "Component/TargetArm.h"
+#include "Component/TileMapComponent.h"
 #include "Engine.h"
 #include "PathManager.h"
 #include "DetailWindow/CameraWidgetList.h"
@@ -18,6 +19,10 @@
 #include "DetailWindow/SpriteComponentWidgetList.h"
 #include "DetailWindow/SceneComponentWidgetList.h"
 #include "DetailWindow/PrimitiveWidgetList.h"
+#include "DetailWindow/TileMapWidgetList.h"
+#include "Animation2DWindow.h"
+#include "Editor/EditorGUIManager.h"
+
 
 CDetailWindow::CDetailWindow()
 {
@@ -33,6 +38,20 @@ CDetailWindow::~CDetailWindow()
 	{
 		AddWidget(m_vecComponentWidgetList[i]);
 	}
+}
+
+CComponentWidgetList* CDetailWindow::GetComponentWidgetList(
+	const std::string& Name)
+{
+	size_t	Size = m_vecComponentWidgetList.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		if (m_vecComponentWidgetList[i]->GetName() == Name)
+			return m_vecComponentWidgetList[i];
+	}
+
+	return nullptr;
 }
 
 void CDetailWindow::SetSelectComponent(CSceneComponent* Component)
@@ -53,6 +72,8 @@ void CDetailWindow::SetSelectComponent(CSceneComponent* Component)
 
 bool CDetailWindow::Init()
 {
+	m_vecComponentWidgetList.resize((size_t)ESceneComponentType::Max);
+
 	for (int i = 0; i < (int)ESceneComponentType::Max; ++i)
 	{
 		CreateEditorWidgetList((ESceneComponentType)i);
@@ -89,7 +110,12 @@ void CDetailWindow::ChangeWidget(CSceneComponent* Component)
 	{
 		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::Sprite]);
 
-		((CSpriteComponentWidgetList*)m_vecComponentWidgetList[(int)ESceneComponentType::Sprite])->SetSpriteContent((CSpriteComponent*)Component);
+		CSpriteComponentWidgetList* SpriteWidget = (CSpriteComponentWidgetList*)m_vecComponentWidgetList[(int)ESceneComponentType::Sprite];
+
+		CAnimation2DWindow* Anim2DWindow = CEditorGUIManager::GetInst()->FindEditorWindow<CAnimation2DWindow>("Animation2DWindow");
+
+		SpriteWidget->SetSelectAnimationSequence2DName(Anim2DWindow->GetAnimation2DSequenceSelectName());
+		SpriteWidget->SetSpriteContent((CSpriteComponent*)Component);
 	}
 
 	else if (Component->GetComponentTypeName() == "CameraComponent")
@@ -100,6 +126,15 @@ void CDetailWindow::ChangeWidget(CSceneComponent* Component)
 	else if (Component->GetComponentTypeName() == "TargetArmComponent")
 	{
 		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::TargetArm]);
+	}
+
+	else if (Component->GetComponentTypeName() == "TileMapComponent")
+	{
+		AddWidget(m_vecComponentWidgetList[(int)ESceneComponentType::TileMap]);
+
+		CTileMapWidgetList* TileMapWidget = (CTileMapWidgetList*)m_vecComponentWidgetList[(int)ESceneComponentType::TileMap];
+
+		TileMapWidget->SetTileMapComponent((CTileMapComponent*)Component);
 	}
 }
 
@@ -192,6 +227,9 @@ void CDetailWindow::CreateEditorWidgetList(ESceneComponentType Type)
 	case ESceneComponentType::Collider3D:
 		//WidgetList = CreateWidgetEmpty<CSceneComponentWidgetList>("SceneComponent");
 		break;
+	case ESceneComponentType::TileMap:
+		WidgetList = CreateWidgetEmpty<CTileMapWidgetList>("TileMapComponent");
+		break;
 	}
 
 	if (!WidgetList)
@@ -199,5 +237,5 @@ void CDetailWindow::CreateEditorWidgetList(ESceneComponentType Type)
 
 	WidgetList->m_DetailWindow = this;
 
-	m_vecComponentWidgetList.push_back(WidgetList);
+	m_vecComponentWidgetList[(int)Type] = WidgetList;
 }

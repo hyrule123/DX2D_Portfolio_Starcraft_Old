@@ -68,6 +68,11 @@ public:
 		m_PrevViewNameUTF8 = TextUTF8;
 	}
 
+	void SetSelect(int Index)
+	{
+		m_SelectIndex = Index;
+	}
+
 	bool CheckItem(const std::string& Item)	const
 	{
 		size_t	Size = m_vecItem.size();

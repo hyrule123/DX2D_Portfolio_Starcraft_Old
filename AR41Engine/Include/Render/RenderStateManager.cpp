@@ -18,6 +18,9 @@ bool CRenderStateManager::Init()
 
 	CreateDepthStencil("DepthDisable", false);
 
+	CreateDepthStencil("DepthLessEqual", true, D3D11_DEPTH_WRITE_MASK_ALL,
+		D3D11_COMPARISON_LESS_EQUAL);
+
 	return true;
 }
 

@@ -52,16 +52,16 @@ void CDefaultSetting::LoadResource()
 
     if (!UltraTex)
         assert(0);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::Array, 17, 16, 0, 1);
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
 
     CResourceManager::GetInst()->CreateAnimationSequence2D(
         "UltraMove", UltraTex);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::Array, 17, 16, 1, 9);
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
 
 
     CResourceManager::GetInst()->CreateAnimationSequence2D(
         "UltraAttack", UltraTex);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::Array, 17, 16, 10, 5);
+    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
 
     std::vector<const TCHAR*>   vecFileName;
 

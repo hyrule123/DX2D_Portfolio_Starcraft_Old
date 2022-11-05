@@ -48,5 +48,21 @@ public:
 	{
 		m_BufferData.ColorKey = Color;
 	}
+	
+	
+	void SetImageType(EImageType Type)
+	{
+		m_BufferData.TextureType = (int)Type;
+	}
+
+	void SetTextureWidth(float Width)
+	{
+		m_BufferData.TextureWidth = Width;
+	}
+
+	void SetTextureHeight(float Height)
+	{
+		m_BufferData.TextureHeight = Height;
+	}
 };
 

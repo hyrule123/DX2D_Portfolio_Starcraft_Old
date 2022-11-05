@@ -35,7 +35,7 @@ CUIText::CUIText(const CUIText& Text) :
     CUIWidget(Text)
 {
     m_Font = Text.m_Font;
-    m_Layout = Text.m_Layout;
+    m_Layout = nullptr;
     m_Brush = Text.m_Brush;
     m_RenderTarget = Text.m_RenderTarget;
     m_FontSize = Text.m_FontSize;

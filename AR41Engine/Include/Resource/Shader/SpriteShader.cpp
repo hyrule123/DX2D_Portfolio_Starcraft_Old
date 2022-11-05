@@ -11,10 +11,10 @@ CSpriteShader::~CSpriteShader()
 
 bool CSpriteShader::Init()
 {
-	if (FAILED(LoadVertexShader("SpriteVS", TEXT("Sprite.fx"), SHADER_PATH)))
+	if (!LoadVertexShader("SpriteVS", TEXT("Sprite.fx"), SHADER_PATH))
 		return false;
 
-	if (FAILED(LoadPixelShader("SpritePS", TEXT("Sprite.fx"), SHADER_PATH)))
+	if (!LoadPixelShader("SpritePS", TEXT("Sprite.fx"), SHADER_PATH))
 		return false;
 
 	AddInputDesc("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0);

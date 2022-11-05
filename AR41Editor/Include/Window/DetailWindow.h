@@ -21,6 +21,8 @@ public:
 		return m_SelectComponent;
 	}
 
+	class CComponentWidgetList* GetComponentWidgetList(const std::string& Name);
+
 public:
 	void SetSelectComponent(class CSceneComponent* Component);
 

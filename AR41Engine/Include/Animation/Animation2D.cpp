@@ -337,7 +337,7 @@ void CAnimation2D::SetShader()
 			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
 		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
 	}
-	else if (Type == EAnimation2DType::Array)
+	else if (Type == EAnimation2DType::AtlasIndexed)
 	{
 		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->m_Sequence->GetRowNum());
 

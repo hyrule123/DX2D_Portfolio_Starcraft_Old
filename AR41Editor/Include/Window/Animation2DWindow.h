@@ -25,11 +25,17 @@ private:
 	std::vector<Animation2DFrameData>	m_vecFrame;
 
 	std::string		m_Animation2DSelectName;
+	std::string		m_Animation2DSequenceSelectName;
 
 public:
 	const std::string& GetAnimation2DSelectName()	const
 	{
 		return m_Animation2DSelectName;
+	}
+
+	const std::string& GetAnimation2DSequenceSelectName()	const
+	{
+		return m_Animation2DSequenceSelectName;
 	}
 
 public:

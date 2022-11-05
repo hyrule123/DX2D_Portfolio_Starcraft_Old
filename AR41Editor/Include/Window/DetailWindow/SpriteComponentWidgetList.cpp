@@ -5,10 +5,15 @@
 #include "Editor/EditorImage.h"
 #include "Editor/EditorInput.h"
 #include "Editor/EditorListBox.h"
+#include "Editor/EditorCheckBox.h"
 #include "../Animation2DWindow.h"
 #include "Editor/EditorGUIManager.h"
 #include "../DetailWindow.h"
 #include "Component/SpriteComponent.h"
+#include "Animation/Animation2D.h"
+#include "Resource/ResourceManager.h"
+#include "Resource/Animation/AnimationManager.h"
+#include "Resource/Animation/AnimationSequence2D.h"
 
 CSpriteComponentWidgetList::CSpriteComponentWidgetList()
 {
@@ -20,6 +25,8 @@ CSpriteComponentWidgetList::~CSpriteComponentWidgetList()
 
 void CSpriteComponentWidgetList::SetSpriteContent(CSpriteComponent* Sprite)
 {
+	m_Sprite = Sprite;
+
 	m_AnimationClass->SetText(Sprite->GetAnimationName().c_str());
 
 	// 애니메이션 정보를 얻어와서 그 이름들을 리스트에 넣어준다.
@@ -35,6 +42,11 @@ void CSpriteComponentWidgetList::SetSpriteContent(CSpriteComponent* Sprite)
 	{
 		m_AnimationList->AddItem(vecAnimNames[i]);
 	}
+}
+
+void CSpriteComponentWidgetList::SetSelectAnimationSequence2DName(const std::string& Name)
+{
+	m_SequenceName->SetText(Name.c_str());
 }
 
 bool CSpriteComponentWidgetList::Init()
@@ -81,11 +93,38 @@ bool CSpriteComponentWidgetList::Init()
 
 	CEditorGroup* AnimDataGroup = Category->CreateWidget<CEditorGroup>("Animation", "Animation2DData");
 
+	m_Animation2DDataName = AnimDataGroup->CreateWidget<CEditorInput>("Animation2DDataName", 150.f, 30.f);
+	m_Animation2DDataName->SetText("None");
+
+	m_SequenceName = AnimDataGroup->CreateWidget<CEditorInput>("SequenceName", 150.f, 30.f);
+	m_SequenceName->ReadOnly(true);
+	m_SequenceName->SetText("None");
+
 	m_PlayTime = AnimDataGroup->CreateWidget<CEditorInput>("PlayTime", 100.f, 30.f);
 	m_PlayTime->SetInputType(EImGuiInputType::Float);
 
 	m_PlayScale = AnimDataGroup->CreateWidget<CEditorInput>("PlayScale", 100.f, 30.f);
 	m_PlayScale->SetInputType(EImGuiInputType::Float);
+
+	m_LoopCheck = AnimDataGroup->CreateWidget<CEditorCheckBox>("Loop", 100.f, 30.f);
+
+	m_ReverseCheck = AnimDataGroup->CreateWidget<CEditorCheckBox>("Reverse", 100.f, 30.f);
+
+	Button = AnimDataGroup->CreateWidget<CEditorButton>("AddAnimation2D", 150.f, 30.f);
+
+	Button->SetClickCallback<CSpriteComponentWidgetList>(this, &CSpriteComponentWidgetList::AddAnimation2DData);
+
+	AnimDataGroup->CreateWidget<CEditorSameLine>("Line");
+
+	Button = AnimDataGroup->CreateWidget<CEditorButton>("DeleteAnimation2D", 150.f, 30.f);
+
+	Button->SetClickCallback<CSpriteComponentWidgetList>(this, &CSpriteComponentWidgetList::DeleteAnimation2DData);
+
+	Button = AnimDataGroup->CreateWidget<CEditorButton>("ModifyAnimation2D", 150.f, 30.f);
+
+	Button->SetClickCallback<CSpriteComponentWidgetList>(this, &CSpriteComponentWidgetList::ModifyAnimation2DData);
+
+
 
     return true;
 }
@@ -108,9 +147,38 @@ void CSpriteComponentWidgetList::CreateAnimationButtonClick()
 	if (Name == "Animation2D")
 	{
 		Sprite->SetAnimation<CAnimation2D>("Animation2D");
+		m_AnimationClass->SetText("Animation2D");
 	}
 }
 
 void CSpriteComponentWidgetList::AnimationSelectCallback(int Index, const std::string& Item)
+{
+}
+
+void CSpriteComponentWidgetList::AddAnimation2DData()
+{
+	CAnimation2D* Animation = m_Sprite->GetAnimation();
+
+	if (Animation->FindAnimation(m_Animation2DDataName->GetText()))
+		return;
+
+	CAnimationSequence2D* Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(
+		m_SequenceName->GetText());
+
+	if (!Sequence)
+		return;
+
+	Animation->AddAnimation(m_Animation2DDataName->GetText(),
+		Sequence, m_PlayTime->GetFloat(), m_PlayScale->GetFloat(),
+		m_LoopCheck->GetCheck(), m_ReverseCheck->GetCheck());
+
+	m_AnimationList->AddItem(m_Animation2DDataName->GetText());
+}
+
+void CSpriteComponentWidgetList::DeleteAnimation2DData()
+{
+}
+
+void CSpriteComponentWidgetList::ModifyAnimation2DData()
 {
 }

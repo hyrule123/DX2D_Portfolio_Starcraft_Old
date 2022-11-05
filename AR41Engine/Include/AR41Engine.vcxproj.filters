@@ -193,8 +193,29 @@
     <Filter Include="02. Resource\07. Font">
       <UniqueIdentifier>{f6e36326-7e28-4cc2-99b5-af0673bb857e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. Resource\08. Maps">
-      <UniqueIdentifier>{e3fa128b-825f-418b-b440-e056666ffb87}</UniqueIdentifier>
+    <Filter Include="01. Manager\10. Thread">
+      <UniqueIdentifier>{dace6ab4-c87d-4c79-b4ef-78bbe7d4aee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\01. Primitive\01. 2D">
+      <UniqueIdentifier>{6bb13f38-abf6-4dfd-954b-a661870c754f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\01. SceneComponent\01. Primitive\02. 3D">
+      <UniqueIdentifier>{15252881-846e-4361-850d-742143afb39b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\04. TileMap">
+      <UniqueIdentifier>{a878562a-1871-4dd9-86ae-6b952aa4ff89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\06. TileMap">
+      <UniqueIdentifier>{6f142a93-e34d-4f9c-adfd-80d6e96489ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\04. StructuredBuffer">
+      <UniqueIdentifier>{406d135b-a9c6-4b46-a256-0b17e9e16398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\08. Map">
+      <UniqueIdentifier>{88a52d1e-2c26-451d-afbb-c33465f48cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\09. CDO">
+      <UniqueIdentifier>{c888dde4-6b3a-4892-b4d9-2307a93669f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -558,14 +579,59 @@
     <ClInclude Include="Editor\EditorGroup.h">
       <Filter>07. Editor\03. Widget</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Map\StormLib.h">
-      <Filter>02. Resource\08. Maps</Filter>
+    <ClInclude Include="Editor\EditorCheckBox.h">
+      <Filter>07. Editor\03. Widget</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Map\StormPort.h">
-      <Filter>02. Resource\08. Maps</Filter>
+    <ClInclude Include="Thread\Thread.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\ThreadManager.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\LoadingThread.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\Sync.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\DataStream.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\ThreadQueue.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SpriteComponent.h">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Tile.h">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TileMapComponent.h">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\TileMapConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\TileMapShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. TileMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\StructuredBuffer.h">
+      <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\TileMapBackShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. TileMap</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Map\MapManager.h">
-      <Filter>02. Resource\08. Maps</Filter>
+      <Filter>02. Resource\08. Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Map\StormLib.h">
+      <Filter>02. Resource\08. Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Map\StormPort.h">
+      <Filter>02. Resource\08. Map</Filter>
+    </ClInclude>
+    <ClInclude Include="CDOManager.h">
+      <Filter>02. Resource\09. CDO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -878,8 +944,50 @@
     <ClCompile Include="Editor\EditorGroup.cpp">
       <Filter>07. Editor\03. Widget</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\EditorCheckBox.cpp">
+      <Filter>07. Editor\03. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\Thread.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\ThreadManager.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\LoadingThread.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\DataStream.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\ThreadQueue.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SpriteComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TileMapComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Tile.cpp">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\TileMapConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\TileMapShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. TileMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\StructuredBuffer.cpp">
+      <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\TileMapBackShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. TileMap</Filter>
+    </ClCompile>
     <ClCompile Include="Resource\Map\MapManager.cpp">
-      <Filter>02. Resource\08. Maps</Filter>
+      <Filter>02. Resource\08. Map</Filter>
+    </ClCompile>
+    <ClCompile Include="CDOManager.cpp">
+      <Filter>02. Resource\09. CDO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -893,6 +1001,9 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\UI.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\TileMap.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

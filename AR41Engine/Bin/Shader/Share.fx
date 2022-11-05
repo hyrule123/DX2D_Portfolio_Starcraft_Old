@@ -26,7 +26,11 @@ cbuffer Material : register(b1)
     float4 g_MtrlSpecularColor;
     float4 g_MtrlEmissiveColor;
     float g_MtrlOpacity;
+    int g_MtrlTextureType;
+    float g_MtrlTextureWidth;
+    float g_MtrlTextureHeight;
     float3 g_MtrlColorKey;
+	float g_Empty;
 };
 
 SamplerState g_PointSmp : register(s0);
@@ -40,20 +44,22 @@ cbuffer Animation2D : register(b2)
     float g_Anim2DImageWidth;
     float g_Anim2DImageHeight;
     float2 g_Anim2DFrameStart;
-      
     float2 g_Anim2DFrameEnd;
     int g_Anim2DType;
     int g_Anim2DEnable;
-    
     int g_Anim2DFrame;
     int g_Anim2DXFlip;
     float2 g_Anim2DEmpty;
 };
 
+#define Anim2D_None -1
 #define Anim2D_Atlas 0
-#define Anim2D_Array 1
-#define Anim2D_Frame 2
+#define Anim2D_Frame 1
+#define Anim2D_Array 2
 
+#define Image_Atlas 0
+#define Image_Frame 1
+#define Image_Array 2
 
 float2 UpdateAnimation2D(float2 UV)
 {

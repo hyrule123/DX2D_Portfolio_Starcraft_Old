@@ -56,7 +56,7 @@ public:
 
     int GetFrameCount() const
     {
-        if (m_Anim2DType == EAnimation2DType::Array)
+        if (m_Anim2DType == EAnimation2DType::AtlasIndexed)
             return m_ColSize;
 
         return (int)m_vecFrameData.size();

@@ -102,6 +102,8 @@ public:
 		DXGI_FORMAT Fmt = DXGI_FORMAT_UNKNOWN);
 	virtual void Render();
 	virtual void Render(int SlotNumber);
+	virtual void RenderInstancing(int Count);
+	virtual void RenderInstancing(int Count, int SlotNumber);
 
 
 protected:

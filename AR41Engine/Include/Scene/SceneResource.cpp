@@ -230,6 +230,32 @@ bool CSceneResource::LoadTextureFullPath(const std::string& Name,
 	return true;
 }
 
+bool CSceneResource::LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
+{
+	if (FindTexture(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
+		return false;
+
+	m_mapTexture.insert(std::make_pair(Name, CResourceManager::GetInst()->FindTexture(Name)));
+
+	return true;
+}
+
+bool CSceneResource::LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
+{
+	if (FindTexture(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
+		return false;
+
+	m_mapTexture.insert(std::make_pair(Name, CResourceManager::GetInst()->FindTexture(Name)));
+
+	return true;
+}
+
 CTexture* CSceneResource::FindTexture(const std::string& Name)
 {
 	auto	iter = m_mapTexture.find(Name);

@@ -12,3 +12,9 @@
 #pragma comment(lib, "AR41Engine.lib")
 
 #endif // _DEBUG
+
+enum class ETileEditMode
+{
+	Image,
+	Option
+};

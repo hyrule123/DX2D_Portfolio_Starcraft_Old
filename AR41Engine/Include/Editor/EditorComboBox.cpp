@@ -99,10 +99,14 @@ void CEditorComboBox::Render()
 			{
 				m_Select = true;
 
-				if (m_SelectIndex != (int)i && m_SelectCallback)
+				if (m_SelectIndex != (int)i)
 				{
 					m_SelectIndex = (int)i;
-					m_SelectCallback(m_SelectIndex, m_vecItem[i]);
+
+					if (m_SelectCallback)
+					{
+						m_SelectCallback(m_SelectIndex, m_vecItem[i]);
+					}
 				}
 
 				if (m_SelectPrevViewName)

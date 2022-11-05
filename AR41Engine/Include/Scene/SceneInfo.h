@@ -35,5 +35,6 @@ public:
 	virtual CSceneInfo* Clone();
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
+	virtual void SceneChangeComplete();
 };
 

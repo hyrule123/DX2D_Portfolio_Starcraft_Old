@@ -161,6 +161,65 @@ void CMesh::Render(int SlotNumber)
 	}
 }
 
+void CMesh::RenderInstancing(int Count)
+{
+	size_t	Size = m_vecMeshSlot.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		unsigned int	Stride = (unsigned int)m_vecMeshSlot[i]->VB->Size;
+		unsigned int	Offset = 0;
+
+		CDevice::GetInst()->GetContext()->IASetPrimitiveTopology(m_vecMeshSlot[i]->Primitive);
+		CDevice::GetInst()->GetContext()->IASetVertexBuffers(0, 1,
+			&m_vecMeshSlot[i]->VB->Buffer, &Stride, &Offset);
+
+		if (m_vecMeshSlot[i]->IB)
+		{
+			CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+				m_vecMeshSlot[i]->IB->Buffer, m_vecMeshSlot[i]->IB->Fmt,
+				0);
+			CDevice::GetInst()->GetContext()->DrawIndexedInstanced(
+				m_vecMeshSlot[i]->IB->Count, Count, 0, 0, 0);
+		}
+
+		else
+		{
+			CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+				nullptr, DXGI_FORMAT_UNKNOWN, 0);
+			CDevice::GetInst()->GetContext()->DrawInstanced(
+				m_vecMeshSlot[i]->VB->Count, Count, 0, 0);
+		}
+	}
+}
+
+void CMesh::RenderInstancing(int Count, int SlotNumber)
+{
+	unsigned int	Stride = (unsigned int)m_vecMeshSlot[SlotNumber]->VB->Size;
+	unsigned int	Offset = 0;
+
+	CDevice::GetInst()->GetContext()->IASetPrimitiveTopology(m_vecMeshSlot[SlotNumber]->Primitive);
+	CDevice::GetInst()->GetContext()->IASetVertexBuffers(0, 1,
+		&m_vecMeshSlot[SlotNumber]->VB->Buffer, &Stride, &Offset);
+
+	if (m_vecMeshSlot[SlotNumber]->IB)
+	{
+		CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+			m_vecMeshSlot[SlotNumber]->IB->Buffer, m_vecMeshSlot[SlotNumber]->IB->Fmt,
+			0);
+		CDevice::GetInst()->GetContext()->DrawIndexedInstanced(
+			m_vecMeshSlot[SlotNumber]->IB->Count, Count, 0, 0, 0);
+	}
+
+	else
+	{
+		CDevice::GetInst()->GetContext()->IASetIndexBuffer(
+			nullptr, DXGI_FORMAT_UNKNOWN, 0);
+		CDevice::GetInst()->GetContext()->DrawInstanced(
+			m_vecMeshSlot[SlotNumber]->VB->Count, Count, 0, 0);
+	}
+}
+
 bool CMesh::CreateBuffer(BufferType Type, void* Data, int Size, 
 	int Count, D3D11_USAGE Usage, ID3D11Buffer** Buffer)
 {

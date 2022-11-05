@@ -60,6 +60,9 @@ public:	// ===================== Texture =========================
 	bool LoadTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+		const std::string& PathName = TEXTURE_PATH);
+	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 	class CTexture* FindTexture(const std::string& Name);
 
 

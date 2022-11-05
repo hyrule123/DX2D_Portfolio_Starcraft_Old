@@ -11,6 +11,7 @@
 class CResourceManager
 {
 private:
+	CMapManager* m_MapManager;
 	class CMeshManager* m_MeshManager;
 	CShaderManager* m_ShaderManager;
 	class CTextureManager* m_TextureManager;
@@ -18,7 +19,7 @@ private:
 	CAnimationManager* m_AnimationManager;
 	CSoundManager* m_SoundManager;
 	CFontManager* m_FontManager;
-	CMapManager* m_MapManager;
+	
 
 public:
 	bool Init();
@@ -62,6 +63,9 @@ public:	// ===================== Texture =========================
 	bool LoadTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+		const std::string& PathName = TEXTURE_PATH);
+	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 	class CTexture* FindTexture(const std::string& Name);
 	void ReleaseTexture(const std::string& Name);
 

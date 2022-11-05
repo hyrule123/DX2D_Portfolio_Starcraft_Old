@@ -101,6 +101,7 @@ private:
 	Vector2	m_MouseMove;
 	UINT8 m_MouseButtonStatus;	//마우스 클릭 저장용 비트플래그 변수
 	bool	m_ShowCursor;
+	bool	m_CollisionWidget;
 
 public:
 	bool GetMouseLDown()	const

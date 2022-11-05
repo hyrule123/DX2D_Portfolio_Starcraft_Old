@@ -80,6 +80,7 @@ public:
 	{
 		// 타입 이름을 문자열로 얻어온다.
 		m_TypeName = typeid(T).name();
+		m_TypeName.erase(0, 6);
 
 		// 타입의 고유한 번호를 얻어온다.
 		m_TypeID = typeid(T).hash_code();

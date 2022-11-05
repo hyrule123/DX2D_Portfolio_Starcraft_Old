@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <dwrite_3.h>
 #include <d2d1.h>
+#include <process.h>
 
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "d2d1.lib")
@@ -49,6 +50,7 @@ typedef std::string tstring;
 #define	SOUND_PATH		"Sound"
 #define	FONT_PATH		"Font"
 #define	ANIMATION2D_PATH "Animation2D"
+#define	SCENE_PATH		"Scene"
 #define MAP_PATH		"Map"
 
 #define	DECLARE_SINGLE(Type)	\
@@ -184,7 +186,11 @@ struct MaterialCBuffer
 	Vector4 SpecularColor;
 	Vector4 EmissiveColor;
 	float Opacity;
+	int	TextureType;
+	float TextureWidth;
+	float TextureHeight;
 	Vector3 ColorKey;
+	float Empty;
 
 	MaterialCBuffer():
 		ColorKey(-1.f, -1.f, -1.f),
@@ -338,4 +344,34 @@ struct UIProgressBarCBuffer
 	int		BarDir;
 	float	Percent;
 	Vector2	Empty;
+};
+
+struct ThreadSyncData
+{
+	int	Header;
+	int	Size;
+	unsigned char Data[1024];
+};
+
+struct TileMapCBuffer
+{
+	Vector2	ImageSize;
+	Vector2	Start;
+	Vector2	End;
+	Vector2	TileSize;
+	Matrix	matWVP;
+	int		Frame;
+	Vector3	Empty;
+};
+
+struct TileInfo
+{
+	Matrix	matWVP;
+	Vector2	Start;
+	Vector2	End;
+	Vector4	TypeColor;
+	float	Opacity;
+	int		AnimationType;
+	int		Frame;
+	float	Empty;
 };

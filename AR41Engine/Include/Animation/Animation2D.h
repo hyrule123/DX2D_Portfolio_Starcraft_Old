@@ -61,7 +61,7 @@ public:
 	}
 
 public:
-	virtual void Start();
+	void Start();
     virtual bool Init();
 	virtual void Update(float DeltaTime);
 	bool AddAnimation(const std::string& Name, const std::string& SequenceName,
@@ -80,7 +80,7 @@ public:
 	virtual CAnimation2D* Clone();
 	void SetShader();
 
-protected:
+public:
 	CAnimation2DData* FindAnimation(const std::string& Name);
 
 public:

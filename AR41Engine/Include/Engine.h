@@ -17,6 +17,8 @@ private:
 	CEngineSetting* m_Setting;
 
 public:
+	float GetFPS()	const;
+
 	static bool GetEditorMode()
 	{
 		return m_EditorMode;

@@ -46,6 +46,7 @@ protected:
 	class CScene* m_Scene;
 	std::vector<TextureResourceInfo*>	m_vecTextureInfo;
 	EImageType	m_ImageType;
+	ID3D11ShaderResourceView* m_ArraySRV;
 
 public:
 	EImageType GetImageType()	const
@@ -87,9 +88,13 @@ public:
 	bool LoadTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+		const std::string& PathName = TEXTURE_PATH);
+	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 
 private:
 	bool CreateResource(int Index);
+	bool CreateResourceArray();
 
 public:
 	void SetShader(int Register, int ShaderBufferType, int Index);
