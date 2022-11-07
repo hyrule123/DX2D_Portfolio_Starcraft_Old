@@ -14,6 +14,7 @@
 class CSceneResource
 {
 	friend class CScene;
+	friend class CResourceManager;
 
 private:
 	CSceneResource();

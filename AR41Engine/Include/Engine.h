@@ -15,7 +15,6 @@ private:
 	static bool		m_EditorMode;
 	static std::function<bool(HWND, UINT, WPARAM, LPARAM)>	m_WndProcFunc;
 	CEngineSetting* m_Setting;
-	class CCDOManager* m_CDOManager;
 
 public:
 	float GetFPS()	const;

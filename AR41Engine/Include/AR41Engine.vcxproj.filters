@@ -630,9 +630,6 @@
     <ClInclude Include="Resource\Map\StormPort.h">
       <Filter>02. Resource\08. Map</Filter>
     </ClInclude>
-    <ClInclude Include="CDOManager.h">
-      <Filter>01. Manager\11. CDO</Filter>
-    </ClInclude>
     <ClInclude Include="CDO.h">
       <Filter>01. Manager\11. CDO</Filter>
     </ClInclude>
@@ -988,9 +985,6 @@
     </ClCompile>
     <ClCompile Include="Resource\Map\MapManager.cpp">
       <Filter>02. Resource\08. Map</Filter>
-    </ClCompile>
-    <ClCompile Include="CDOManager.cpp">
-      <Filter>01. Manager\11. CDO</Filter>
     </ClCompile>
     <ClCompile Include="CDO.cpp">
       <Filter>01. Manager\11. CDO</Filter>

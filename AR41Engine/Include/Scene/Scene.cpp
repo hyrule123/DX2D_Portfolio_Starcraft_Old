@@ -11,8 +11,6 @@
 #include "../UI/UIButton.h"
 #include "../UI/UIImage.h"
 #include "../UI/UIWindow.h"
-#include "../CDOManager.h"
-
 
 CScene::CScene()	:
 	m_Change(false),
@@ -235,7 +233,7 @@ void CScene::Load(const char* FullPath)
 	size_t TypeID = 0;
 	fread(&TypeID, sizeof(size_t), 1, File);
 
-	m_SceneInfo = static_cast<CSceneInfo*>(CCDOManager::GetInst()->CloneCDO(TypeID));
+	m_SceneInfo = static_cast<CSceneInfo*>(CCDO::CloneCDO(TypeID));
 
 	m_SceneInfo->m_Owner = this;
 
@@ -338,7 +336,7 @@ void CScene::Load(const char* FullPath)
 
 		TypeID = 0;
 		fread(&TypeID, sizeof(size_t), 1, File);
-		CGameObject* ObjCDO = static_cast<CGameObject*>(CCDOManager::GetInst()->CloneCDO(TypeID));
+		CGameObject* ObjCDO = static_cast<CGameObject*>(CCDO::CloneCDO(TypeID));
 
 		ObjCDO->SetScene(this);
 
