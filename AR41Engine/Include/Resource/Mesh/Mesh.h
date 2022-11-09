@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
 #include "../Material/Material.h"
 
 struct MeshSubset
@@ -33,8 +33,7 @@ struct MeshSlot
 	}
 };
 
-class CMesh :
-	public CRef
+class CMesh : public CGameResource
 {
 	friend class CMeshManager;
 

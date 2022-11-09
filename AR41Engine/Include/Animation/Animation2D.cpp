@@ -1,7 +1,6 @@
 #include "Animation2D.h"
 #include "../Component/SpriteComponent.h"
 #include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
 #include "../Resource/ResourceManager.h"
 #include "../Resource/Shader/Animation2DConstantBuffer.h"
 
@@ -89,11 +88,8 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 	CAnimationSequence2D* Sequence = nullptr;
 
-	if (m_Owner->GetScene())
-		Sequence = m_Owner->GetScene()->GetResource()->FindAnimationSequence2D(SequenceName);
 
-	else
-		Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
+	Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
 
 	Anim = new CAnimation2DData;
 

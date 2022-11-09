@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
 
 class CConstantBuffer	:
-	public CRef
+	public CGameResource
 {
 	friend class CShaderManager;
 

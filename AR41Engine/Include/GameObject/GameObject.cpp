@@ -13,7 +13,7 @@ CGameObject::CGameObject()  :
 }
 
 CGameObject::CGameObject(const CGameObject& Obj)    :
-	CRef(Obj)
+	CCDO(Obj)
 {
 	m_ObjectTypeName = Obj.m_ObjectTypeName;
 	m_LifeTime = Obj.m_LifeTime;

@@ -1,7 +1,13 @@
 #include "UIText.h"
+
+//Resources
 #include "../Resource/ResourceManager.h"
+#include "../Resource/Font/Font.h"
+
+
 #include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
+
+
 #include "../Input.h"
 #include "../Device.h"
 
@@ -70,15 +76,8 @@ CUIText::~CUIText()
 
 void CUIText::SetFont(const std::string& Name)
 {
-    if (m_Scene)
-    {
-        m_Font = m_Scene->GetResource()->FindFont(Name);
-    }
 
-    else
-    {
-        m_Font = CResourceManager::GetInst()->FindFont(Name);
-    }
+    m_Font = CResourceManager::GetInst()->FindFont(Name);
 
     CreateLayout();
 }
@@ -110,17 +109,10 @@ void CUIText::SetColor(unsigned char r, unsigned char g, unsigned char b)
     m_Color.y = g / 255.f;
     m_Color.z = b / 255.f;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_Color);
-        m_Brush = m_Scene->GetResource()->FindFontColor(m_Color);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_Color);
-        m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_Color);
+    m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
+
 }
 
 void CUIText::SetColor(const Vector4& Color)
@@ -129,17 +121,10 @@ void CUIText::SetColor(const Vector4& Color)
     m_Color.y = Color.y;
     m_Color.z = Color.z;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_Color);
-        m_Brush = m_Scene->GetResource()->FindFontColor(m_Color);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_Color);
-        m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_Color);
+    m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
+
 }
 
 void CUIText::SetColor(unsigned int Color)
@@ -148,17 +133,10 @@ void CUIText::SetColor(unsigned int Color)
     m_Color.y = ((Color >> 8) & 0x000000ff) / 255.f;
     m_Color.z = (Color & 0x000000ff) / 255.f;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_Color);
-        m_Brush = m_Scene->GetResource()->FindFontColor(m_Color);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_Color);
-        m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_Color);
+    m_Brush = CResourceManager::GetInst()->FindFontColor(m_Color);
+
 }
 
 void CUIText::SetTransparency(bool Transparency)
@@ -192,17 +170,10 @@ void CUIText::SetShadowColor(unsigned char r, unsigned char g, unsigned char b)
     m_ShadowColor.y = g / 255.f;
     m_ShadowColor.z = b / 255.f;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = m_Scene->GetResource()->FindFontColor(m_ShadowColor);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
+    m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
+
 }
 
 void CUIText::SetShadowColor(const Vector4& Color)
@@ -211,17 +182,10 @@ void CUIText::SetShadowColor(const Vector4& Color)
     m_ShadowColor.y = Color.y;
     m_ShadowColor.z = Color.z;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = m_Scene->GetResource()->FindFontColor(m_ShadowColor);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
+    m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
+
 }
 
 void CUIText::SetShadowColor(unsigned int Color)
@@ -230,17 +194,10 @@ void CUIText::SetShadowColor(unsigned int Color)
     m_ShadowColor.y = ((Color >> 8) & 0x000000ff) / 255.f;
     m_ShadowColor.z = (Color & 0x000000ff) / 255.f;
 
-    if (m_Scene)
-    {
-        m_Scene->GetResource()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = m_Scene->GetResource()->FindFontColor(m_ShadowColor);
-    }
 
-    else
-    {
-        CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
-        m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
-    }
+    CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
+    m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
+
 }
 
 void CUIText::SetShadowTransparency(bool Transparency)

@@ -15,7 +15,7 @@ private:
 
 public:
 	bool Init();
-	bool CreateMesh(class CScene* Scene, MeshType Type, const std::string& Name, 
+	class CMesh* CreateMesh(class CScene* Scene, MeshType Type, const std::string& Name, 
 		void* VtxData, int Size, int Count,
 		D3D11_USAGE VtxUsage, D3D11_PRIMITIVE_TOPOLOGY Primitive,
 		void* IdxData = nullptr, int IdxSize = 0, int IdxCount = 0,
@@ -24,5 +24,7 @@ public:
 
 	class CMesh* FindMesh(const std::string& Name);
 	void ReleaseMesh(const std::string& Name);
+
+	void DeleteUnused();
 };
 

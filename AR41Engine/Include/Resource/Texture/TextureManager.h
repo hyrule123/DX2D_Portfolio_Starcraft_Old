@@ -16,17 +16,18 @@ private:
 
 public:
 	bool Init();
-	bool LoadTexture(const std::string& Name, const TCHAR* FileName,
+	class CTexture* LoadTexture(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
-	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
-	bool LoadTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+	class CTexture* LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
+	class CTexture* LoadTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
-	bool LoadTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
-	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+	class CTexture* LoadTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	class CTexture* LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
-	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	class CTexture* LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 	class CTexture* FindTexture(const std::string& Name);
 	void ReleaseTexture(const std::string& Name);
+	void DeleteUnused();
 
 private:
 	/*

@@ -4,10 +4,11 @@
 #include "../Component/ObjectComponent.h"
 
 class CGameObject :
-	public CRef
+	public CCDO
 {
 	friend class CScene;
 	friend class CSceneManager;
+	friend class CCDO;
 
 protected:
 	CGameObject();
@@ -129,7 +130,7 @@ public:
 	template <typename T>
 	T* CreateComponent(const std::string& Name)
 	{
-		T* Component = new T;
+		T* Component = CloneCDO<T>();
 
 		Component->SetName(Name);
 		Component->SetScene(m_Scene);

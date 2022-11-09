@@ -1,9 +1,10 @@
 #include "UIWidget.h"
+
+#include "../Resource/ResourceManager.h"
 #include "../Resource/Mesh/Mesh.h"
 #include "../Resource/Shader/Shader.h"
 #include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
-#include "../Resource/ResourceManager.h"
+
 #include "../Component/CameraComponent.h"
 #include "../Scene/CameraManager.h"
 #include "UIWindow.h"
@@ -46,28 +47,16 @@ CUIWidget::~CUIWidget()
 
 void CUIWidget::SetShader(const std::string& Name)
 {
-    if (m_Scene)
-    {
-        m_Shader = m_Scene->GetResource()->FindShader(Name);
-    }
 
-    else
-    {
-        m_Shader = CResourceManager::GetInst()->FindShader(Name);
-    }
+    m_Shader = CResourceManager::GetInst()->FindShader(Name);
+
 }
 
 void CUIWidget::SetMesh(const std::string& Name)
 {
-    if (m_Scene)
-    {
-        m_Mesh = m_Scene->GetResource()->FindMesh(Name);
-    }
 
-    else
-    {
-        m_Mesh = CResourceManager::GetInst()->FindMesh(Name);
-    }
+    m_Mesh = CResourceManager::GetInst()->FindMesh(Name);
+
 
     Vector3 MeshSize = m_Mesh->GetMax() - m_Mesh->GetMin();
 
@@ -80,17 +69,9 @@ void CUIWidget::Start()
 
 bool CUIWidget::Init()
 {
-    if (m_Scene)
-    {
-        m_Mesh = m_Scene->GetResource()->FindMesh("LBUVRect");
-        m_Shader = m_Scene->GetResource()->FindShader("UIShader");
-    }
 
-    else
-    {
-        m_Mesh = CResourceManager::GetInst()->FindMesh("LBUVRect");
-        m_Shader = CResourceManager::GetInst()->FindShader("UIShader");
-    }
+    m_Mesh = CResourceManager::GetInst()->FindMesh("LBUVRect");
+    m_Shader = CResourceManager::GetInst()->FindShader("UIShader");
 
     Vector3 MeshSize = m_Mesh->GetMax() - m_Mesh->GetMin();
 
@@ -201,17 +182,10 @@ void CUIWidget::Load(FILE* File)
     fread(&Length, 4, 1, File);
     fread(ShaderName, 1, Length, File);
 
-    if (m_Scene)
-    {
-        m_Mesh = m_Scene->GetResource()->FindMesh(MeshName);
-        m_Shader = m_Scene->GetResource()->FindShader(ShaderName);
-    }
 
-    else
-    {
-        m_Mesh = CResourceManager::GetInst()->FindMesh(MeshName);
-        m_Shader = CResourceManager::GetInst()->FindShader(ShaderName);
-    }
+    m_Mesh = CResourceManager::GetInst()->FindMesh(MeshName);
+    m_Shader = CResourceManager::GetInst()->FindShader(ShaderName);
+
 }
 
 bool CUIWidget::CollisionMouse(const Vector2& MousePos)

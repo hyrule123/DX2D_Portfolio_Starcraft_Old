@@ -79,34 +79,35 @@ bool CSoundManager::CreateSoundChannel(const std::string& Name)
 	return true;
 }
 
-bool CSoundManager::LoadSound(const std::string& GroupName, const std::string& Name,
+CSound* CSoundManager::LoadSound(const std::string& GroupName, const std::string& Name,
 	bool Loop, const char* FileName, const std::string& PathName)
 {
 	CSound* Sound = FindSound(Name);
 
 	if (Sound)
-		return true;
+		return Sound;
 
 	FMOD::ChannelGroup* Group = FindChannelGroup(GroupName);
 
 	if (!Group)
-		return false;
+		return Sound;
 
 	Sound = new CSound;
 
+	Sound->SetResourceType(EResourceType::Sound);
 	Sound->SetName(Name);
 
 	if (!Sound->LoadSound(m_System, Group, Loop, FileName, PathName))
 	{
 		SAFE_DELETE(Sound);
-		return false;
+		return nullptr;
 	}
 
 	Sound->SetGroupName(GroupName);
 
 	m_mapSound.insert(std::make_pair(Name, Sound));
 
-	return true;
+	return Sound;
 }
 
 bool CSoundManager::SetVolume(int Volume)
@@ -205,4 +206,22 @@ void CSoundManager::ReleaseSound(const std::string& Name)
 
 	if (iter->second->GetRefCount() == 1)
 		m_mapSound.erase(iter);
+}
+
+void CSoundManager::DeleteUnused()
+{
+	auto iter = m_mapSound.begin();
+	auto iterEnd = m_mapSound.end();
+
+	while (iter != iterEnd)
+	{
+		//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+		{
+			m_mapSound.erase(iter);
+			continue;
+		}
+
+		++iter;
+	}
 }

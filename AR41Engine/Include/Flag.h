@@ -209,3 +209,18 @@ enum class ETileOption
 	Wall,
 	End
 };
+
+enum class EResourceType
+{
+	Mesh,
+	Shader,
+	CBuffer,
+	Texture,
+	Material,
+	Animation,
+	Sound,
+	Font,
+	FontCollection,
+	Map,
+	End
+};

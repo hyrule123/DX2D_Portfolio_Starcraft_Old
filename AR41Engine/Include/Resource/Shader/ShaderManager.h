@@ -16,42 +16,51 @@ private:
 	class CColliderConstantBuffer* m_ColliderCBuffer;
 
 public:
-	class CColliderConstantBuffer* GetColliderCBuffer()	const
-	{
-		return m_ColliderCBuffer;
-	}
+	inline class CColliderConstantBuffer* GetColliderCBuffer()	const;
 
 public:
 	bool Init();
 	class CShader* FindShader(const std::string& Name);
 	void ReleaseShader(const std::string& Name);
 
-	bool CreateConstantBuffer(const std::string& Name, int Size, int Register,
+	class CConstantBuffer* CreateConstantBuffer(const std::string& Name, int Size, int Register,
 		int ShaderBufferType = (int)EShaderBufferType::All);
 	class CConstantBuffer* FindConstantBuffer(const std::string& Name);
+	
+	void DeleteUnused();
 
 public:
 	template <typename T>
-	bool CreateShader(const std::string& Name)
-	{
-		T* Shader = (T*)FindShader(Name);
+	T* CreateShader(const std::string& Name);
 
-		if (Shader)
-			return true;
-
-		Shader = new T;
-
-		Shader->SetName(Name);
-
-		if (!Shader->Init())
-		{
-			SAFE_DELETE(Shader);
-			return false;
-		}
-
-		m_mapShader.insert(std::make_pair(Name, Shader));
-
-		return true;
-	}
 };
 
+inline CColliderConstantBuffer* CShaderManager::GetColliderCBuffer() const
+{
+	return m_ColliderCBuffer;
+}
+
+
+template <typename T>
+T* CShaderManager::CreateShader(const std::string& Name)
+{
+	T* Shader = (T*)FindShader(Name);
+
+	if (Shader)
+		return Shader;
+
+	Shader = new T;
+
+	Shader->SetName(Name);
+	Shader->SetResourceType(EResourceType::Shader);
+
+	if (!Shader->Init())
+	{
+		SAFE_DELETE(Shader);
+		return nullptr;
+	}
+
+	m_mapShader.insert(std::make_pair(Name, Shader));
+
+	return Shader;
+}

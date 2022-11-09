@@ -1,34 +1,32 @@
 #pragma once
 
-#include "EngineInfo.h"
+#include "Ref.h"
 
-class CCDO
+class CCDO : public CRef
 {
+	friend class CSceneManager;
+
 protected:
 	CCDO();
 	CCDO(const CCDO& CDO);
-	virtual ~CCDO() = 0;
+	virtual ~CCDO();
 
-	virtual bool Init();
+	//사전 로드해놔도 문제없는 요소들은 이 메소드를 재정의해서 사용
+	//cf)Init()에서는 다른 인스턴스를 참조하는 작업을 진행한다.
+	virtual bool CDOPreload();
 	virtual CCDO* Clone();
 
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 
-	std::string	m_Name;
-	std::string	m_TypeName;
-	size_t	m_TypeID;
+	bool m_Essential;	//씬 전환시에도 유지할 인스턴스
 
-
-public:
-	inline size_t GetTypeID()	const;
-	inline const std::string& GetTypeName()	const;
-	inline const std::string& GetName()	const;
-	inline void SetName(const std::string& Name);
+	inline void SetEssential(const bool& b);
+	inline const bool& GetEssential() const;
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<size_t, CCDO*>	m_mapCDO;
+	static std::unordered_map<size_t, CSharedPtr<CCDO>>	m_mapCDO;
 
 	template <typename T>
 	static T* FindCDO();
@@ -37,9 +35,11 @@ private:
 
 	static CCDO* FindCDO(const std::string& Name);
 
+	static void AddCDO(CCDO* CDO);
+
 public:
 	template <typename T>
-	static bool CreateCDO(const std::string& Name = "");
+	static bool CreateCDO(const std::string& Name = "", const bool& Essential = false);
 
 	template <typename T>
 	static T* CloneCDO();
@@ -47,43 +47,20 @@ public:
 	static class CCDO* CloneCDO(const std::string& Name);
 
 	static class CCDO* CloneCDO(size_t hash_code);
-
-	template <typename T>
-	inline void SetTypeID();
 };
 
 
 
-size_t CCDO::GetTypeID()	const
+inline void CCDO::SetEssential(const bool& b)
 {
-	return m_TypeID;
+	m_Essential = b;
 }
 
-const std::string& CCDO::GetTypeName()	const
+inline const bool& CCDO::GetEssential() const
 {
-	return m_TypeName;
+	return m_Essential;
 }
 
-const std::string& CCDO::GetName()	const
-{
-	return m_Name;
-}
-
-void CCDO::SetName(const std::string& Name)
-{
-	m_Name = Name;
-}
-
-
-template <typename T>
-void CCDO::SetTypeID()
-{
-	// 타입 이름을 문자열로 얻어온다.
-	m_TypeName = typeid(T).name();
-
-	// 타입의 고유한 번호를 얻어온다.
-	m_TypeID = typeid(T).hash_code();
-}
 
 
 template<typename T>
@@ -92,15 +69,19 @@ inline T* CCDO::CloneCDO()
 	auto iter = m_mapCDO.find(typeid(T).hash_code());
 
 	if (iter == m_mapCDO.end())
-		return nullptr;
+	{
+		if(!CreateCDO<T>())
+			return nullptr;
 
+		return static_cast<T*>(FindCDO<T>()->Clone());
+	}
+	
 	return static_cast<T*>(iter->second->Clone());
 }
 
 
-
 template<typename T>
-inline bool CCDO::CreateCDO(const std::string& Name)
+inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 {
 
 	size_t hashcode = typeid(T).hash_code();
@@ -109,23 +90,29 @@ inline bool CCDO::CreateCDO(const std::string& Name)
 	if (m_mapCDO.find(hashcode) != m_mapCDO.end())
 		return true;
 
-	T* CDO = new T;
+	CSharedPtr<T> CDO = new T;
 
 	CDO->SetTypeID<T>();
+	
+	CDO->SetEssential(Essential);
+
 	if (!Name.empty())
 		CDO->SetName(Name);
 
-	if (!CDO->Init())
+	if (!CDO->CDOPreload())
 	{
 		delete CDO;
 		return false;
 	}
 
+	CCDO* Cast = static_cast<CCDO*>(CDO);
 
-	m_mapCDO.insert(std::make_pair(hashcode, static_cast<CCDO*>(CDO)));
+	m_mapCDO.insert(std::make_pair(hashcode, static_cast<CCDO*>(Cast)));
+	AddCDO(Cast);
 
 	return true;
 }
+
 
 
 
@@ -137,5 +124,5 @@ inline T* CCDO::FindCDO()
 	if (iter == m_mapCDO.end())
 		return nullptr;
 
-	return static_cast<T*>(iter->second());
+	return static_cast<T*>(iter->second.Get());
 }

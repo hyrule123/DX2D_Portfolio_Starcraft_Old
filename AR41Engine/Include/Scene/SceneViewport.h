@@ -58,7 +58,7 @@ public:
 		if (Window)
 			return Window;
 
-		Window = new T;
+		Window = CCDO::CloneCDO<T>();
 
 		Window->SetName(Name);
 		Window->m_Owner = this;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Scene/SceneManager.h"
+
 #include "../EngineInfo.h"
 #include "Shader/ShaderManager.h"
 #include "Material/MaterialManager.h"
@@ -7,6 +9,11 @@
 #include "Sound/SoundManager.h"
 #include "Font/FontManager.h"
 #include "Map/MapManager.h"
+
+
+//새로운 리소스 타입을 추가할 경우 EResourceType에 값을 추가하고 리소스를 생성 시 이 값을 변경해줄것.
+
+
 
 class CResourceManager
 {
@@ -20,12 +27,15 @@ private:
 	CSoundManager* m_SoundManager;
 	CFontManager* m_FontManager;
 
+	void AddSceneResource(class CGameResource* ResPtr);
 	
 
 public:
 	bool Init();
 	void Update();
-
+	
+	//사용하지 않는 리소스인지 확인하고 제거
+	void DeleteUnused();
 
 public:	// ===================== Mesh =========================
 	bool CreateMesh(class CScene* Scene, MeshType Type, const std::string& Name,
@@ -42,10 +52,8 @@ public:	// ===================== Mesh =========================
 
 public:	// ===================== Shader =========================
 	template <typename T>
-	bool CreateShader(const std::string& Name)
-	{
-		return m_ShaderManager->CreateShader<T>(Name);
-	}
+	bool CreateShader(const std::string& Name);
+
 
 	class CColliderConstantBuffer* GetColliderCBuffer()	const;
 	class CShader* FindShader(const std::string& Name);
@@ -80,7 +88,15 @@ public:	// ===================== Material =========================
 	template <typename T>
 	T* CreateMaterial(const std::string& Name)
 	{
-		return m_MaterialManager->CreateMaterial<T>(Name);
+		T* Material = m_MaterialManager->CreateMaterial<T>(Name);
+
+		if (Material)
+		{
+			CSceneManager::GetInst()->AddSceneResource(Material);
+			return Material;
+		}
+
+		return nullptr;
 	}
 
 
@@ -166,3 +182,17 @@ public:	// ============================ Font ================================
 	DECLARE_SINGLE(CResourceManager)
 };
 
+
+template <typename T>
+bool CResourceManager::CreateShader(const std::string& Name)
+{
+	T* Shader = m_ShaderManager->CreateShader<T>(Name);
+
+	if (Shader)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Name, static_cast<CGameResource*>(Shader));
+		return true;
+	}
+
+	return false;
+}

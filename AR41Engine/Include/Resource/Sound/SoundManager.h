@@ -20,7 +20,7 @@ public:
 	bool Init();
 	void Update();
 	bool CreateSoundChannel(const std::string& Name);
-	bool LoadSound(const std::string& GroupName, const std::string& Name,
+	class CSound* LoadSound(const std::string& GroupName, const std::string& Name,
 		bool Loop, const char* FileName, const std::string& PathName = SOUND_PATH);
 	bool SetVolume(int Volume);
 	bool SetVolume(const std::string& GroupName, int Volume);
@@ -33,5 +33,6 @@ public:
 	FMOD::ChannelGroup* FindChannelGroup(const std::string& Name);
 	class CSound* FindSound(const std::string& Name);
 	void ReleaseSound(const std::string& Name);
+	void DeleteUnused();
 };
 

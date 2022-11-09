@@ -1,7 +1,8 @@
 #include "UIButton.h"
 #include "../Resource/ResourceManager.h"
+
 #include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
+
 #include "../Resource/Sound/Sound.h"
 #include "../Input.h"
 
@@ -44,42 +45,22 @@ void CUIButton::SetTexture(EButtonState State, CTexture* Texture)
 
 bool CUIButton::SetTexture(EButtonState State, const std::string& Name, const TCHAR* FileName, const std::string& PathName)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTexture(Name, FileName, PathName))
-            return false;
 
-        m_TextureInfo[(int)State].Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
-            return false;
-
-        m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
+    m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
 
     return true;
 }
 
 bool CUIButton::SetTextureFullPath(EButtonState State, const std::string& Name, const TCHAR* FullPath)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTextureFullPath(Name, FullPath))
-            return false;
 
-        m_TextureInfo[(int)State].Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
-            return false;
-
-        m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
+    m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
 
     return true;
 }
@@ -87,42 +68,24 @@ bool CUIButton::SetTextureFullPath(EButtonState State, const std::string& Name, 
 bool CUIButton::SetTexture(EButtonState State, const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
     const std::string& PathName)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTexture(Name, vecFileName, PathName))
-            return false;
 
-        m_TextureInfo[(int)State].Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
-            return false;
+    m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-        m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
 
     return true;
 }
 
 bool CUIButton::SetTextureFullPath(EButtonState State, const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTextureFullPath(Name, vecFullPath))
-            return false;
 
-        m_TextureInfo[(int)State].Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
-            return false;
+    m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-        m_TextureInfo[(int)State].Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
 
     return true;
 }
@@ -167,31 +130,18 @@ void CUIButton::SetSound(EButtonEventState State, CSound* Sound)
 
 void CUIButton::SetSound(EButtonEventState State, const std::string& Name)
 {
-    if (m_Scene)
-        m_Sound[(int)State] = m_Scene->GetResource()->FindSound(Name);
-
-    else
-        m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
+    m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
 }
 
 bool CUIButton::SetSound(EButtonEventState State, const std::string& GroupName, const std::string& Name,
     bool Loop, const char* FileName, const std::string& PathName)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadSound(GroupName, Name, Loop, FileName, PathName))
-            return false;
 
-        m_Sound[(int)State] = m_Scene->GetResource()->FindSound(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadSound(GroupName, Name, Loop, FileName, PathName))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadSound(GroupName, Name, Loop, FileName, PathName))
-            return false;
+    m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
 
-        m_Sound[(int)State] = CResourceManager::GetInst()->FindSound(Name);
-    }
 
     return true;
 }
@@ -473,19 +423,11 @@ void CUIButton::Load(FILE* File)
                 fread(FileName, sizeof(TCHAR), MAX_PATH, File);
                 fread(PathName, sizeof(char), MAX_PATH, File);
 
-                if (m_Scene)
-                {
-                    m_Scene->GetResource()->LoadTexture(TexName, FileName, PathName);
 
-                    m_TextureInfo[i].Texture = m_Scene->GetResource()->FindTexture(TexName);
-                }
+                CResourceManager::GetInst()->LoadTexture(TexName, FileName, PathName);
 
-                else
-                {
-                    CResourceManager::GetInst()->LoadTexture(TexName, FileName, PathName);
+                m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
-                    m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
-                }
             }
 
             else
@@ -508,19 +450,9 @@ void CUIButton::Load(FILE* File)
                         vecFileName.push_back(FileName);
                     }
 
-                    if (m_Scene)
-                    {
-                        m_Scene->GetResource()->LoadTexture(TexName, vecFileName, ResultPathName);
+                    CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
 
-                        m_TextureInfo[i].Texture = m_Scene->GetResource()->FindTexture(TexName);
-                    }
-
-                    else
-                    {
-                        CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
-
-                        m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
-                    }
+                    m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
                     for (int i = 0; i < TextureSRVCount; ++i)
                     {
@@ -546,19 +478,10 @@ void CUIButton::Load(FILE* File)
                         vecFileName.push_back(FileName);
                     }
 
-                    if (m_Scene)
-                    {
-                        m_Scene->GetResource()->LoadTextureArray(TexName, vecFileName, ResultPathName);
 
-                        m_TextureInfo[i].Texture = m_Scene->GetResource()->FindTexture(TexName);
-                    }
+                    CResourceManager::GetInst()->LoadTextureArray(TexName, vecFileName, ResultPathName);
 
-                    else
-                    {
-                        CResourceManager::GetInst()->LoadTextureArray(TexName, vecFileName, ResultPathName);
-
-                        m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
-                    }
+                    m_TextureInfo[i].Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
                     for (int i = 0; i < TextureSRVCount; ++i)
                     {
@@ -599,17 +522,9 @@ void CUIButton::Load(FILE* File)
             fread(PathName, sizeof(char), MAX_PATH, File);
 
             // Group 이름과 Loop 저장해야한다
-            if (m_Scene)
-            {
-                m_Scene->GetResource()->LoadSound(GroupName, SoundName, Loop, FileName, PathName);
-                m_Sound[i] = m_Scene->GetResource()->FindSound(SoundName);
-            }
+            CResourceManager::GetInst()->LoadSound(GroupName, SoundName, Loop, FileName, PathName);
+            m_Sound[i] = CResourceManager::GetInst()->FindSound(SoundName);
 
-            else
-            {
-                CResourceManager::GetInst()->LoadSound(GroupName, SoundName, Loop, FileName, PathName);
-                m_Sound[i] = CResourceManager::GetInst()->FindSound(SoundName);
-            }
         }
     }
 }

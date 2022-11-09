@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../Ref.h"
+#include "../CDO.h"
 #include "UIWidget.h"
 
 class CUIWindow :
-    public CRef
+    public CCDO
 {
+	friend class CCDO;
     friend class CSceneViewport;
 	friend class CScene;
 	friend class CSceneManager;
@@ -15,24 +16,6 @@ protected:
     CUIWindow(const CUIWindow& Window);
     virtual ~CUIWindow();
 
-private:
-	static std::unordered_map<std::string, CUIWindow*>	m_mapUIWindowCDO;
-
-public:
-	static void AddUIWindowCDO(const std::string& Name, CUIWindow* CDO)
-	{
-		m_mapUIWindowCDO.insert(std::make_pair(Name, CDO));
-	}
-
-	static CUIWindow* FindCDO(const std::string& Name)
-	{
-		auto	iter = m_mapUIWindowCDO.find(Name);
-
-		if (iter == m_mapUIWindowCDO.end())
-			return nullptr;
-
-		return iter->second;
-	}
 
 protected:
 	class CScene* m_Scene;

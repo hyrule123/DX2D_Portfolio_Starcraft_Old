@@ -34,48 +34,51 @@ bool CFontManager::Init()
     return true;
 }
 
-bool CFontManager::CreateFontCollection(const std::string& Name, const TCHAR* FileName,
+CFontCollection* CFontManager::CreateFontCollection(const std::string& Name, const TCHAR* FileName,
     const std::string& PathName)
 {
     CFontCollection* FontCollection = FindFontCollection(Name);
 
     if (FontCollection)
-        return true;
+        return FontCollection;
 
     FontCollection = new CFontCollection;
+
+    FontCollection->SetResourceType(EResourceType::FontCollection);
 
     if (!FontCollection->CreateFontCollection(m_WriteFactory, Name, FileName, PathName))
     {
         SAFE_DELETE(FontCollection);
-        return false;
+        return nullptr;
     }
 
 
     m_mapFontCollection.insert(std::make_pair(Name, FontCollection));
 
-    return true;
+    return FontCollection;
 }
 
-bool CFontManager::LoadFont(const std::string& Name, const TCHAR* FontName, int Weight,
+CFont* CFontManager::LoadFont(const std::string& Name, const TCHAR* FontName, int Weight,
     float FontSize, const TCHAR* LocalName, int Stretch)
 {
     CFont* Font = FindFont(Name);
 
     if (Font)
-        return true;
+        return Font;
 
     Font = new CFont;
+    Font->SetResourceType(EResourceType::Font);
 
     if (!Font->LoadFont(m_WriteFactory, Name, FontName, Weight, FontSize, LocalName, Stretch))
     {
         SAFE_DELETE(Font);
-        return false;
+        return nullptr;
     }
 
 
     m_mapFont.insert(std::make_pair(Name, Font));
 
-    return true;
+    return Font;
 }
 
 const TCHAR* CFontManager::GetFontFaceName(const std::string& CollectionName)
@@ -271,4 +274,41 @@ void CFontManager::ReleaseFontCollection(const std::string& Name)
 
     if (iter->second->GetRefCount() == 1)
         m_mapFontCollection.erase(iter);
+}
+
+void CFontManager::DeleteUnused()
+{
+    {
+        auto iter = m_mapFont.begin();
+        auto iterEnd = m_mapFont.end();
+
+        while (iter != iterEnd)
+        {
+            //씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+            if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+            {
+                m_mapFont.erase(iter);
+                continue;
+            }
+
+            ++iter;
+        }
+    }
+
+    {
+        auto iter = m_mapFontCollection.begin();
+        auto iterEnd = m_mapFontCollection.end();
+
+        while (iter != iterEnd)
+        {
+            //씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+            if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+            {
+                m_mapFontCollection.erase(iter);
+                continue;
+            }
+
+            ++iter;
+        }
+    }
 }

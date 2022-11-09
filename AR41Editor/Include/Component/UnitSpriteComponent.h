@@ -7,6 +7,7 @@ class CUnitSpriteComponent :
 {
     friend class CGameObject;
     friend class CScene;
+    friend class CCDO;
 
 protected:
     CUnitSpriteComponent();

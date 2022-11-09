@@ -22,9 +22,9 @@ public:
 	bool Init();
 
 public:
-	bool CreateFontCollection(const std::string& Name, const TCHAR* FileName,
+	CFontCollection* CreateFontCollection(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = FONT_PATH);
-	bool LoadFont(const std::string& Name, const TCHAR* FontName,
+	CFont* LoadFont(const std::string& Name, const TCHAR* FontName,
 		int Weight, float FontSize, const TCHAR* LocalName, int Stretch = 5);
 
 	const TCHAR* GetFontFaceName(const std::string& CollectionName);
@@ -48,5 +48,6 @@ public:
 	CFontCollection* FindFontCollection(const std::string& Name);
 	void ReleaseFont(const std::string& Name);
 	void ReleaseFontCollection(const std::string& Name);
+	void DeleteUnused();
 };
 

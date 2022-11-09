@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
 
 struct TextureResourceInfo
 {
@@ -34,7 +34,7 @@ struct TextureResourceInfo
 };
 
 class CTexture :
-	public CRef
+	public CGameResource
 {
 	friend class CTextureManager;
 

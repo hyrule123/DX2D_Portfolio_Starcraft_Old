@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UIWidget.h"
-#include "../Resource/Font/Font.h"
+
 
 enum class Text_Align_H
 {
@@ -34,7 +34,7 @@ protected:
     int m_TextCapacity;
 
 protected:
-    CSharedPtr<CFont> m_Font;
+    CSharedPtr<class CFont> m_Font;
     IDWriteTextLayout* m_Layout;
     ID2D1SolidColorBrush* m_Brush;
     ID2D1RenderTarget* m_RenderTarget;

@@ -24,11 +24,11 @@ CScene::CScene()	:
 
 	m_SceneInfo->Init();
 
-	m_Resource = new CSceneResource;
+	m_SceneResource = new CSceneResource;
 
-	m_Resource->m_Owner = this;
+	m_SceneResource->m_Owner = this;
 
-	m_Resource->Init();
+	m_SceneResource->Init();
 
 	m_CameraManager = new CCameraManager;
 
@@ -56,7 +56,7 @@ CScene::~CScene()
 	SAFE_DELETE(m_Viewport);
 	SAFE_DELETE(m_CollisionManager);
 	SAFE_DELETE(m_CameraManager);
-	SAFE_DELETE(m_Resource);
+	SAFE_DELETE(m_SceneResource);
 	SAFE_DELETE(m_SceneInfo);
 }
 
@@ -389,6 +389,8 @@ void CScene::GetAllGameObjectHierarchyName(std::vector<HierarchyObjectName>& vec
 		vecName.push_back(Names);
 	}
 }
+
+
 
 CGameObject* CScene::FindObject(const std::string& Name)
 {

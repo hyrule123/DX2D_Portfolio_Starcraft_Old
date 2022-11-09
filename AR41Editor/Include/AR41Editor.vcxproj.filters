@@ -60,9 +60,6 @@
     <ClCompile Include="GameObject\Player2D.cpp">
       <Filter>04. GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Bullet.cpp">
-      <Filter>04. GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Window\ObjectWindow.cpp">
       <Filter>03. Window</Filter>
     </ClCompile>
@@ -134,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Component\UnitSpriteComponent.cpp">
       <Filter>04. GameObject\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Bullet.cpp">
+      <Filter>04. GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

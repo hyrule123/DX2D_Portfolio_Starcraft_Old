@@ -6,6 +6,7 @@ class CCameraComponent :
     public CSceneComponent
 {
     friend class CCameraManager;
+	friend class CCDO;
 	friend class CGameObject;
 	friend class CScene;
 

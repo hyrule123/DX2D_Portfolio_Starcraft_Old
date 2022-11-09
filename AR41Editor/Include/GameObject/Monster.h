@@ -6,6 +6,7 @@ class CMonster :
     public CGameObject
 {
 	friend class CScene;
+	friend class CCDO;
 
 protected:
 	CMonster();

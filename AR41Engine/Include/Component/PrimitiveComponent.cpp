@@ -1,9 +1,10 @@
 
 #include "PrimitiveComponent.h"
-#include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
+#include "../Resource/ResourceManager.h"
+
 #include "../Render/RenderManager.h"
 #include "../Resource/Material/Material.h"
+#include "../Resource/Mesh/Mesh.h"
 
 CPrimitiveComponent::CPrimitiveComponent()
 {
@@ -33,11 +34,7 @@ CPrimitiveComponent::~CPrimitiveComponent()
 
 void CPrimitiveComponent::SetMesh(const std::string& Name)
 {
-	if (m_Scene)
-		m_Mesh = m_Scene->GetResource()->FindMesh(Name);
-
-	else
-		m_Mesh = CResourceManager::GetInst()->FindMesh(Name);
+	m_Mesh = CResourceManager::GetInst()->FindMesh(Name);
 
 	if (m_Mesh)
 		SetMeshSize(m_Mesh->GetMeshSize());
@@ -75,11 +72,8 @@ void CPrimitiveComponent::SetMaterial(int Slot, const std::string& Name)
 {
 	CMaterial* Material = nullptr;
 	
-	if (m_Scene)
-		Material = m_Scene->GetResource()->FindMaterial(Name);
 
-	else
-		Material = CResourceManager::GetInst()->FindMaterial(Name);
+	Material = CResourceManager::GetInst()->FindMaterial(Name);
 
 	m_vecMaterial[Slot] = Material->Clone();
 }
@@ -95,7 +89,7 @@ void CPrimitiveComponent::SetMaterial(int Slot, CMaterial* Material)
 
 void CPrimitiveComponent::AddMaterial(const std::string& Name)
 {
-	CMaterial* Material = m_Scene->GetResource()->FindMaterial(Name);
+	CMaterial* Material = CResourceManager::GetInst()->FindMaterial(Name);
 
 	m_vecMaterial.push_back(Material->Clone());
 }

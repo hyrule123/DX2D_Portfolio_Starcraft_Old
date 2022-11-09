@@ -6,6 +6,7 @@ class CPlayer2D :
     public CGameObject
 {
 	friend class CScene;
+	friend class CCDO;
 
 protected:
 	CPlayer2D();

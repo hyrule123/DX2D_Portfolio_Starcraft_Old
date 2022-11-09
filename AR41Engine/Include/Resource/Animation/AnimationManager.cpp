@@ -21,77 +21,80 @@ bool CAnimationManager::Init()
 	return true;
 }
 
-bool CAnimationManager::CreateAnimationSequence2D(const std::string& Name, 
+CAnimationSequence2D* CAnimationManager::CreateAnimationSequence2D(const std::string& Name,
 	const std::string& TextureName, const TCHAR* FileName, const std::string& PathName)
 {
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (Sequence)
-		return true;
+		return Sequence;
 
-	Sequence = new CAnimationSequence2D;
-
+	Sequence = new CAnimationSequence2D; 
+	
+	Sequence->SetResourceType(EResourceType::Animation);
 	Sequence->SetName(Name);
 
 	if (!Sequence->Init(TextureName, FileName, PathName))
 	{
 		SAFE_DELETE(Sequence);
-		return false;
+		return nullptr;
 	}
 
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
-	return true;
+	return Sequence;
 }
 
-bool CAnimationManager::CreateAnimationSequence2D(const std::string& Name, 
+CAnimationSequence2D* CAnimationManager::CreateAnimationSequence2D(const std::string& Name,
 	CTexture* Texture)
 {
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (Sequence)
-		return true;
+		return Sequence;
 
-	Sequence = new CAnimationSequence2D;
-
+	Sequence = new CAnimationSequence2D; 
+	
+	Sequence->SetResourceType(EResourceType::Animation);
 	Sequence->SetName(Name);
 
 	if (!Sequence->Init(Texture))
 	{
 		SAFE_DELETE(Sequence);
-		return false;
+		return nullptr;
 	}
 
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
-	return true;
+	return Sequence;
 }
 
-bool CAnimationManager::CreateAnimationSequence2DFullPath(
+CAnimationSequence2D* CAnimationManager::CreateAnimationSequence2DFullPath(
 	const std::string& Name, const std::string& TextureName,
 	const TCHAR* FullPath)
 {
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (Sequence)
-		return true;
+		return Sequence;
 
-	Sequence = new CAnimationSequence2D;
-
+	Sequence = new CAnimationSequence2D; 
+	
+	Sequence->SetResourceType(EResourceType::Animation);
 	Sequence->SetName(Name);
 
 	if (!Sequence->InitFullPath(TextureName, FullPath))
 	{
 		SAFE_DELETE(Sequence);
-		return false;
+		return nullptr;
 	}
 
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
-	return true;
+	return Sequence;
 }
 
-bool CAnimationManager::CreateAnimationSequence2D(
+CAnimationSequence2D* CAnimationManager::CreateAnimationSequence2D(
 	const std::string& Name, const std::string& TextureName,
 	const std::vector<const TCHAR*>& vecFileName, 
 	const std::string& PathName)
@@ -99,45 +102,47 @@ bool CAnimationManager::CreateAnimationSequence2D(
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (Sequence)
-		return true;
+		return Sequence;
 
-	Sequence = new CAnimationSequence2D;
-
+	Sequence = new CAnimationSequence2D; 
+	
+	Sequence->SetResourceType(EResourceType::Animation);
 	Sequence->SetName(Name);
 
 	if (!Sequence->Init(TextureName, vecFileName, PathName))
 	{
 		SAFE_DELETE(Sequence);
-		return false;
+		return nullptr;
 	}
 
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
-	return true;
+	return Sequence;
 }
 
-bool CAnimationManager::CreateAnimationSequence2DFullPath(
+CAnimationSequence2D* CAnimationManager::CreateAnimationSequence2DFullPath(
 	const std::string& Name, const std::string& TextureName,
 	const std::vector<const TCHAR*>& vecFullPath)
 {
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
 
 	if (Sequence)
-		return true;
+		return Sequence;
 
-	Sequence = new CAnimationSequence2D;
-
+	Sequence = new CAnimationSequence2D; 
+	
+	Sequence->SetResourceType(EResourceType::Animation);
 	Sequence->SetName(Name);
 
 	if (!Sequence->InitFullPath(TextureName, vecFullPath))
 	{
 		SAFE_DELETE(Sequence);
-		return false;
+		return nullptr;
 	}
 
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
-	return true;
+	return Sequence;
 }
 
 bool CAnimationManager::AddSequence2DFrame(const std::string& Name, const Vector2& Start,
@@ -223,7 +228,8 @@ bool CAnimationManager::LoadSequence2D(const std::string& Name, const char* Full
 
 	if (!Sequence)
 	{
-		Sequence = new CAnimationSequence2D;
+		Sequence = new CAnimationSequence2D; 
+		Sequence->SetResourceType(EResourceType::Animation);
 
 		Sequence->SetName(Name);
 
@@ -259,7 +265,8 @@ bool CAnimationManager::LoadSequence2D(const std::string& Name, const char* File
 
 	if (!Sequence)
 	{
-		Sequence = new CAnimationSequence2D;
+		Sequence = new CAnimationSequence2D; 
+		Sequence->SetResourceType(EResourceType::Animation);
 
 		Sequence->SetName(Name);
 
@@ -294,5 +301,23 @@ void CAnimationManager::ReleaseAnimationSequence2D(const std::string& Name)
 	{
 		if (iter->second->GetRefCount() == 1)
 			m_mapSequence2D.erase(iter);
+	}
+}
+
+void CAnimationManager::DeleteUnused()
+{
+	auto iter = m_mapSequence2D.begin();
+	auto iterEnd = m_mapSequence2D.end();
+
+	while (iter != iterEnd)
+	{
+		//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+		{
+			m_mapSequence2D.erase(iter);
+			continue;
+		}
+
+		++iter;
 	}
 }

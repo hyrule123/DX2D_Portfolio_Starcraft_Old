@@ -3,6 +3,7 @@
 class CCollider2D :
     public CCollider
 {
+    friend class CCDO;
     friend class CGameObject;
     friend class CScene;
 

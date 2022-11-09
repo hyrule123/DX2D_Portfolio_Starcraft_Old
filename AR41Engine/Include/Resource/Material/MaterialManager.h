@@ -18,6 +18,7 @@ public:
 	bool Init();
 	CMaterial* FindMaterial(const std::string& Name);
 	void ReleaseMaterial(const std::string& Name);
+	void DeleteUnused();
 
 public:
 	template <typename T>
@@ -29,6 +30,7 @@ public:
 			return Material;
 
 		Material = new T;
+		Material->SetResourceType(EResourceType::Material);
 
 		Material->SetName(Name);
 

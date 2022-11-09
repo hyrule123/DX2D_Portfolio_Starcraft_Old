@@ -1,11 +1,15 @@
 
 #include "SceneManager.h"
+
+#include "../CDO.h"
 #include "SceneInfo.h"
 #include "../GameObject/GameObject.h"
 #include "../Component/SceneComponent.h"
 #include "../Animation/Animation2D.h"
 #include "../UI/UIWindow.h"
 #include "../UI/UIWidget.h"
+
+#include "../Resource/GameResource.h"
 
 DEFINITION_SINGLE(CSceneManager)
 
@@ -65,11 +69,16 @@ bool CSceneManager::ChangeScene()
 	{
 		if (m_NextScene->m_Change)
 		{
-			SAFE_DELETE(m_Scene);
+			//이전 씬을 일단 빼놓고 씬을 교체
+			CScene* PrevScene = m_Scene;
 			m_Scene = m_NextScene;
 			m_NextScene = nullptr;
 
+			//씬 로드 시작
 			m_Scene->GetSceneInfo()->SceneChangeComplete();
+
+			//씬 로드가 완료되면 이전 씬의 인스턴스를 제거해서 리소스 관리
+			SAFE_DELETE(PrevScene);
 
 			return true;
 		}
@@ -90,4 +99,22 @@ void CSceneManager::CreateNextScene(bool AutoChange)
 void CSceneManager::ChangeNextScene()
 {
 	m_NextScene->m_Change = true;
+}
+
+void CSceneManager::AddSceneResource(CGameResource* ResPtr)
+{
+	if (m_NextScene)
+		m_NextScene->GetSceneResource()->AddGameResource(ResPtr);
+
+	else if (m_Scene)
+		m_Scene->GetSceneResource()->AddGameResource(ResPtr);
+}
+
+void CSceneManager::AddCDO(CCDO* CCDO)
+{
+	if (m_NextScene)
+		m_NextScene->GetSceneResource()->AddCDO(CCDO);
+
+	else if (m_Scene)
+		m_Scene->GetSceneResource()->AddCDO(CCDO);
 }

@@ -1,10 +1,13 @@
 
 #include "Material.h"
+
+//Resources
 #include "../ResourceManager.h"
-#include "../../Scene/Scene.h"
-#include "../../Scene/SceneResource.h"
-#include "../Shader/MaterialConstantBuffer.h"
 #include "../Shader/Shader.h"
+
+#include "../../Scene/Scene.h"
+#include "../Shader/MaterialConstantBuffer.h"
+
 #include "../../Render/RenderManager.h"
 
 CMaterial::CMaterial()	:
@@ -28,7 +31,7 @@ CMaterial::CMaterial()	:
 }
 
 CMaterial::CMaterial(const CMaterial& Material)	:
-	CRef(Material)
+	CGameResource(Material)
 {
 	m_Shader = Material.m_Shader;
 	m_BaseColor = Material.m_BaseColor;
@@ -212,21 +215,12 @@ void CMaterial::AddTexture(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTexture(Name, FileName, PathName))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -240,21 +234,10 @@ void CMaterial::AddTextureFullPath(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureFullPath(Name, FullPath))
-			return;
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+		return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
-
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
-			return;
-
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -269,21 +252,12 @@ void CMaterial::AddTexture(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTexture(Name, vecFileName, PathName))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -297,21 +271,12 @@ void CMaterial::AddTextureFullPath(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureFullPath(Name, vecFullPath))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -326,21 +291,12 @@ void CMaterial::AddTextureArray(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -354,21 +310,12 @@ void CMaterial::AddTextureArrayFullPath(int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -399,21 +346,12 @@ void CMaterial::SetTexture(int Index, int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTexture(Name, FileName, PathName))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTextureFullPath(int Index, int Register, int ShaderBufferType, const std::string& Name, const TCHAR* FullPath)
@@ -427,21 +365,12 @@ void CMaterial::SetTextureFullPath(int Index, int Register, int ShaderBufferType
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureFullPath(Name, FullPath))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTexture(int Index, int Register, int ShaderBufferType, 
@@ -457,21 +386,11 @@ void CMaterial::SetTexture(int Index, int Register, int ShaderBufferType,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTexture(Name, vecFileName, PathName))
-			return;
+	if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
+		return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
-			return;
-
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTextureFullPath(int Index, int Register, 
@@ -487,21 +406,12 @@ void CMaterial::SetTextureFullPath(int Index, int Register,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureFullPath(Name, vecFullPath))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTextureArray(int Index, int Register,
@@ -518,21 +428,11 @@ void CMaterial::SetTextureArray(int Index, int Register,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
+	if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
+		return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
-
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTextureArrayFullPath(int Index, int Register,
@@ -548,21 +448,12 @@ void CMaterial::SetTextureArrayFullPath(int Index, int Register,
 	Info->ShaderBufferType = ShaderBufferType;
 	Info->Name = Name;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
 
-		Info->Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
+	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 }
 
 void CMaterial::SetTextureSamplerType(int Index, ESamplerType Type)
@@ -600,15 +491,7 @@ void CMaterial::SetRenderState(const std::string& Name)
 
 void CMaterial::SetShader(const std::string& Name)
 {
-	if (m_Scene)
-	{
-		m_Shader = m_Scene->GetResource()->FindShader(Name);
-	}
-
-	else
-	{
-		m_Shader = CResourceManager::GetInst()->FindShader(Name);
-	}
+	m_Shader = CResourceManager::GetInst()->FindShader(Name);
 }
 
 void CMaterial::SetMaterial()
@@ -805,19 +688,9 @@ void CMaterial::Load(FILE* File)
 			fread(FileName, sizeof(TCHAR), MAX_PATH, File);
 			fread(PathName, sizeof(char), MAX_PATH, File);
 
-			if (m_Scene)
-			{
-				m_Scene->GetResource()->LoadTexture(Info->Name, FileName, PathName);
+			CResourceManager::GetInst()->LoadTexture(Info->Name, FileName, PathName);
 
-				Info->Texture = m_Scene->GetResource()->FindTexture(Info->Name);
-			}
-
-			else
-			{
-				CResourceManager::GetInst()->LoadTexture(Info->Name, FileName, PathName);
-
-				Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
-			}
+			Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
 		}
 
 		else
@@ -840,19 +713,10 @@ void CMaterial::Load(FILE* File)
 					vecFileName.push_back(FileName);
 				}
 
-				if (m_Scene)
-				{
-					m_Scene->GetResource()->LoadTexture(Info->Name, vecFileName, ResultPathName);
 
-					Info->Texture = m_Scene->GetResource()->FindTexture(Info->Name);
-				}
+				CResourceManager::GetInst()->LoadTexture(Info->Name, vecFileName, ResultPathName);
 
-				else
-				{
-					CResourceManager::GetInst()->LoadTexture(Info->Name, vecFileName, ResultPathName);
-
-					Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
-				}
+				Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
 
 				for (int i = 0; i < TextureSRVCount; ++i)
 				{
@@ -878,19 +742,11 @@ void CMaterial::Load(FILE* File)
 					vecFileName.push_back(FileName);
 				}
 
-				if (m_Scene)
-				{
-					m_Scene->GetResource()->LoadTextureArray(Info->Name, vecFileName, ResultPathName);
 
-					Info->Texture = m_Scene->GetResource()->FindTexture(Info->Name);
-				}
+				CResourceManager::GetInst()->LoadTextureArray(Info->Name, vecFileName, ResultPathName);
 
-				else
-				{
-					CResourceManager::GetInst()->LoadTextureArray(Info->Name, vecFileName, ResultPathName);
+				Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
 
-					Info->Texture = CResourceManager::GetInst()->FindTexture(Info->Name);
-				}
 
 				for (int i = 0; i < TextureSRVCount; ++i)
 				{

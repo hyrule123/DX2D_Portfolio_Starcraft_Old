@@ -80,9 +80,6 @@ bool CEngine::Init(HINSTANCE hInst, const TCHAR* Title,
 
 	Create(Title, ClassName);
 
-	m_Setting = new CEngineSetting;
-
-	m_Setting->Init();
 
 	// Device 초기화
 	if (!CDevice::GetInst()->Init(m_hWnd, DeviceWidth, DeviceHeight, WindowMode))
@@ -129,8 +126,12 @@ bool CEngine::Init(HINSTANCE hInst, const TCHAR* Title,
 	m_Timer = new CTimer;
 
 	m_Timer->Init();
+	
 
+	//설정 초기화
+	m_Setting = new CEngineSetting;
 
+	m_Setting->Init();
 
 	return true;
 }

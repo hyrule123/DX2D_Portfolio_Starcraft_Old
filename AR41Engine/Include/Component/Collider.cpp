@@ -1,9 +1,18 @@
 #include "Collider.h"
-#include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
-#include "../Render/RenderManager.h"
-#include "../Resource/Material/Material.h"
+
+//Device
 #include "../Engine.h"
+
+//Resources
+#include "../Resource/ResourceManager.h"
+#include "../Resource/Material/Material.h"
+#include "../Resource/Mesh/Mesh.h"
+#include "../Resource/Shader/Shader.h"
+
+#include "../Scene/Scene.h"
+
+#include "../Render/RenderManager.h"
+
 #include "../Scene/SceneCollision.h"
 #include "../CollisionManager.h"
 

@@ -1,4 +1,7 @@
 #include "EditorManager.h"
+
+#include "CDO.h"
+
 #include "Scene/EditorDefaultScene.h"
 #include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
@@ -41,10 +44,9 @@ bool CEditorManager::Init(HINSTANCE hInst)
     {
         return false;
     }
-
-    CSceneInfo* Info = new CEditorDefaultScene;
-
-    CScene::AddSceneInfoCDO("EditorDefaultScene", Info);
+    
+    CCDO::CreateCDO<CEditorDefaultScene>("EditorDefaultScene");
+    CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>(true);
 
     CEngineShareSetting::Setting();
 

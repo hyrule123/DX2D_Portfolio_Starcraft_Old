@@ -120,15 +120,15 @@ bool CMeshManager::Init()
 	return true;
 }
 
-bool CMeshManager::CreateMesh(CScene* Scene, MeshType Type, const std::string& Name,
+CMesh* CMeshManager::CreateMesh(CScene* Scene, MeshType Type, const std::string& Name,
 	void* VtxData, int Size, int Count, D3D11_USAGE VtxUsage,
 	D3D11_PRIMITIVE_TOPOLOGY Primitive, void* IdxData, int IdxSize, 
 	int IdxCount, D3D11_USAGE IdxUsage, DXGI_FORMAT Fmt)
 {
-	if (FindMesh(Name))
-		return true;
+	CMesh* Mesh = FindMesh(Name);
 
-	CMesh* Mesh = nullptr;
+	if (Mesh)
+		return Mesh;
 
 	switch (Type)
 	{
@@ -145,17 +145,18 @@ bool CMeshManager::CreateMesh(CScene* Scene, MeshType Type, const std::string& N
 
 	Mesh->SetScene(Scene);
 	Mesh->SetName(Name);
+	Mesh->SetResourceType(EResourceType::Mesh);
 
 	if (!Mesh->CreateMesh(VtxData, Size, Count, VtxUsage, Primitive,
 		IdxData, IdxSize, IdxCount, IdxUsage, Fmt))
 	{
 		SAFE_RELEASE(Mesh);
-		return false;
+		return nullptr;
 	}
 
 	m_mapMesh.insert(std::make_pair(Name, Mesh));
 
-	return true;
+	return Mesh;
 }
 
 CMesh* CMeshManager::FindMesh(const std::string& Name)
@@ -176,5 +177,23 @@ void CMeshManager::ReleaseMesh(const std::string& Name)
 	{
 		if (iter->second->GetRefCount() == 1)
 			m_mapMesh.erase(iter);
+	}
+}
+
+void CMeshManager::DeleteUnused()
+{
+	auto iter = m_mapMesh.begin();
+	auto iterEnd = m_mapMesh.end();
+
+	while (iter != iterEnd)
+	{
+		//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+		{
+			m_mapMesh.erase(iter);
+			continue;
+		}
+			
+		++iter;
 	}
 }

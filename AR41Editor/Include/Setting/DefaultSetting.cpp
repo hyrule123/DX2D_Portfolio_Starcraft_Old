@@ -1,6 +1,10 @@
 #include "DefaultSetting.h"
-#include "CDOManager.h"
 
+//Resources
+#include "Resource/ResourceManager.h"
+
+
+#include "CDO.h"
 
 #include "../GameObject/Player2D.h"
 #include "../GameObject/Monster.h"
@@ -36,14 +40,14 @@ void CDefaultSetting::Init()
 
 void CDefaultSetting::CreateCDO()
 {
-    CCDOManager::GetInst()->CreateCDO<CPlayer2D>("Player2D");
-    CCDOManager::GetInst()->CreateCDO<CMonster>("Monster");
-    CCDOManager::GetInst()->CreateCDO<CBullet>("Bullet");
-    CCDOManager::GetInst()->CreateCDO<CMarine>("Marine");
+    CCDO::CreateCDO<CPlayer2D>("Player2D");
+    CCDO::CreateCDO<CMonster>("Monster");
+    CCDO::CreateCDO<CBullet>("Bullet");
+    CCDO::CreateCDO<CMarine>("Marine");
 
-    CCDOManager::GetInst()->CreateCDO<CUnitRootComponent>("UnitRootComponent");
-    CCDOManager::GetInst()->CreateCDO<CUnitSpriteComponent>("UnitSpriteComponent");
-    CCDOManager::GetInst()->CreateCDO<CStartSceneUI>("StartSceneUI");
+    CCDO::CreateCDO<CUnitRootComponent>("UnitRootComponent");
+    CCDO::CreateCDO<CUnitSpriteComponent>("UnitSpriteComponent");
+    CCDO::CreateCDO<CStartSceneUI>("StartSceneUI");
 
     //CScene::CreateObjectCDO<CPlayer2D>("Player2D");
     //CScene::CreateObjectCDO<CMonster>("Monster");

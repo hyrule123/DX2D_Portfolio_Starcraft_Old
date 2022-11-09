@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
 #include "../Texture/Texture.h"
 #include "../../Render/RenderState.h"
 
@@ -23,7 +23,7 @@ struct MaterialTextureInfo
 };
 
 class CMaterial :
-    public CRef
+    public CGameResource
 {
     friend class CMaterialManager;
     friend class CMesh;

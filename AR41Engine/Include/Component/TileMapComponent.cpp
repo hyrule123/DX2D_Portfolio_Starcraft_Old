@@ -95,11 +95,8 @@ void CTileMapComponent::SetEditorMouseOnTile(int Index)
 
 void CTileMapComponent::SetTileMaterial(const std::string& Name)
 {
-	if (m_Scene)
-		m_TileMaterial = m_Scene->GetResource()->FindMaterial(Name);
 
-	else
-		m_TileMaterial = CResourceManager::GetInst()->FindMaterial(Name);
+	m_TileMaterial = CResourceManager::GetInst()->FindMaterial(Name);
 
 	m_TileMapCBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTexture(0)->GetWidth(),
 		(float)m_TileMaterial->GetTexture(0)->GetHeight()));
@@ -171,21 +168,12 @@ void CTileMapComponent::SetTileBackTexture(const std::string& Name,
 {
 	CTexture* Texture = nullptr;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTexture(Name, FileName, PathName))
-			return;
 
-		Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
-			return;
+	Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_TileBackTexture = Texture;
 
@@ -201,21 +189,12 @@ void CTileMapComponent::SetTileBackTextureFullPath(const std::string& Name,
 {
 	CTexture* Texture = nullptr;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureFullPath(Name, FullPath))
-			return;
 
-		Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
-			return;
+	Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-		Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
 
 	m_TileBackTexture = Texture;
 
@@ -231,21 +210,10 @@ void CTileMapComponent::SetTileBackTextureArray(const std::string& Name,
 {
 	CTexture* Texture = nullptr;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
+	if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
+		return;
 
-		Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
-
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArray(Name, vecFileName, PathName))
-			return;
-
-		Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
+	Texture = CResourceManager::GetInst()->FindTexture(Name);
 
 	m_TileBackTexture = Texture;
 
@@ -261,21 +229,11 @@ void CTileMapComponent::SetTileBackTextureArrayFullPath(const std::string& Name,
 {
 	CTexture* Texture = nullptr;
 
-	if (m_Scene)
-	{
-		if (!m_Scene->GetResource()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
 
-		Texture = m_Scene->GetResource()->FindTexture(Name);
-	}
+	if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
+		return;
 
-	else
-	{
-		if (!CResourceManager::GetInst()->LoadTextureArrayFullPath(Name, vecFullPath))
-			return;
-
-		Texture = CResourceManager::GetInst()->FindTexture(Name);
-	}
+	Texture = CResourceManager::GetInst()->FindTexture(Name);
 
 	m_TileBackTexture = Texture;
 

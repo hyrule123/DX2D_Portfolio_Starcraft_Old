@@ -1,11 +1,19 @@
 #include "ColliderOBB2D.h"
+
+//Resources
+#include "../Resource/ResourceManager.h"
+#include "../Resource/Mesh/Mesh.h"
+#include "../Resource/Shader/Shader.h"
+
+
 #include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
+
+
 #include "../Render/RenderManager.h"
 #include "../Scene/CameraManager.h"
 #include "../Resource/Material/Material.h"
 #include "../Engine.h"
-#include "../Resource/ResourceManager.h"
+
 #include "CameraComponent.h"
 #include "../Resource/Shader/ColliderConstantBuffer.h"
 #include "../CollisionManager.h"

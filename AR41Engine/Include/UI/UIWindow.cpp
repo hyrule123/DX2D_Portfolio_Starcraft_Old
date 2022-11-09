@@ -1,7 +1,6 @@
 #include "UIWindow.h"
 #include "../Device.h"
 
-std::unordered_map<std::string, CUIWindow*> CUIWindow::m_mapUIWindowCDO;
 
 CUIWindow::CUIWindow()  :
     m_ZOrder(0),
@@ -13,7 +12,7 @@ CUIWindow::CUIWindow()  :
 }
 
 CUIWindow::CUIWindow(const CUIWindow& Window)	:
-	CRef(Window)
+	CCDO(Window)
 {
     m_ZOrder = Window.m_ZOrder;
 	m_Size = Window.m_Size;

@@ -4,6 +4,7 @@ class CMarine :
     public CGameObject
 {
 	friend class CScene;
+	friend class CCDO;
 
 protected:
 	CMarine();

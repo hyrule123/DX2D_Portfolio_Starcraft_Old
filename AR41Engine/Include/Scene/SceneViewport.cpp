@@ -121,11 +121,8 @@ void CSceneViewport::Save(FILE* File)
 
 	for (; iter != iterEnd; ++iter)
 	{
-		std::string	TypeName = (*iter)->GetWindowTypeName();
-
-		int	Length = (int)TypeName.length();
-		fwrite(&Length, sizeof(int), 1, File);
-		fwrite(TypeName.c_str(), 1, Length, File);
+		size_t Hash = (*iter)->GetTypeID();
+		fwrite(&Hash, sizeof(size_t), 1, File);
 
 		(*iter)->Save(File);
 	}
@@ -139,13 +136,10 @@ void CSceneViewport::Load(FILE* File)
 
 	for (int i = 0; i < Count; ++i)
 	{
-		char	TypeName[256] = {};
-		int	Length = 0;
+		size_t TypeID = 0;
+		fread(&TypeID, sizeof(size_t), 1, File);
 
-		fread(&Length, sizeof(int), 1, File);
-		fread(TypeName, 1, Length, File);
-
-		CUIWindow* CDO = CUIWindow::FindCDO(TypeName);
+		CUIWindow* CDO = static_cast<CUIWindow*>(CCDO::CloneCDO(TypeID));
 
 		CUIWindow* Window = CDO->Clone();
 

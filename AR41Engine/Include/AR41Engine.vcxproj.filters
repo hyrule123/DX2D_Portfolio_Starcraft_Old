@@ -633,6 +633,9 @@
     <ClInclude Include="CDO.h">
       <Filter>01. Manager\11. CDO</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\GameResource.h">
+      <Filter>02. Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -988,6 +991,9 @@
     </ClCompile>
     <ClCompile Include="CDO.cpp">
       <Filter>01. Manager\11. CDO</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\GameResource.cpp">
+      <Filter>02. Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

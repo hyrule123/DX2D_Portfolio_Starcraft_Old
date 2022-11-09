@@ -5,6 +5,7 @@
 class CStartSceneUI :
     public CUIWindow
 {
+	friend class CCDO;
 	friend class CSceneViewport;
 	friend class CScene;
 
@@ -28,5 +29,8 @@ public:
 	virtual CStartSceneUI* Clone();
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
+
+private:
+	void StartButtonClick();
 };
 

@@ -5,7 +5,6 @@
 CDepthStencilState::CDepthStencilState()
 {
 	m_Type = ERenderStateType::DepthStencil;
-	SetTypeID<CDepthStencilState>();
 
 	m_StencilRef = 0xffffffff;
 	m_PrevStencilRef = 0xffffffff;

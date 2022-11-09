@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
+
 
 class CShader :
-    public CRef
+    public CGameResource
 {
     friend class CShaderManager;
 
@@ -24,4 +25,5 @@ public:
     virtual bool Init() = 0;
     virtual void SetShader() = 0;
 };
+
 

@@ -6,6 +6,7 @@
 class CTileMapComponent :
     public CPrimitiveComponent
 {
+    friend class CCDO;
     friend class CGameObject;
     friend class CScene;
 

@@ -1,8 +1,11 @@
 #include "UIImage.h"
+
+//Resources
 #include "../Resource/ResourceManager.h"
-#include "../Scene/Scene.h"
-#include "../Scene/SceneResource.h"
 #include "../Resource/Sound/Sound.h"
+
+#include "../Scene/Scene.h"
+
 #include "../Input.h"
 
 CUIImage::CUIImage()
@@ -27,42 +30,23 @@ void CUIImage::SetTexture(CTexture* Texture)
 
 bool CUIImage::SetTexture(const std::string& Name, const TCHAR* FileName, const std::string& PathName)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTexture(Name, FileName, PathName))
-            return false;
 
-        m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
-            return false;
+    m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-        m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
 
     return true;
 }
 
 bool CUIImage::SetTextureFullPath(const std::string& Name, const TCHAR* FullPath)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTextureFullPath(Name, FullPath))
-            return false;
 
-        m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
-            return false;
-
-        m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
+    m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
 
     return true;
 }
@@ -70,42 +54,22 @@ bool CUIImage::SetTextureFullPath(const std::string& Name, const TCHAR* FullPath
 bool CUIImage::SetTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
     const std::string& PathName)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTexture(Name, vecFileName, PathName))
-            return false;
 
-        m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
-            return false;
-
-        m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
+    m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
 
     return true;
 }
 
 bool CUIImage::SetTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
 {
-    if (m_Scene)
-    {
-        if (!m_Scene->GetResource()->LoadTextureFullPath(Name, vecFullPath))
-            return false;
 
-        m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(Name);
-    }
+    if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
+        return false;
 
-    else
-    {
-        if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
-            return false;
-
-        m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
-    }
+    m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(Name);
 
     return true;
 }
@@ -288,19 +252,11 @@ void CUIImage::Load(FILE* File)
         fread(FileName, sizeof(TCHAR), MAX_PATH, File);
         fread(PathName, sizeof(char), MAX_PATH, File);
 
-        if (m_Scene)
-        {
-            m_Scene->GetResource()->LoadTexture(TexName, FileName, PathName);
 
-            m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(TexName);
-        }
+        CResourceManager::GetInst()->LoadTexture(TexName, FileName, PathName);
 
-        else
-        {
-            CResourceManager::GetInst()->LoadTexture(TexName, FileName, PathName);
+        m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
-            m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
-        }
     }
 
     else
@@ -323,19 +279,10 @@ void CUIImage::Load(FILE* File)
                 vecFileName.push_back(FileName);
             }
 
-            if (m_Scene)
-            {
-                m_Scene->GetResource()->LoadTexture(TexName, vecFileName, ResultPathName);
 
-                m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(TexName);
-            }
+            CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
 
-            else
-            {
-                CResourceManager::GetInst()->LoadTexture(TexName, vecFileName, ResultPathName);
-
-                m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
-            }
+            m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
             for (int i = 0; i < TextureSRVCount; ++i)
             {
@@ -361,19 +308,11 @@ void CUIImage::Load(FILE* File)
                 vecFileName.push_back(FileName);
             }
 
-            if (m_Scene)
-            {
-                m_Scene->GetResource()->LoadTextureArray(TexName, vecFileName, ResultPathName);
 
-                m_TextureInfo.Texture = m_Scene->GetResource()->FindTexture(TexName);
-            }
+            CResourceManager::GetInst()->LoadTextureArray(TexName, vecFileName, ResultPathName);
 
-            else
-            {
-                CResourceManager::GetInst()->LoadTextureArray(TexName, vecFileName, ResultPathName);
+            m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
-                m_TextureInfo.Texture = CResourceManager::GetInst()->FindTexture(TexName);
-            }
 
             for (int i = 0; i < TextureSRVCount; ++i)
             {

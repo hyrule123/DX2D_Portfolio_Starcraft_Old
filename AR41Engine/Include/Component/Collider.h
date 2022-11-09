@@ -3,6 +3,7 @@
 class CCollider :
     public CSceneComponent
 {
+    friend class CCDO;
     friend class CGameObject;
     friend class CScene;
     friend class CCollisionManager;

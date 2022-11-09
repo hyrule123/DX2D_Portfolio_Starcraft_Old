@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../Ref.h"
+#include "../GameResource.h"
 
 
 class CAnimationSequence2D :
-    public CRef
+    public CGameResource
 {
     friend class CAnimationManager;
 

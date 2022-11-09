@@ -21,6 +21,8 @@ CShaderManager::~CShaderManager()
 	SAFE_DELETE(m_ColliderCBuffer);
 }
 
+
+
 bool CShaderManager::Init()
 {
 	CreateShader<CSpriteColorShader>("SpriteColorShader");
@@ -84,27 +86,28 @@ void CShaderManager::ReleaseShader(const std::string& Name)
 	}
 }
 
-bool CShaderManager::CreateConstantBuffer(const std::string& Name, int Size,
+CConstantBuffer* CShaderManager::CreateConstantBuffer(const std::string& Name, int Size,
 	int Register, int ShaderBufferType)
 {
 	CConstantBuffer* Buffer = FindConstantBuffer(Name);
 
 	if (Buffer)
-		return true;
+		return Buffer;
 
 	Buffer = new CConstantBuffer;
 
 	Buffer->SetName(Name);
+	Buffer->SetResourceType(EResourceType::CBuffer);
 
 	if (!Buffer->Init(Size, Register, ShaderBufferType))
 	{
 		SAFE_RELEASE(Buffer);
-		return false;
+		return nullptr;
 	}
 
 	m_mapCBuffer.insert(std::make_pair(Name, Buffer));
 
-	return true;
+	return Buffer;
 }
 
 CConstantBuffer* CShaderManager::FindConstantBuffer(const std::string& Name)
@@ -115,4 +118,41 @@ CConstantBuffer* CShaderManager::FindConstantBuffer(const std::string& Name)
 		return nullptr;
 
 	return iter->second;
+}
+
+void CShaderManager::DeleteUnused()
+{
+	{
+		auto iter = m_mapShader.begin();
+		auto iterEnd = m_mapShader.end();
+
+		while (iter != iterEnd)
+		{
+			//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+			if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+			{
+				m_mapShader.erase(iter);
+				continue;
+			}
+
+			++iter;
+		}
+	}
+
+	{
+		auto iter = m_mapCBuffer.begin();
+		auto iterEnd = m_mapCBuffer.end();
+
+		while (iter != iterEnd)
+		{
+			//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+			if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+			{
+				m_mapCBuffer.erase(iter);
+				continue;
+			}
+
+			++iter;
+		}
+	}
 }

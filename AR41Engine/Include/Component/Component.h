@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Ref.h"
+#include "../CDO.h"
 
 class CComponent :
-    public CRef
+    public CCDO
 {
     friend class CGameObject;
     friend class CSceneManager;

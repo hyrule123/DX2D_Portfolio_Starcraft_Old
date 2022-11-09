@@ -32,6 +32,8 @@ private:
 public:
 	void CreateNextScene(bool AutoChange = true);
 	void ChangeNextScene();
+	void AddSceneResource(class CGameResource* ResPtr);
+	void AddCDO(class CCDO* CCDO);
 
 public:
 	template <typename T>

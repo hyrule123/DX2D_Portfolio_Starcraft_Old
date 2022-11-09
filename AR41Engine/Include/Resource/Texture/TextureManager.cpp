@@ -57,128 +57,134 @@ bool CTextureManager::Init()
 	return true;
 }
 
-bool CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName, 
+CTexture* CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName, 
 	const std::string& PathName)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTexture(Name, FileName, PathName))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
-bool CTextureManager::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
+CTexture* CTextureManager::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTextureFullPath(Name, FullPath))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
-bool CTextureManager::LoadTexture(const std::string& Name, 
+CTexture* CTextureManager::LoadTexture(const std::string& Name, 
 	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTexture(Name, vecFileName, PathName))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
-bool CTextureManager::LoadTextureFullPath(const std::string& Name, 
+CTexture* CTextureManager::LoadTextureFullPath(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFullPath)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTextureFullPath(Name, vecFullPath))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
-bool CTextureManager::LoadTextureArray(const std::string& Name,
+CTexture* CTextureManager::LoadTextureArray(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTextureArray(Name, vecFileName, PathName))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
-bool CTextureManager::LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
+CTexture* CTextureManager::LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
-		return true;
+		return Texture;
 
 	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
 
 	if (!Texture->LoadTextureArrayFullPath(Name, vecFullPath))
 	{
 		SAFE_DELETE(Texture);
-		return false;
+		return nullptr;
 	}
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
 
-	return true;
+	return Texture;
 }
 
 CTexture* CTextureManager::FindTexture(const std::string& Name)
@@ -199,6 +205,24 @@ void CTextureManager::ReleaseTexture(const std::string& Name)
 	{
 		if (iter->second->GetRefCount() == 1)
 			m_mapTexture.erase(iter);
+	}
+}
+
+void CTextureManager::DeleteUnused()
+{
+	auto iter = m_mapTexture.begin();
+	auto iterEnd = m_mapTexture.end();
+
+	while (iter != iterEnd)
+	{
+		//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
+		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+		{
+			m_mapTexture.erase(iter);
+			continue;
+		}
+
+		++iter;
 	}
 }
 

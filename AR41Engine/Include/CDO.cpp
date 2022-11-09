@@ -1,28 +1,32 @@
 #include "CDO.h"
+#include "Scene/SceneManager.h"
 
-std::unordered_map<size_t, CCDO*>	CCDO::m_mapCDO;
+std::unordered_map<size_t, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
 
 CCDO::CCDO():
-	m_TypeID()
+	m_Essential()
 {
 }
 
 CCDO::CCDO(const CCDO& CDO):
-	m_Name(CDO.m_Name),
-	m_TypeID(CDO.m_TypeID),
-	m_TypeName(CDO.m_TypeName)
+	CRef(CDO),
+	m_Essential(CDO.m_Essential)
+{
+}
+
+CCDO::~CCDO()
 {
 }
 
 
-bool CCDO::Init()
+bool CCDO::CDOPreload()
 {
 	return true;
 }
 
 CCDO* CCDO::Clone()
 {
-	return nullptr;
+	return new CCDO(*this);
 }
 
 void CCDO::Save(FILE* File)
@@ -86,6 +90,11 @@ CCDO* CCDO::FindCDO(const std::string& Name)
 	return nullptr;
 }
 
+void CCDO::AddCDO(CCDO* CDO)
+{
+	CSceneManager::GetInst()->AddCDO(CDO);
+}
+
 CCDO* CCDO::CloneCDO(const std::string& Name)
 {
 	CCDO* CDO = FindCDO(Name);
@@ -105,3 +114,4 @@ CCDO* CCDO::CloneCDO(size_t hash_code)
 
 	return CDO;
 }
+

@@ -6,6 +6,17 @@
 #include "../UI/UIProgressBar.h"
 #include "Shader/UIProgressBarConstantBuffer.h"
 
+//씬별 리소스 관리용
+#include "../Scene/SceneManager.h"
+
+//리소스
+#include "GameResource.h"
+#include "Mesh/Mesh.h"
+#include "Shader/ConstantBuffer.h"
+#include "Texture/Texture.h"
+#include "Animation/AnimationSequence2D.h"
+
+
 DEFINITION_SINGLE(CResourceManager)
 
 CResourceManager::CResourceManager()
@@ -25,6 +36,13 @@ CResourceManager::~CResourceManager()
 	SAFE_DELETE(m_TextureManager);
 	SAFE_DELETE(m_ShaderManager);
 	SAFE_DELETE(m_MeshManager);
+}
+
+
+//씬별 리소스 추가
+void CResourceManager::AddSceneResource(CGameResource* ResPtr)
+{
+	CSceneManager::GetInst()->AddSceneResource(ResPtr);
 }
 
 bool CResourceManager::Init()
@@ -82,15 +100,76 @@ void CResourceManager::Update()
 	m_SoundManager->Update();
 }
 
+void CResourceManager::DeleteUnused()
+{
+	m_MeshManager->DeleteUnused();
+	m_ShaderManager->DeleteUnused();
+	m_MaterialManager->DeleteUnused();
+	m_AnimationManager->DeleteUnused();
+
+	m_TextureManager->DeleteUnused();
+
+
+	m_SoundManager->DeleteUnused();
+	m_FontManager->DeleteUnused();
+}
+
+
+
+//void CResourceManager::CheckUnused(const std::string& Name, EResourceType ResType)
+//{
+//	switch (ResType)
+//	{
+//	case EResourceType::Mesh:
+//		ReleaseMesh(Name);
+//		break;
+//	case EResourceType::Shader:
+//		ReleaseShader(Name);
+//		break;
+//	case EResourceType::CBuffer:
+//		break;
+//	case EResourceType::Texture:
+//		ReleaseTexture(Name);
+//		break;
+//	case EResourceType::Material:
+//		ReleaseMaterial(Name);
+//		break;
+//	case EResourceType::Animation:
+//		ReleaseAnimationSequence2D(Name);
+//		break;
+//	case EResourceType::Sound:
+//		ReleaseSound(Name);
+//		break;
+//	case EResourceType::Font:
+//		ReleaseFont(Name);
+//		break;
+//	case EResourceType::Map:
+//		//Map은 일단 보류
+//		break;
+//	default:
+//		break;
+//	}
+//
+//}
+
+
 bool CResourceManager::CreateMesh(CScene* Scene, MeshType Type,
 	const std::string& Name, void* VtxData, int Size, 
 	int Count, D3D11_USAGE VtxUsage, 
 	D3D11_PRIMITIVE_TOPOLOGY Primitive, void* IdxData, int IdxSize, 
 	int IdxCount, D3D11_USAGE IdxUsage, DXGI_FORMAT Fmt)
 {
-	return m_MeshManager->CreateMesh(Scene, Type, Name, VtxData, Size,
+	CMesh* Mesh = m_MeshManager->CreateMesh(Scene, Type, Name, VtxData, Size,
 		Count, VtxUsage, Primitive, IdxData, IdxSize, IdxCount, IdxUsage,
 		Fmt);
+
+	if (Mesh)
+	{
+		AddSceneResource(static_cast<CGameResource*>(Mesh));
+		return true;
+	}
+
+	return false;
 }
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)
@@ -121,7 +200,15 @@ void CResourceManager::ReleaseShader(const std::string& Name)
 bool CResourceManager::CreateConstantBuffer(const std::string& Name, int Size,
 	int Register, int ShaderBufferType)
 {
-	return m_ShaderManager->CreateConstantBuffer(Name, Size, Register, ShaderBufferType);
+	CConstantBuffer* Buffer = m_ShaderManager->CreateConstantBuffer(Name, Size, Register, ShaderBufferType);
+
+	if (Buffer)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Buffer));
+		return true;
+	}
+
+	return false;
 }
 
 CConstantBuffer* CResourceManager::FindConstantBuffer(const std::string& Name)
@@ -131,34 +218,82 @@ CConstantBuffer* CResourceManager::FindConstantBuffer(const std::string& Name)
 
 bool CResourceManager::LoadTexture(const std::string& Name, const TCHAR* FileName, const std::string& PathName)
 {
-	return m_TextureManager->LoadTexture(Name, FileName, PathName);
+	CTexture* Texture = m_TextureManager->LoadTexture(Name, FileName, PathName);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+		
+	return false;
 }
 
 bool CResourceManager::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
 {
-	return m_TextureManager->LoadTextureFullPath(Name, FullPath);
+	CTexture* Texture = m_TextureManager->LoadTextureFullPath(Name, FullPath);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::LoadTexture(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
 {
-	return m_TextureManager->LoadTexture(Name, vecFileName, PathName);
+	CTexture* Texture = m_TextureManager->LoadTexture(Name, vecFileName, PathName);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::LoadTextureFullPath(const std::string& Name, 
 	const std::vector<const TCHAR*>& vecFullPath)
 {
-	return m_TextureManager->LoadTextureFullPath(Name, vecFullPath);
+	CTexture* Texture = m_TextureManager->LoadTextureFullPath(Name, vecFullPath);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
 {
-	return m_TextureManager->LoadTextureArray(Name, vecFileName, PathName);
+	CTexture* Texture = m_TextureManager->LoadTextureArray(Name, vecFileName, PathName);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
 {
-	return m_TextureManager->LoadTextureArrayFullPath(Name, vecFullPath);
+	CTexture* Texture = m_TextureManager->LoadTextureArrayFullPath(Name, vecFullPath);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
 }
 
 CTexture* CResourceManager::FindTexture(const std::string& Name)
@@ -183,19 +318,43 @@ void CResourceManager::ReleaseMaterial(const std::string& Name)
 
 bool CResourceManager::CreateAnimationSequence2D(const std::string& Name, const std::string& TextureName, const TCHAR* FileName, const std::string& PathName)
 {
-	return m_AnimationManager->CreateAnimationSequence2D(Name, TextureName, FileName, PathName);
+	CAnimationSequence2D* Seq = m_AnimationManager->CreateAnimationSequence2D(Name, TextureName, FileName, PathName);
+
+	if (Seq)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Seq);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::CreateAnimationSequence2D(const std::string& Name, CTexture* Texture)
 {
-	return m_AnimationManager->CreateAnimationSequence2D(Name, Texture);
+	CAnimationSequence2D* Seq = m_AnimationManager->CreateAnimationSequence2D(Name, Texture);
+
+	if (Seq)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Seq);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::CreateAnimationSequence2DFullPath(
 	const std::string& Name, const std::string& TextureName,
 	const TCHAR* FullPath)
 {
-	return m_AnimationManager->CreateAnimationSequence2DFullPath(Name, TextureName, FullPath);
+	CAnimationSequence2D* Seq = m_AnimationManager->CreateAnimationSequence2DFullPath(Name, TextureName, FullPath);
+
+	if (Seq)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Seq);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::CreateAnimationSequence2D(const std::string& Name,
@@ -203,16 +362,32 @@ bool CResourceManager::CreateAnimationSequence2D(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFileName,
 	const std::string& PathName)
 {
-	return m_AnimationManager->CreateAnimationSequence2D(Name, TextureName,
+	CAnimationSequence2D* Seq = m_AnimationManager->CreateAnimationSequence2D(Name, TextureName,
 		vecFileName, PathName);
+
+	if (Seq)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Seq);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::CreateAnimationSequence2DFullPath(
 	const std::string& Name, const std::string& TextureName, 
 	const std::vector<const TCHAR*>& vecFullPath)
 {
-	return m_AnimationManager->CreateAnimationSequence2DFullPath(Name, TextureName,
+	CAnimationSequence2D* Seq = m_AnimationManager->CreateAnimationSequence2DFullPath(Name, TextureName,
 		vecFullPath);
+
+	if (Seq)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Seq);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::AddAnimationSequence2DFrame(const std::string& Name, const Vector2& Start, const Vector2& End)
@@ -337,14 +512,30 @@ void CResourceManager::ReleaseSound(const std::string& Name)
 bool CResourceManager::CreateFontCollection(const std::string& Name, 
 	const TCHAR* FileName, const std::string& PathName)
 {
-	return m_FontManager->CreateFontCollection(Name, FileName, PathName);
+	CFontCollection* FontCol = m_FontManager->CreateFontCollection(Name, FileName, PathName);
+
+	if (FontCol)
+	{
+		CSceneManager::GetInst()->AddSceneResource(FontCol);
+		return true;
+	}
+
+	return false;
 }
 
 bool CResourceManager::LoadFont(const std::string& Name, const TCHAR* FontName, 
 	int Weight, float FontSize, const TCHAR* LocalName, int Stretch)
 {
-	return m_FontManager->LoadFont(Name, FontName, Weight,
+	CFont* Font = m_FontManager->LoadFont(Name, FontName, Weight,
 		FontSize, LocalName, Stretch);
+
+	if (Font)
+	{
+		CSceneManager::GetInst()->AddSceneResource(Font);
+		return true;
+	}
+
+	return false;
 }
 
 const TCHAR* CResourceManager::GetFontFaceName(const std::string& CollectionName)

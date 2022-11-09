@@ -20,7 +20,7 @@ private:
 	bool		m_Change;
 	bool		m_Start;
 	CSceneInfo* m_SceneInfo;
-	CSceneResource* m_Resource;
+	CSceneResource* m_SceneResource;
 	CCameraManager* m_CameraManager;
 	CSceneCollision* m_CollisionManager;
 	CSceneViewport* m_Viewport;
@@ -44,9 +44,9 @@ public:
 		return m_SceneInfo;
 	}
 
-	CSceneResource* GetResource()	const
+	CSceneResource* GetSceneResource()	const
 	{
-		return m_Resource;
+		return m_SceneResource;
 	}
 
 	CCameraManager* GetCameraManager()	const
@@ -74,6 +74,7 @@ public:
 	void Save(const char* FullPath);
 	void Load(const char* FullPath);
 	void GetAllGameObjectHierarchyName(std::vector<HierarchyObjectName>& vecName);
+	
 
 public:
 	class CGameObject* FindObject(const std::string& Name);
@@ -100,7 +101,7 @@ public:
 	template <typename T>
 	T* CreateObject(const std::string& Name)
 	{
-		T* Obj = new T;
+		T* Obj = CCDO::CloneCDO<T>();
 
 		Obj->SetName(Name);
 		Obj->SetScene(this);

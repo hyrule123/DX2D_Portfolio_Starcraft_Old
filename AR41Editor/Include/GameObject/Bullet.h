@@ -5,6 +5,7 @@
 class CBullet :
     public CGameObject
 {
+	friend class CCDO;
 	friend class CScene;
 
 protected:

@@ -6,7 +6,7 @@
 #include "../../Scene/Scene.h"
 #include "../../Scene/SceneResource.h"
 
-CMesh::CMesh()	:
+CMesh::CMesh() :
 	m_Min(FLT_MAX, FLT_MAX, FLT_MAX),
 	m_Max(FLT_MIN, FLT_MIN, FLT_MIN)
 {
@@ -32,15 +32,7 @@ void CMesh::SetMaterial(int Container, int Subset, const std::string& Name)
 {
 	CMaterial* Material = nullptr;
 
-	if (m_Scene)
-	{
-		Material = m_Scene->GetResource()->FindMaterial(Name);
-	}
-
-	else
-	{
-		Material = CResourceManager::GetInst()->FindMaterial(Name);
-	}
+	Material = CResourceManager::GetInst()->FindMaterial(Name);
 
 	m_vecContainer[Container]->vecSubset[Subset].Material = Material;
 	m_vecContainer[Container]->vecSubset[Subset].Slot->Material = Material;

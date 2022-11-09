@@ -24,13 +24,13 @@ public:
 
 public:
 	bool Init();
-	bool CreateAnimationSequence2D(const std::string& Name, const std::string& TextureName,
+	class CAnimationSequence2D* CreateAnimationSequence2D(const std::string& Name, const std::string& TextureName,
 		const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
-	bool CreateAnimationSequence2D(const std::string& Name, class CTexture* Texture);
-	bool CreateAnimationSequence2DFullPath(const std::string& Name, const std::string& TextureName, const TCHAR* FullPath);
-	bool CreateAnimationSequence2D(const std::string& Name, const std::string& TextureName, const std::vector<const TCHAR*>& vecFileName,
+	class CAnimationSequence2D* CreateAnimationSequence2D(const std::string& Name, class CTexture* Texture);
+	class CAnimationSequence2D* CreateAnimationSequence2DFullPath(const std::string& Name, const std::string& TextureName, const TCHAR* FullPath);
+	class CAnimationSequence2D* CreateAnimationSequence2D(const std::string& Name, const std::string& TextureName, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
-	bool CreateAnimationSequence2DFullPath(const std::string& Name, const std::string& TextureName, const std::vector<const TCHAR*>& vecFullPath);
+	class CAnimationSequence2D* CreateAnimationSequence2DFullPath(const std::string& Name, const std::string& TextureName, const std::vector<const TCHAR*>& vecFullPath);
 	bool AddSequence2DFrame(const std::string& Name, const Vector2& Start, const Vector2& End);
 	bool AddSequence2DFrame(const std::string& Name, float StartX, float StartY, float EndX,
 		float EndY);
@@ -51,6 +51,7 @@ public:
 
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
 	void ReleaseAnimationSequence2D(const std::string& Name);
+	void DeleteUnused();
 
 };
 
