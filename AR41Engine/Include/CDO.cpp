@@ -24,7 +24,7 @@ bool CCDO::CDOPreload()
 	return true;
 }
 
-CCDO* CCDO::Clone()
+CCDO* CCDO::Clone() const
 {
 	return new CCDO(*this);
 }
@@ -102,7 +102,7 @@ CCDO* CCDO::CloneCDO(const std::string& Name)
 	if (!CDO)
 		return nullptr;
 
-	return CDO;
+	return CDO->Clone();
 }
 
 CCDO* CCDO::CloneCDO(size_t hash_code)
@@ -112,6 +112,6 @@ CCDO* CCDO::CloneCDO(size_t hash_code)
 	if (!CDO)
 		return nullptr;
 
-	return CDO;
+	return CDO->Clone();
 }
 

@@ -5,7 +5,8 @@ CGameObject::CGameObject()  :
 	m_Scene(nullptr),
 	m_LifeTime(-1.f),
 	m_ComponentSerialNumber(0),
-	m_Start(false)
+	m_Start(false),
+	m_RootComponent()
 {
 	SetTypeID<CGameObject>();
 

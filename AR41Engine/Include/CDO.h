@@ -14,7 +14,7 @@ protected:
 	//사전 로드해놔도 문제없는 요소들은 이 메소드를 재정의해서 사용
 	//cf)Init()에서는 다른 인스턴스를 참조하는 작업을 진행한다.
 	virtual bool CDOPreload();
-	virtual CCDO* Clone();
+	virtual CCDO* Clone() const;
 
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
@@ -83,7 +83,6 @@ inline T* CCDO::CloneCDO()
 template<typename T>
 inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 {
-
 	size_t hashcode = typeid(T).hash_code();
 
 	//이미 만들어져 있으면 return

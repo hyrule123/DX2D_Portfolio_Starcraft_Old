@@ -140,5 +140,7 @@ void CStartSceneUI::StartButtonClick()
     // 로딩 Scene을 생성한다.
     CSceneManager::GetInst()->CreateNextScene(true);
 
+    //Next Scene에 로딩 Scene Info를 생성한다.
+    //인자로 false를 줄 경우 Next Scene에 Scene Info를 생성한다.
     CSceneManager::GetInst()->CreateSceneInfo<CLoadingSceneInfo>(false);
 }

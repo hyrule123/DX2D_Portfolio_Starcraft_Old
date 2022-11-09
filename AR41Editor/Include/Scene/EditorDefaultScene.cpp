@@ -15,7 +15,7 @@ CEditorDefaultScene::~CEditorDefaultScene()
 
 bool CEditorDefaultScene::Init()
 {
-	m_Owner->GetViewport()->CreateUIWindow<CStartSceneUI>("StartUI");
+	//m_Owner->GetViewport()->CreateUIWindow<CStartSceneUI>("StartUI");
 
 	return true;
 }
