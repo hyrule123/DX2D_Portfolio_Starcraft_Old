@@ -130,7 +130,7 @@ void CUIWindow::Render()
 	}
 }
 
-CUIWindow* CUIWindow::Clone()
+CUIWindow* CUIWindow::Clone() const
 {
     return new CUIWindow(*this);
 }

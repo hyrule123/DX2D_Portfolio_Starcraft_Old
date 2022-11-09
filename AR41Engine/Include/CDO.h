@@ -13,8 +13,9 @@ protected:
 
 	//사전 로드해놔도 문제없는 요소들은 이 메소드를 재정의해서 사용
 	//cf)Init()에서는 다른 인스턴스를 참조하는 작업을 진행한다.
+	virtual bool Init();
 	virtual bool CDOPreload();
-	virtual CCDO* Clone() const;
+	virtual CCDO* Clone() const = 0;
 
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
@@ -26,16 +27,16 @@ protected:
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<size_t, CSharedPtr<CCDO>>	m_mapCDO;
+	static std::unordered_map<std::type_index, CSharedPtr<CCDO>>	m_mapCDO;
 
 	template <typename T>
 	static T* FindCDO();
 
-	static CCDO* FindCDO(size_t hash_code);
-
+	static CCDO* FindCDO(const size_t& hash_code);
 	static CCDO* FindCDO(const std::string& Name);
 
 	static void AddCDO(CCDO* CDO);
+
 
 public:
 	template <typename T>
@@ -43,10 +44,9 @@ public:
 
 	template <typename T>
 	static T* CloneCDO();
-
 	static class CCDO* CloneCDO(const std::string& Name);
-
-	static class CCDO* CloneCDO(size_t hash_code);
+	static class CCDO* CloneCDO(const size_t& hash_code);
+	static void DeleteUnusedCDO();
 };
 
 
@@ -66,7 +66,7 @@ inline const bool& CCDO::GetEssential() const
 template<typename T>
 inline T* CCDO::CloneCDO()
 {
-	auto iter = m_mapCDO.find(typeid(T).hash_code());
+	auto iter = m_mapCDO.find(std::type_index(typeid(T)));
 
 	if (iter == m_mapCDO.end())
 	{
@@ -83,10 +83,10 @@ inline T* CCDO::CloneCDO()
 template<typename T>
 inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 {
-	size_t hashcode = typeid(T).hash_code();
+	std::type_index idx = std::type_index(typeid(T));
 
-	//이미 만들어져 있으면 return
-	if (m_mapCDO.find(hashcode) != m_mapCDO.end())
+	//이미 만들어져 있으면 return true
+	if (m_mapCDO.find(idx) != m_mapCDO.end())
 		return true;
 
 	CSharedPtr<T> CDO = new T;
@@ -106,19 +106,17 @@ inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 
 	CCDO* Cast = static_cast<CCDO*>(CDO);
 
-	m_mapCDO.insert(std::make_pair(hashcode, static_cast<CCDO*>(Cast)));
+	m_mapCDO.insert(std::make_pair(idx, static_cast<CCDO*>(Cast)));
 	AddCDO(Cast);
 
 	return true;
 }
 
 
-
-
 template<typename T>
 inline T* CCDO::FindCDO()
 {
-	auto iter = m_mapCDO.find(typeid(T).hash_code());
+	auto iter = m_mapCDO.find(std::type_index(typeid(T)));
 
 	if (iter == m_mapCDO.end())
 		return nullptr;

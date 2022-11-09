@@ -85,7 +85,7 @@ public:
 	{
 		SAFE_DELETE(m_SceneInfo);
 
-		m_SceneInfo = new T;
+		m_SceneInfo = CCDO::CloneCDO<T>();
 
 		m_SceneInfo->m_Owner = this;
 

@@ -93,7 +93,7 @@ public:
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual void Render();
-    virtual CUIWindow* Clone();
+    virtual CUIWindow* Clone() const;
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
 	CUIWidget* CollisionMouse(const Vector2& MousePos);

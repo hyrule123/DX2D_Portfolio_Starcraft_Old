@@ -33,7 +33,7 @@ public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
-	virtual CSceneInfo* Clone();
+	virtual CSceneInfo* Clone() const;
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 	virtual void SceneChangeComplete();

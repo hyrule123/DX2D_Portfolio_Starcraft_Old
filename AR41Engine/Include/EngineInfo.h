@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <crtdbg.h>
 #include <typeinfo>
+#include <typeindex>
 #include <string>
 #include <functional>
 #include <algorithm>

@@ -16,6 +16,7 @@ CSceneResource::~CSceneResource()
 	m_vecCDO.clear();
 
 	CResourceManager::GetInst()->DeleteUnused();
+	CCDO::DeleteUnusedCDO();
 }
 
 bool CSceneResource::Init()

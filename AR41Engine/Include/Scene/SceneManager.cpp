@@ -15,7 +15,8 @@ DEFINITION_SINGLE(CSceneManager)
 
 CSceneManager::CSceneManager()	:
 	m_Scene(nullptr),
-	m_NextScene(nullptr)
+	m_NextScene(nullptr),
+	m_PrevScene(nullptr)
 {
 }
 
@@ -23,6 +24,7 @@ CSceneManager::~CSceneManager()
 {
 	SAFE_DELETE(m_NextScene);
 	SAFE_DELETE(m_Scene);
+	SAFE_DELETE(m_PrevScene);
 }
 
 bool CSceneManager::Init()
@@ -70,15 +72,16 @@ bool CSceneManager::ChangeScene()
 		if (m_NextScene->m_Change)
 		{
 			//이전 씬을 일단 빼놓고 씬을 교체
-			CScene* PrevScene = m_Scene;
+			m_PrevScene = m_Scene;
 			m_Scene = m_NextScene;
 			m_NextScene = nullptr;
 
-			//씬 로드 시작
+			//씬 로드 시작. 만약 중간 로딩 씬을 사용중이라면 여기부터 멀티스레드로 로딩을 시작함.
 			m_Scene->GetSceneInfo()->SceneChangeComplete();
 
 			//씬 로드가 완료되면 이전 씬의 인스턴스를 제거해서 리소스 관리
-			SAFE_DELETE(PrevScene);
+			//만약 멀티스레드를 사용중일 경우에는 이미 제거되어 있을 것임. 그렇지 않을 경우 여기서 제거
+			SAFE_DELETE(m_PrevScene);
 
 			return true;
 		}
@@ -99,6 +102,11 @@ void CSceneManager::CreateNextScene(bool AutoChange)
 void CSceneManager::ChangeNextScene()
 {
 	m_NextScene->m_Change = true;
+}
+
+void CSceneManager::DeletePrevScene()
+{
+	SAFE_DELETE(m_PrevScene);
 }
 
 void CSceneManager::AddSceneResource(CGameResource* ResPtr)

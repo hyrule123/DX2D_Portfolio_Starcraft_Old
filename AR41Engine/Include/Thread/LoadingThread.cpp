@@ -16,16 +16,20 @@ CLoadingThread::~CLoadingThread()
 
 void CLoadingThread::Run()
 {
-	// Main Scene 생성
-	CSceneManager::GetInst()->CreateNextScene(false);
+	CSceneManager* Mgr = CSceneManager::GetInst();
+
+	// Main Scene 생성(씬 자동 교체 false)
+	Mgr->CreateNextScene(false);
 
 	const PathInfo* Info = CPathManager::GetInst()->FindPath(m_PathName);
 
 	m_FullPath = Info->PathMultibyte + m_FileName;
 
-	CSceneManager::GetInst()->GetNextScene()->SetLoadingCallback<CLoadingThread>(this, &CLoadingThread::LoadingCallback);
+	Mgr->GetNextScene()->SetLoadingCallback<CLoadingThread>(this, &CLoadingThread::LoadingCallback);
 
-	CSceneManager::GetInst()->GetNextScene()->Load(m_FullPath.c_str());
+	Mgr->GetNextScene()->Load(m_FullPath.c_str());
+
+	Mgr->DeletePrevScene();
 
 	m_LoadComplete = true;
 }

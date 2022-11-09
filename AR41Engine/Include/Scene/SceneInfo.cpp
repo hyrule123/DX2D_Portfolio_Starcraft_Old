@@ -45,7 +45,7 @@ void CSceneInfo::PostUpdate(float DeltaTime)
 {
 }
 
-CSceneInfo* CSceneInfo::Clone()
+CSceneInfo* CSceneInfo::Clone() const
 {
 	return new CSceneInfo(*this);
 }

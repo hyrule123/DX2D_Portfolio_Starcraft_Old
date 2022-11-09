@@ -1,7 +1,7 @@
 #include "CDO.h"
 #include "Scene/SceneManager.h"
 
-std::unordered_map<size_t, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
+std::unordered_map<std::type_index, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
 
 CCDO::CCDO():
 	m_Essential()
@@ -19,14 +19,15 @@ CCDO::~CCDO()
 }
 
 
-bool CCDO::CDOPreload()
+
+bool CCDO::Init()
 {
 	return true;
 }
 
-CCDO* CCDO::Clone() const
+bool CCDO::CDOPreload()
 {
-	return new CCDO(*this);
+	return true;
 }
 
 void CCDO::Save(FILE* File)
@@ -64,14 +65,20 @@ void CCDO::Load(FILE* File)
 }
 
 
-CCDO* CCDO::FindCDO(size_t hash_code)
+CCDO* CCDO::FindCDO(const size_t& hash_code)
 {
-	auto iter = m_mapCDO.find(hash_code);
+	auto iter = m_mapCDO.begin();
+	auto iterEnd = m_mapCDO.end();
 
-	if (iter == m_mapCDO.end())
-		return nullptr;
+	while (iter != iterEnd)
+	{
+		if (iter->first.hash_code() == hash_code)
+			return iter->second;
 
-	return static_cast<CCDO*>(iter->second);
+		++iter;
+	}
+
+	return nullptr;
 }
 
 CCDO* CCDO::FindCDO(const std::string& Name)
@@ -105,7 +112,7 @@ CCDO* CCDO::CloneCDO(const std::string& Name)
 	return CDO->Clone();
 }
 
-CCDO* CCDO::CloneCDO(size_t hash_code)
+CCDO* CCDO::CloneCDO(const size_t& hash_code)
 {
 	CCDO* CDO = FindCDO(hash_code);
 
@@ -113,5 +120,23 @@ CCDO* CCDO::CloneCDO(size_t hash_code)
 		return nullptr;
 
 	return CDO->Clone();
+}
+
+void CCDO::DeleteUnusedCDO()
+{
+	auto iter = m_mapCDO.begin();
+	auto iterEnd = m_mapCDO.end();
+
+	while (iter != iterEnd)
+	{
+		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
+		{
+			m_mapCDO.erase(iter);
+			continue;
+		}
+
+		++iter;
+	}
+
 }
 

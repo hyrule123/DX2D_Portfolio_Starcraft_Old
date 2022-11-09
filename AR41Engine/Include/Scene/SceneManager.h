@@ -7,6 +7,7 @@ class CSceneManager
 private:
 	CScene* m_Scene;
 	CScene* m_NextScene;
+	CScene* m_PrevScene;
 
 public:
 	CScene* GetScene()	const
@@ -32,19 +33,24 @@ private:
 public:
 	void CreateNextScene(bool AutoChange = true);
 	void ChangeNextScene();
+	void DeletePrevScene();
+
 	void AddSceneResource(class CGameResource* ResPtr);
 	void AddCDO(class CCDO* CCDO);
 
 public:
 	template <typename T>
-	bool CreateSceneInfo(bool Current = true)
-	{
-		if (Current)
-			return m_Scene->CreateSceneInfo<T>();
-
-		return m_NextScene->CreateSceneInfo<T>();
-	}
+	bool CreateSceneInfo(bool Current = true);
 
 	DECLARE_SINGLE(CSceneManager)
 };
 
+
+template <typename T>
+bool CSceneManager::CreateSceneInfo(bool Current)
+{
+	if (Current)
+		return m_Scene->CreateSceneInfo<T>();
+
+	return m_NextScene->CreateSceneInfo<T>();
+}

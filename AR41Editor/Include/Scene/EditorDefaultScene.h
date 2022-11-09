@@ -7,9 +7,11 @@ class CEditorDefaultScene :
 {
 public:
     CEditorDefaultScene();
+    CEditorDefaultScene(const CEditorDefaultScene& Scene);
     ~CEditorDefaultScene();
 
 public:
     virtual bool Init();
+    virtual CEditorDefaultScene* Clone() const;
 };
 
