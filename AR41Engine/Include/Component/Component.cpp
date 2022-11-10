@@ -8,8 +8,6 @@ CComponent::CComponent()	:
 	m_Owner(nullptr),
 	m_SerialNumber(0)
 {
-	SetTypeID<CComponent>();
-
 	m_ComponentTypeName = "Component";
 }
 

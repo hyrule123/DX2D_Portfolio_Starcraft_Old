@@ -9,8 +9,6 @@
 CUnitSpriteComponent::CUnitSpriteComponent():
 	m_UnitRoot()
 {
-	SetTypeID<CUnitSpriteComponent>();
-
 	m_ComponentTypeName = "UnitSpriteComponent";
 }
 

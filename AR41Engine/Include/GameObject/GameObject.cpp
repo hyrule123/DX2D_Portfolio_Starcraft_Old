@@ -8,8 +8,6 @@ CGameObject::CGameObject()  :
 	m_Start(false),
 	m_RootComponent()
 {
-	SetTypeID<CGameObject>();
-
 	m_ObjectTypeName = "GameObject";
 }
 

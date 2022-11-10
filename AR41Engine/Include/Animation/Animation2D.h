@@ -16,25 +16,6 @@ protected:
     CAnimation2D(const CAnimation2D& Anim);
     virtual ~CAnimation2D();
 
-private:
-	static std::unordered_map<std::string, CAnimation2D*> m_mapAnimationCDO;
-
-public:
-	static void AddAnimationCDO(const std::string& Name, CAnimation2D* CDO)
-	{
-		m_mapAnimationCDO.insert(std::make_pair(Name, CDO));
-	}
-
-	static CAnimation2D* FindCDO(const std::string& Name)
-	{
-		auto	iter = m_mapAnimationCDO.find(Name);
-
-		if (iter == m_mapAnimationCDO.end())
-			return nullptr;
-
-		return iter->second;
-	}
-
 protected:
 	std::string	m_ClassName;
 	class CSpriteComponent* m_Owner;

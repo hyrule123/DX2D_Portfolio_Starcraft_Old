@@ -6,8 +6,6 @@
 
 CSpriteComponent::CSpriteComponent()
 {
-	SetTypeID<CSpriteComponent>();
-
 	m_ComponentTypeName = "SpriteComponent";
 }
 
@@ -194,9 +192,8 @@ void CSpriteComponent::Load(FILE* File)
 		fread(&Length, 4, 1, File);
 		fread(ClassName, 1, Length, File);
 
-		CAnimation2D* CDO = CAnimation2D::FindCDO(ClassName);
 
-		m_Animation = CDO->Clone();
+		m_Animation = new CAnimation2D;
 
 		m_Animation->m_Owner = this;
 

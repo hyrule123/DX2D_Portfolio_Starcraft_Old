@@ -45,6 +45,7 @@ void CResourceManager::AddSceneResource(CGameResource* ResPtr)
 	CSceneManager::GetInst()->AddSceneResource(ResPtr);
 }
 
+
 bool CResourceManager::Init()
 {
 

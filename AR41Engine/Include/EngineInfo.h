@@ -376,3 +376,12 @@ struct TileInfo
 	int		Frame;
 	float	Empty;
 };
+
+//PreLoad 시 사용할 정보
+struct RequiredResource
+{
+	std::string Name;
+	tstring FileName;
+	std::string PathName;
+	EResourceType ResType;
+};

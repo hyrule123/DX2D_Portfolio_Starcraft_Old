@@ -4,7 +4,6 @@
 #include "../Resource/ResourceManager.h"
 #include "../Resource/Shader/Animation2DConstantBuffer.h"
 
-std::unordered_map<std::string, CAnimation2D*> CAnimation2D::m_mapAnimationCDO;
 
 CAnimation2D::CAnimation2D()	:
 	m_Owner(nullptr),

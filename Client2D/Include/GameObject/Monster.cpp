@@ -6,8 +6,6 @@
 
 CMonster::CMonster()
 {
-	SetTypeID<CMonster>();
-
 	m_ObjectTypeName = "Monster";
 }
 

@@ -23,8 +23,6 @@
 
 CColliderOBB2D::CColliderOBB2D()
 {
-	SetTypeID<CColliderOBB2D>();
-
 	m_ComponentTypeName = "ColliderOBB2D";
 	m_Collider2DType = ECollider2D_Type::OBB2D;
 

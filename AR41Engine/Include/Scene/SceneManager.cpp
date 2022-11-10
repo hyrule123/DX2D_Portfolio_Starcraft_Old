@@ -117,12 +117,3 @@ void CSceneManager::AddSceneResource(CGameResource* ResPtr)
 	else if (m_Scene)
 		m_Scene->GetSceneResource()->AddGameResource(ResPtr);
 }
-
-void CSceneManager::AddCDO(CCDO* CCDO)
-{
-	if (m_NextScene)
-		m_NextScene->GetSceneResource()->AddCDO(CCDO);
-
-	else if (m_Scene)
-		m_Scene->GetSceneResource()->AddCDO(CCDO);
-}

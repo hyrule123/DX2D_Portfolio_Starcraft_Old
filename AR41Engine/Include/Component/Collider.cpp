@@ -18,7 +18,6 @@
 
 CCollider::CCollider()
 {
-	SetTypeID<CCollider>();
 
 	m_ComponentTypeName = "Collider";
 	m_Result.Src = this;

@@ -21,10 +21,8 @@ private:
 
 private:
 	std::vector<CSharedPtr<class CGameResource>> m_vecResource;
-	std::vector<CSharedPtr<class CCDO>> m_vecCDO;
 
 public:
 	bool Init();
 	void AddGameResource(class CGameResource* ResPtr);
-	void AddCDO(class CCDO* CDOPtr);
 };

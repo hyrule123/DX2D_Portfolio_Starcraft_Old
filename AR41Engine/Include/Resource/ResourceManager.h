@@ -28,14 +28,15 @@ private:
 	CFontManager* m_FontManager;
 
 	void AddSceneResource(class CGameResource* ResPtr);
-	
 
 public:
+
 	bool Init();
 	void Update();
 	
 	//사용하지 않는 리소스인지 확인하고 제거
 	void DeleteUnused();
+
 
 public:	// ===================== Mesh =========================
 	bool CreateMesh(class CScene* Scene, MeshType Type, const std::string& Name,

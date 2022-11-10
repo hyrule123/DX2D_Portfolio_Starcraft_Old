@@ -20,8 +20,6 @@
 
 CColliderSphere2D::CColliderSphere2D()
 {
-	SetTypeID<CColliderSphere2D>();
-
 	m_ComponentTypeName = "ColliderSphere2D";
 	m_Collider2DType = ECollider2D_Type::Sphere2D;
 

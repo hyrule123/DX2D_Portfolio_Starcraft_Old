@@ -4,8 +4,6 @@ CObjectComponent::CObjectComponent()
 {
 	m_ComponentType = ComponentType::Object;
 
-	SetTypeID<CObjectComponent>();
-
 	m_ComponentTypeName = "ObjectComponent";
 }
 

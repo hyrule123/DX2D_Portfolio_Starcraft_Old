@@ -56,6 +56,7 @@ cbuffer Animation2D : register(b2)
 #define Anim2D_Atlas 0
 #define Anim2D_Frame 1
 #define Anim2D_Array 2
+#define Anim2D_AtlasIndexed 3
 
 #define Image_Atlas 0
 #define Image_Frame 1
@@ -68,7 +69,7 @@ float2 UpdateAnimation2D(float2 UV)
     
     float2 Result = (float2) 0;
     
-    if (g_Anim2DType <= Anim2D_Array)
+    if (g_Anim2DType <= Anim2D_Array || g_Anim2DType == Anim2D_AtlasIndexed)
     {
         if(g_Anim2DXFlip == 1)
         {

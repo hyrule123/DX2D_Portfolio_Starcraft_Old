@@ -3,13 +3,7 @@
 #include "Ref.h"
 
 
-//PreLoad 시 사용할 정보
-struct RequiredResource
-{
-	std::string FileName;
-	std::string PathName;
-	EResourceType ResType;
-};
+
 
 
 class CCDO : public CRef
@@ -24,16 +18,21 @@ protected:
 	//사전 로드해놔도 문제없는 요소들은 이 메소드를 재정의해서 사용
 	//cf)Init()에서는 다른 인스턴스를 참조하는 작업을 진행한다.
 	virtual bool Init();
+
+
+	//사전 로드해야 할 리소스가 있을 경우 여기서 m_vecRequiredResource를 동적 할당하고 값을 채워나감
 	virtual bool CDOPreload();
 	virtual CCDO* Clone() const = 0;
 
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 
-	bool m_Essential;	//씬 전환시에도 유지할 인스턴스
 
-	inline void SetEssential(const bool& b);
-	inline const bool& GetEssential() const;
+protected:
+	//하나만 생성해서 공유해서 사용하면 되므로 포인터로 선언
+	std::vector<RequiredResource>* m_vecRequiredResource;
+
+
 
 //내부 변수 저장 및 탐색 용도
 private:
@@ -46,32 +45,18 @@ private:
 	static CCDO* FindCDO(const std::string& Name);
 	static CCDO* FindCDOByFileName(const std::string& FileName);
 
-	static void AddSceneResource(CCDO* CDO);
-
 
 public:
 	template <typename T>
-	static bool CreateCDO(const std::string& Name = "", const bool& Essential = false);
+	static bool CreateCDO();
 
 	template <typename T>
 	static T* CloneCDO();
-	static class CCDO* CloneCDO(const std::string& Name);
+	static class CCDO* CloneCDO(const std::string& ClassName);
 	static class CCDO* CloneCDOByFileName(const std::string& FileName);
 	static class CCDO* CloneCDO(const size_t& hash_code);
-	static void DeleteUnusedCDO();
 };
 
-
-
-inline void CCDO::SetEssential(const bool& b)
-{
-	m_Essential = b;
-}
-
-inline const bool& CCDO::GetEssential() const
-{
-	return m_Essential;
-}
 
 
 
@@ -93,7 +78,7 @@ inline T* CCDO::CloneCDO()
 
 
 template<typename T>
-inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
+inline bool CCDO::CreateCDO()
 {
 	std::string N = typeid(T).name();
 
@@ -104,11 +89,7 @@ inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 	CSharedPtr<T> CDO = new T;
 
 	CDO->SetTypeID<T>();
-	
-	CDO->SetEssential(Essential);
 
-	if (!Name.empty())
-		CDO->SetName(Name);
 
 	if (!CDO->CDOPreload())
 	{
@@ -119,7 +100,6 @@ inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 	CCDO* Cast = static_cast<CCDO*>(CDO);
 
 	m_mapCDO.insert(std::make_pair(N, static_cast<CCDO*>(Cast)));
-	AddSceneResource(Cast);
 
 	return true;
 }

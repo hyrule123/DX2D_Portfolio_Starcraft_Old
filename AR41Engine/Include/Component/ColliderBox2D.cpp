@@ -21,7 +21,6 @@
 
 CColliderBox2D::CColliderBox2D()
 {
-	SetTypeID<CColliderBox2D>();
 
 	m_ComponentTypeName = "ColliderBox2D";
 	m_Collider2DType = ECollider2D_Type::Box2D;

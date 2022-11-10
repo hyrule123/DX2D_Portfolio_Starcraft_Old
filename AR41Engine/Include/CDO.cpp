@@ -1,16 +1,16 @@
 #include "CDO.h"
-#include "Scene/SceneManager.h"
+
+#include "Resource/ResourceManager.h"
 
 std::unordered_map<std::string, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
 
 CCDO::CCDO():
-	m_Essential()
+	m_vecRequiredResource()
 {
 }
 
 CCDO::CCDO(const CCDO& CDO):
-	CRef(CDO),
-	m_Essential(CDO.m_Essential)
+	CRef(CDO)
 {
 }
 
@@ -22,6 +22,50 @@ CCDO::~CCDO()
 
 bool CCDO::Init()
 {
+	if (m_vecRequiredResource)
+	{
+		if (!(*m_vecRequiredResource).empty())
+		{
+			size_t size = (*m_vecRequiredResource).size();
+
+			for (size_t i = 0; i < size; ++i)
+			{
+				switch ((*m_vecRequiredResource)[i].ResType)
+				{
+				case EResourceType::Mesh:
+					break;
+				case EResourceType::Shader:
+					break;
+				case EResourceType::CBuffer:
+					break;
+				case EResourceType::Texture:
+				{
+					CResourceManager::GetInst()->LoadTexture((*m_vecRequiredResource)[i].Name, (*m_vecRequiredResource)[i].FileName.c_str(), (*m_vecRequiredResource)[i].PathName);
+					break;
+				}
+				case EResourceType::Material:
+					break;
+				case EResourceType::Animation:
+					break;
+				case EResourceType::Sound:
+					break;
+				case EResourceType::Font:
+					break;
+				case EResourceType::FontCollection:
+					break;
+				case EResourceType::Map:
+					break;
+				case EResourceType::End:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+
+
 	return true;
 }
 
@@ -110,14 +154,9 @@ CCDO* CCDO::FindCDOByFileName(const std::string& FileName)
 	return nullptr;
 }
 
-void CCDO::AddSceneResource(CCDO* CDO)
+CCDO* CCDO::CloneCDO(const std::string& ClassName)
 {
-	CSceneManager::GetInst()->AddCDO(CDO);
-}
-
-CCDO* CCDO::CloneCDO(const std::string& Name)
-{
-	CCDO* CDO = FindCDO(Name);
+	CCDO* CDO = FindCDO(ClassName);
 
 	if (!CDO)
 		return nullptr;
@@ -146,23 +185,5 @@ CCDO* CCDO::CloneCDO(const size_t& hash_code)
 		return nullptr;
 
 	return CDO->Clone();
-}
-
-void CCDO::DeleteUnusedCDO()
-{
-	auto iter = m_mapCDO.begin();
-	auto iterEnd = m_mapCDO.end();
-
-	while (iter != iterEnd)
-	{
-		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
-		{
-			m_mapCDO.erase(iter);
-			continue;
-		}
-
-		++iter;
-	}
-
 }
 

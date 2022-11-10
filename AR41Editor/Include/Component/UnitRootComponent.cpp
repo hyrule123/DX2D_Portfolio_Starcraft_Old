@@ -5,7 +5,6 @@ CUnitRootComponent::CUnitRootComponent() :
 	m_DirAngleUnit(11.25f),
 	m_Direction()
 {
-	SetTypeID<CUnitRootComponent>();
 
 	m_ComponentType = ComponentType::Scene;
 

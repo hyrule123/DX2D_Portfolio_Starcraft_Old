@@ -45,7 +45,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
         return false;
     }
     
-    CCDO::CreateCDO<CEditorDefaultScene>("EditorDefaultScene");
+    CCDO::CreateCDO<CEditorDefaultScene>();
     CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>(true);
 
     CEngineShareSetting::Setting();

@@ -24,8 +24,6 @@
 CColliderPixel::CColliderPixel()	:
 	m_Info(nullptr)
 {
-	SetTypeID<CColliderPixel>();
-
 	m_ComponentTypeName = "ColliderPixel";
 	m_Collider2DType = ECollider2D_Type::Pixel;
 }

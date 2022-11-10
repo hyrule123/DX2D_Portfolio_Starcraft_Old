@@ -23,6 +23,7 @@ private:
 public:
 	virtual void Start();
 	virtual bool Init();
+	virtual bool CDOPreload();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
 	virtual CMarine* Clone()    const;

@@ -20,7 +20,6 @@ CTileMapComponent::CTileMapComponent()	:
 	m_TileInfoBuffer(nullptr),
 	m_EditorMouseOnTile(nullptr)
 {
-	SetTypeID<CTileMapComponent>();
 
 	m_ComponentTypeName = "TileMapComponent";
 

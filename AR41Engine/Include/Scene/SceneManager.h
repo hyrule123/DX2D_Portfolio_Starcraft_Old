@@ -36,7 +36,6 @@ public:
 	void DeletePrevScene();
 
 	void AddSceneResource(class CGameResource* ResPtr);
-	void AddCDO(class CCDO* CCDO);
 
 public:
 	template <typename T>

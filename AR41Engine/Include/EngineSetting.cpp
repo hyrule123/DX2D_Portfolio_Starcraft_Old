@@ -25,13 +25,13 @@ CEngineSetting::~CEngineSetting()
 
 void CEngineSetting::Init()
 {
-	CCDO::CreateCDO<CSceneComponent>("SceneComponent", true);
-	CCDO::CreateCDO<CSpriteComponent>("SpriteComponent", true);
-	CCDO::CreateCDO<CCameraComponent>("CameraComponent", true);
-	CCDO::CreateCDO<CColliderBox2D>("ColliderBox2D", true);
-	CCDO::CreateCDO<CColliderOBB2D>("ColliderOBB2D", true);
-	CCDO::CreateCDO<CColliderSphere2D>("ColliderSphere2D", true);
-	CCDO::CreateCDO<CColliderPixel>("ColliderPixel", true);
-	CCDO::CreateCDO<CTargetArm>("TargetArm", true);
-	CCDO::CreateCDO<CTileMapComponent>("TileMapComponent", true);
+	CCDO::CreateCDO<CSceneComponent>();
+	CCDO::CreateCDO<CSpriteComponent>();
+	CCDO::CreateCDO<CCameraComponent>();
+	CCDO::CreateCDO<CColliderBox2D>();
+	CCDO::CreateCDO<CColliderOBB2D>();
+	CCDO::CreateCDO<CColliderSphere2D>();
+	CCDO::CreateCDO<CColliderPixel>();
+	CCDO::CreateCDO<CTargetArm>();
+	CCDO::CreateCDO<CTileMapComponent>();
 }

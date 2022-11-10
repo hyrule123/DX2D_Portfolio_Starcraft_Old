@@ -1,5 +1,7 @@
 #include "Marine.h"
 
+#include "Resource/ResourceManager.h"
+
 #include "Player2D.h"
 #include "Component/SpriteComponent.h"
 #include "Component/CameraComponent.h"
@@ -19,21 +21,17 @@
 
 CMarine::CMarine()
 {
-	SetTypeID<CMarine>();
-
 	m_ObjectTypeName = "Marine";
 }
 
 CMarine::CMarine(const CMarine& Obj) :
 	CGameObject(Obj)
 {
-
 	m_UnitRoot = (CSceneComponent*)FindComponent("UnitRoot");
 	m_MainSprite = (CUnitSpriteComponent*)FindComponent("MainSprite");
 
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
-	
 }
 
 CMarine::~CMarine()
@@ -66,7 +64,6 @@ bool CMarine::Init()
 	CGameObject::Init();
 
 
-
 	m_UnitRoot = CreateComponent<CUnitRootComponent>("UnitRootComponent");
 	SetRootComponent(m_UnitRoot);
 	m_UnitRoot->SetWorldPosition(500.f, 500.f);
@@ -92,12 +89,6 @@ bool CMarine::Init()
 
 
 
-
-
-	
-
-
-
 	CMaterial* Material = m_MainSprite->GetMaterial(0);
 
 	//Material->SetOpacity(0.5f);
@@ -120,6 +111,32 @@ bool CMarine::Init()
 	m_Anim->SetPlayTime("UltraAttack", 0.5f);
 
 	m_Anim->SetCurrentAnimation("UltraAttack");
+
+	return true;
+}
+
+bool CMarine::CDOPreload()
+{
+	CGameObject::CDOPreload();
+
+	CResourceManager::GetInst()->CreateAnimationSequence2D(
+		"UltraIdle", "UltraLisk", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
+
+	CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
+
+
+	if (!UltraTex)
+		assert(0);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
+
+	CResourceManager::GetInst()->CreateAnimationSequence2D(
+		"UltraMove", UltraTex);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
+
+
+	CResourceManager::GetInst()->CreateAnimationSequence2D(
+		"UltraAttack", UltraTex);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
 
 	return true;
 }

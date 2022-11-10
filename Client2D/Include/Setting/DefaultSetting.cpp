@@ -40,14 +40,14 @@ void CDefaultSetting::Init()
 
 void CDefaultSetting::CreateCDO()
 {
-    CCDO::CreateCDO<CPlayer2D>("Player2D");
-    CCDO::CreateCDO<CMonster>("Monster");
-    CCDO::CreateCDO<CBullet>("Bullet");
-    CCDO::CreateCDO<CMarine>("Marine");
+    CCDO::CreateCDO<CPlayer2D>();
+    CCDO::CreateCDO<CMonster>();
+    CCDO::CreateCDO<CBullet>();
+    CCDO::CreateCDO<CMarine>();
 
-    CCDO::CreateCDO<CUnitRootComponent>("UnitRootComponent");
-    CCDO::CreateCDO<CUnitSpriteComponent>("UnitSpriteComponent");
-    CCDO::CreateCDO<CStartSceneUI>("StartSceneUI");
+    CCDO::CreateCDO<CUnitRootComponent>();
+    CCDO::CreateCDO<CUnitSpriteComponent>();
+    CCDO::CreateCDO<CStartSceneUI>();
 
     //CScene::CreateObjectCDO<CPlayer2D>("Player2D");
     //CScene::CreateObjectCDO<CMonster>("Monster");
@@ -62,25 +62,6 @@ void CDefaultSetting::CreateCDO()
 
 void CDefaultSetting::LoadResource()
 {
-    CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "UltraIdle", "UltraLisk", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
-
-    CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
-
-
-    if (!UltraTex)
-        assert(0);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
-
-    CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "UltraMove", UltraTex);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
-
-
-    CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "UltraAttack", UltraTex);
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
-
     std::vector<const TCHAR*>   vecFileName;
 
     for (int i = 1; i <= 89; ++i)

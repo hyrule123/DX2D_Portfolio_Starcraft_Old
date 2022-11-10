@@ -6,7 +6,6 @@ CCameraComponent::CCameraComponent()	:
 	m_CameraViewDistance(1000.f),
 	m_CameraType(ECameraType::Camera2D)
 {
-	SetTypeID<CCameraComponent>();
 
 	m_ComponentTypeName = "CameraComponent";
 }

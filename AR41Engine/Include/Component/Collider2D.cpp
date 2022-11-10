@@ -7,7 +7,6 @@
 
 CCollider2D::CCollider2D()
 {
-	SetTypeID<CCollider2D>();
 
 	m_ComponentTypeName = "Collider2D";
 	m_ColliderType = ECollider_Type::Collider2D;

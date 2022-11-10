@@ -6,8 +6,6 @@ CSceneComponent::CSceneComponent()	:
 	m_Parent(nullptr),
 	m_LayerName("Default")
 {
-	SetTypeID<CSceneComponent>();
-
 	m_Transform = new CTransform;
 
 	m_Transform->Init();
