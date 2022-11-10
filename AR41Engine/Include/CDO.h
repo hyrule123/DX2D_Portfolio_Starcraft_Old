@@ -2,6 +2,16 @@
 
 #include "Ref.h"
 
+
+//PreLoad 시 사용할 정보
+struct RequiredResource
+{
+	std::string FileName;
+	std::string PathName;
+	EResourceType ResType;
+};
+
+
 class CCDO : public CRef
 {
 	friend class CSceneManager;
@@ -27,15 +37,16 @@ protected:
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<std::type_index, CSharedPtr<CCDO>>	m_mapCDO;
+	static std::unordered_map<std::string, CSharedPtr<CCDO>>	m_mapCDO;
 
 	template <typename T>
 	static T* FindCDO();
 
 	static CCDO* FindCDO(const size_t& hash_code);
 	static CCDO* FindCDO(const std::string& Name);
+	static CCDO* FindCDOByFileName(const std::string& FileName);
 
-	static void AddCDO(CCDO* CDO);
+	static void AddSceneResource(CCDO* CDO);
 
 
 public:
@@ -45,6 +56,7 @@ public:
 	template <typename T>
 	static T* CloneCDO();
 	static class CCDO* CloneCDO(const std::string& Name);
+	static class CCDO* CloneCDOByFileName(const std::string& FileName);
 	static class CCDO* CloneCDO(const size_t& hash_code);
 	static void DeleteUnusedCDO();
 };
@@ -66,7 +78,7 @@ inline const bool& CCDO::GetEssential() const
 template<typename T>
 inline T* CCDO::CloneCDO()
 {
-	auto iter = m_mapCDO.find(std::type_index(typeid(T)));
+	auto iter = m_mapCDO.find(typeid(T).name());
 
 	if (iter == m_mapCDO.end())
 	{
@@ -83,10 +95,10 @@ inline T* CCDO::CloneCDO()
 template<typename T>
 inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 {
-	std::type_index idx = std::type_index(typeid(T));
+	std::string N = typeid(T).name();
 
 	//이미 만들어져 있으면 return true
-	if (m_mapCDO.find(idx) != m_mapCDO.end())
+	if (m_mapCDO.find(N) != m_mapCDO.end())
 		return true;
 
 	CSharedPtr<T> CDO = new T;
@@ -106,8 +118,8 @@ inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 
 	CCDO* Cast = static_cast<CCDO*>(CDO);
 
-	m_mapCDO.insert(std::make_pair(idx, static_cast<CCDO*>(Cast)));
-	AddCDO(Cast);
+	m_mapCDO.insert(std::make_pair(N, static_cast<CCDO*>(Cast)));
+	AddSceneResource(Cast);
 
 	return true;
 }
@@ -116,7 +128,7 @@ inline bool CCDO::CreateCDO(const std::string& Name, const bool& Essential)
 template<typename T>
 inline T* CCDO::FindCDO()
 {
-	auto iter = m_mapCDO.find(std::type_index(typeid(T)));
+	auto iter = m_mapCDO.find(typeid(T).name());
 
 	if (iter == m_mapCDO.end())
 		return nullptr;

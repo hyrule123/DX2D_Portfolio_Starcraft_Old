@@ -1,7 +1,7 @@
 #include "CDO.h"
 #include "Scene/SceneManager.h"
 
-std::unordered_map<std::type_index, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
+std::unordered_map<std::string, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
 
 CCDO::CCDO():
 	m_Essential()
@@ -72,7 +72,7 @@ CCDO* CCDO::FindCDO(const size_t& hash_code)
 
 	while (iter != iterEnd)
 	{
-		if (iter->first.hash_code() == hash_code)
+		if (iter->second->GetTypeID() == hash_code)
 			return iter->second;
 
 		++iter;
@@ -83,12 +83,25 @@ CCDO* CCDO::FindCDO(const size_t& hash_code)
 
 CCDO* CCDO::FindCDO(const std::string& Name)
 {
+	auto iter = m_mapCDO.find(Name);
+
+	if (iter == m_mapCDO.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+CCDO* CCDO::FindCDOByFileName(const std::string& FileName)
+{
+	std::string N = "class C";
+	N += FileName;
+
 	auto iter = m_mapCDO.begin();
 	auto iterEnd = m_mapCDO.end();
 
 	while (iter != iterEnd)
 	{
-		if (iter->second->GetName() == Name)
+		if (iter->second->GetName() == N)
 			return iter->second;
 
 		++iter;
@@ -97,7 +110,7 @@ CCDO* CCDO::FindCDO(const std::string& Name)
 	return nullptr;
 }
 
-void CCDO::AddCDO(CCDO* CDO)
+void CCDO::AddSceneResource(CCDO* CDO)
 {
 	CSceneManager::GetInst()->AddCDO(CDO);
 }
@@ -105,6 +118,19 @@ void CCDO::AddCDO(CCDO* CDO)
 CCDO* CCDO::CloneCDO(const std::string& Name)
 {
 	CCDO* CDO = FindCDO(Name);
+
+	if (!CDO)
+		return nullptr;
+
+	return CDO->Clone();
+}
+
+CCDO* CCDO::CloneCDOByFileName(const std::string& FileName)
+{
+	std::string N = "class C";
+	N += FileName;
+	
+	CCDO* CDO = FindCDO(FileName);
 
 	if (!CDO)
 		return nullptr;
