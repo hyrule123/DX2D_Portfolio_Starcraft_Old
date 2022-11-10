@@ -386,7 +386,9 @@ FodyWeavers.xsd
 !fmod64_vc.lib
 !fmod64.dll
 !fmod.dll
-
+##Stormlib
+!StormLib.lib
+!StormLib.dll
 
 # Client2D, Editor Bin Folder
 [Bb]in/

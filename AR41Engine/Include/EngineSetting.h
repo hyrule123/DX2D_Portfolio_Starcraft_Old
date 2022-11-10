@@ -4,6 +4,7 @@
 
 class CEngineSetting
 {
+
 	friend class CEngine;
 
 protected:
