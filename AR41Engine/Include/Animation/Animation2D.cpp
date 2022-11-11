@@ -46,6 +46,11 @@ CAnimation2D::~CAnimation2D()
 	}
 }
 
+void CAnimation2D::SetOwner(CSpriteComponent* Owner)
+{
+	m_Owner = Owner;
+}
+
 CScene* CAnimation2D::GetScene() const
 {
 	if (!m_Owner)

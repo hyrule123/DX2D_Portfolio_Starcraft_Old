@@ -261,6 +261,14 @@ bool CSceneComponent::Init()
 	if (!CComponent::Init())
 		return false;
 
+	size_t size = m_vecChild.size();
+
+	for (size_t i = 0; i < size; ++i)
+	{
+		m_vecChild[i]->Init();
+	}
+
+
 	return true;
 }
 

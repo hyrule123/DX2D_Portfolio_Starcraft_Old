@@ -49,6 +49,7 @@ public:
     void ClearAnimation();
 
 public:
+    virtual bool CDOPreload();
     virtual void Start();
     virtual bool Init();
     virtual void Update(float DeltaTime);

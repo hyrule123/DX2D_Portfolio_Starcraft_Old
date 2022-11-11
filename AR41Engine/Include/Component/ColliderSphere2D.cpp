@@ -104,7 +104,7 @@ void CColliderSphere2D::Render()
 
 	Buffer->UpdateBuffer();
 
-	m_Shader->SetShader();
+  	m_Shader->SetShader();
 
 	m_Mesh->Render();
 }

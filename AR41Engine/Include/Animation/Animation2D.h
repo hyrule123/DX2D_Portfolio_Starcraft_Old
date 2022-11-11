@@ -24,22 +24,10 @@ protected:
 	bool	m_Play;
 
 public:
-	class CScene* GetScene()	const;
-	const std::string& GetAnimationClassName()	const
-	{
-		return m_ClassName;
-	}
-
-	void GetAnimationNames(std::vector<std::string>& vecNames)
-	{
-		auto	iter = m_mapAnimation.begin();
-		auto	iterEnd = m_mapAnimation.end();
-
-		for (; iter != iterEnd; ++iter)
-		{
-			vecNames.push_back(iter->first);
-		}
-	}
+	void SetOwner(class CSpriteComponent* Owner);
+	inline class CScene* GetScene()	const;
+	inline const std::string& GetAnimationClassName()	const;
+	inline void GetAnimationNames(std::vector<std::string>& vecNames);
 
 public:
 	void Start();
@@ -134,3 +122,18 @@ public:
 	}
 };
 
+inline const std::string& CAnimation2D::GetAnimationClassName()	const
+{
+	return m_ClassName;
+}
+
+inline void CAnimation2D::GetAnimationNames(std::vector<std::string>& vecNames)
+{
+	auto	iter = m_mapAnimation.begin();
+	auto	iterEnd = m_mapAnimation.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		vecNames.push_back(iter->first);
+	}
+}

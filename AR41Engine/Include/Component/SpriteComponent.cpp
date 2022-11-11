@@ -13,7 +13,11 @@ CSpriteComponent::CSpriteComponent(const CSpriteComponent& component)	:
 	CPrimitiveComponent(component)
 {
 	if (component.m_Animation)
+	{
 		m_Animation = component.m_Animation->Clone();
+		m_Animation->SetOwner(this);
+	}
+		
 }
 
 CSpriteComponent::~CSpriteComponent()
@@ -99,6 +103,18 @@ void CSpriteComponent::ClearAnimation()
 	SetTextureFrameIndex(0);
 }
 
+bool CSpriteComponent::CDOPreload()
+{
+	if (!CPrimitiveComponent::CDOPreload())
+		return false;
+
+	SetMesh("LBUVRect");
+
+	m_Transform->Set2D(true);
+
+	return true;
+}
+
 void CSpriteComponent::Start()
 {
 	CPrimitiveComponent::Start();
@@ -111,10 +127,6 @@ bool CSpriteComponent::Init()
 {
 	if (!CPrimitiveComponent::Init())
 		return false;
-
-	SetMesh("LBUVRect");
-
-	m_Transform->Set2D(true);
 
 	return true;
 }

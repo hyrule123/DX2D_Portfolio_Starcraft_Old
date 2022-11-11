@@ -15,6 +15,7 @@ CUnitSpriteComponent::CUnitSpriteComponent():
 CUnitSpriteComponent::CUnitSpriteComponent(const CUnitSpriteComponent& component) :
 	CSpriteComponent(component)
 {
+	
 }
 
 CUnitSpriteComponent::~CUnitSpriteComponent()
@@ -22,11 +23,13 @@ CUnitSpriteComponent::~CUnitSpriteComponent()
 }
 
 
+
+
 void CUnitSpriteComponent::Start()
 {
 	CSpriteComponent::Start();
 
-	if (!m_Parent || m_Parent->GetComponentTypeName() != "UnitRootComponent")
+	if (!m_Parent || !m_Parent->CheckTypeID<CUnitRootComponent>())
 		assert(0);
 
 	m_UnitRoot = (CUnitRootComponent*)m_Parent;

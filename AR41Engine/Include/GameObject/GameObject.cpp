@@ -125,6 +125,9 @@ void CGameObject::Start()
 
 bool CGameObject::Init()
 {
+	if (m_RootComponent)
+		m_RootComponent->Init();
+
 	return true;
 }
 

@@ -29,9 +29,10 @@ CMarine::CMarine(const CMarine& Obj) :
 {
 	m_UnitRoot = (CSceneComponent*)FindComponent("UnitRoot");
 	m_MainSprite = (CUnitSpriteComponent*)FindComponent("MainSprite");
-
+	m_Anim = m_MainSprite->GetAnimation();
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
+	
 }
 
 CMarine::~CMarine()
@@ -63,10 +64,32 @@ bool CMarine::Init()
 {
 	CGameObject::Init();
 
-
-	m_UnitRoot = CreateComponent<CUnitRootComponent>("UnitRootComponent");
-	SetRootComponent(m_UnitRoot);
 	m_UnitRoot->SetWorldPosition(500.f, 500.f);
+
+	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
+	m_Anim->SetLoop("UltraIdle", true);
+	m_Anim->SetPlayTime("UltraIdle", 30.f);
+
+	m_Anim->AddAnimation("UltraMove", "UltraMove");
+	m_Anim->SetLoop("UltraMove", true);
+	m_Anim->SetPlayTime("UltraMove", 1.f);
+
+	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
+	m_Anim->SetLoop("UltraAttack", true);
+	m_Anim->SetPlayTime("UltraAttack", 0.5f);
+
+	m_Anim->SetCurrentAnimation("UltraAttack");
+
+	return true;
+}
+
+bool CMarine::CDOPreload()
+{
+	CGameObject::CDOPreload();
+
+	m_UnitRoot = CreateComponent<CUnitRootComponent>("UnitRoot");
+	SetRootComponent(m_UnitRoot);
+	
 
 	m_MainSprite = CreateComponent<CUnitSpriteComponent>("MainSprite");
 	m_UnitRoot->AddChild((CSceneComponent*)m_MainSprite);
@@ -88,36 +111,12 @@ bool CMarine::Init()
 	m_Arm->AddChild(m_Camera);
 
 
-
 	CMaterial* Material = m_MainSprite->GetMaterial(0);
 
-	//Material->SetOpacity(0.5f);
-	//Material->SetRenderState("DepthDisable");
 
 
 	m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
-	m_Anim->SetLoop("UltraIdle", true);
-	m_Anim->SetPlayTime("UltraIdle", 30.f);
-
-	m_Anim->AddAnimation("UltraMove", "UltraMove");
-	m_Anim->SetLoop("UltraMove", true);
-	m_Anim->SetPlayTime("UltraMove", 1.f);
-
-	
-	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
-	m_Anim->SetLoop("UltraAttack", true);
-	m_Anim->SetPlayTime("UltraAttack", 0.5f);
-
-	m_Anim->SetCurrentAnimation("UltraAttack");
-
-	return true;
-}
-
-bool CMarine::CDOPreload()
-{
-	CGameObject::CDOPreload();
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraIdle", "UltraLisk", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));

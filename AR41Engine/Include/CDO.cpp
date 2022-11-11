@@ -10,12 +10,15 @@ CCDO::CCDO():
 }
 
 CCDO::CCDO(const CCDO& CDO):
-	CRef(CDO)
+	CRef(CDO),
+	m_vecRequiredResource(CDO.m_vecRequiredResource)
 {
 }
 
 CCDO::~CCDO()
 {
+	if (m_vecRequiredResource)
+		SAFE_DELETE(m_vecRequiredResource);
 }
 
 
