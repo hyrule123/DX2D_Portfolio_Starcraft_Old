@@ -217,6 +217,9 @@
     <Filter Include="01. Manager\11. CDO">
       <UniqueIdentifier>{c888dde4-6b3a-4892-b4d9-2307a93669f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Scene\06. Navigation">
+      <UniqueIdentifier>{30f3c114-893f-40bc-b586-e91608c16e70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -636,6 +639,21 @@
     <ClInclude Include="Resource\GameResource.h">
       <Filter>02. Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Thread\Navigation.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\NavigationThread.h">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\NavigationManager.h">
+      <Filter>03. Scene\06. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\NavigationAgent.h">
+      <Filter>05. Component\02. ObjectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Map\Map.h">
+      <Filter>02. Resource\08. Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -994,6 +1012,21 @@
     </ClCompile>
     <ClCompile Include="Resource\GameResource.cpp">
       <Filter>02. Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\Navigation.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\NavigationThread.cpp">
+      <Filter>01. Manager\10. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\NavigationManager.cpp">
+      <Filter>03. Scene\06. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\NavigationAgent.cpp">
+      <Filter>05. Component\02. ObjectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Map\Map.cpp">
+      <Filter>02. Resource\08. Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

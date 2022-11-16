@@ -1,4 +1,7 @@
 #include "ThreadManager.h"
+#include "../Component/TileMapComponent.h"
+#include "../Scene/Scene.h"
+#include "NavigationThread.h"
 
 DEFINITION_SINGLE(CThreadManager)
 
@@ -14,6 +17,7 @@ CThreadManager::~CThreadManager()
 
 		for (; iter != iterEnd; ++iter)
 		{
+			iter->second->Stop();
 			SAFE_DELETE(iter->second);
 		}
 
@@ -87,6 +91,7 @@ bool CThreadManager::Delete(const std::string& Name)
 	if (iter == m_mapThread.end())
 		return false;
 
+	iter->second->Stop();
 	SAFE_DELETE(iter->second);
 
 	m_mapThread.erase(iter);
@@ -104,6 +109,82 @@ bool CThreadManager::Start(const std::string& Name)
 	Thread->Start();
 
 	return true;
+}
+
+void CThreadManager::CreateNavigationThread(CTileMapComponent* TileMap)
+{
+	CScene* Scene = TileMap->GetScene();
+
+	unsigned __int64	Address = (unsigned __int64)Scene;
+
+	char	SceneAddress[32] = {};
+
+	sprintf_s(SceneAddress, "%llu", Address);
+
+	std::string	Name = Scene->GetName();
+	Name += "_";
+	Name += TileMap->GetName();
+	Name += "_";
+	Name += SceneAddress;
+
+	SYSTEM_INFO	SysInfo = {};
+
+	GetSystemInfo(&SysInfo);
+
+	for (DWORD i = 0; i < SysInfo.dwNumberOfProcessors * 2; ++i)
+	{
+		char	ThreadName[256] = {};
+
+		sprintf_s(ThreadName, "%s_%d", Name.c_str(), (int)i);
+
+		CNavigationThread* Thread = Create<CNavigationThread>(ThreadName);
+
+		Scene->GetNavigationManager()->AddNavigationThread(Thread);
+
+		Thread->SetTileMapComponent(TileMap);
+		Thread->SetLoop(true);
+
+		Thread->Start();
+
+		Thread->Suspend();
+	}
+}
+
+void CThreadManager::DeleteNavigationThread(CTileMapComponent* TileMap)
+{
+	CScene* Scene = TileMap->GetScene();
+
+	if (!Scene)
+		return;
+
+	unsigned __int64	Address = (unsigned __int64)Scene;
+
+	char	SceneAddress[32] = {};
+
+	sprintf_s(SceneAddress, "%llu", Address);
+
+	std::string	Name = TileMap->GetSceneName();
+	Name += "_";
+	Name += TileMap->GetName();
+	Name += "_";
+	Name += SceneAddress;
+
+	SYSTEM_INFO	SysInfo = {};
+
+	GetSystemInfo(&SysInfo);
+
+	for (DWORD i = 0; i < SysInfo.dwNumberOfProcessors * 2; ++i)
+	{
+		char	ThreadName[256] = {};
+
+		sprintf_s(ThreadName, "%s_%d", Name.c_str(), (int)i);
+
+		CThread* Thread = FindThread(ThreadName);
+
+		Thread->ReStart();
+
+		Delete(ThreadName);
+	}
 }
 
 CThread* CThreadManager::FindThread(const std::string& Name)

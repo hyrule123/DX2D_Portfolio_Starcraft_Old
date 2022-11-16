@@ -16,6 +16,7 @@ protected:
     virtual ~CTileMapComponent();
 
 protected:
+    std::string m_SceneName;
     class CTileMapConstantBuffer* m_TileMapCBuffer;
     class CStructuredBuffer* m_TileInfoBuffer;
     std::vector<CTile*> m_vecTile;
@@ -27,6 +28,7 @@ protected:
     int     m_CountX;
     int     m_CountY;
     int     m_Count;
+    int     m_TileInfoCount;
     int     m_RenderCount;
     Vector2 m_TileSize;
     Vector4 m_TileTypeColor[(int)ETileOption::End];
@@ -36,35 +38,19 @@ protected:
     std::vector<Animation2DFrameData>   m_vecTileFrame;
 
 public:
-    int GetCountX() const
-    {
-        return m_CountX;
-    }
+    inline const std::string& GetSceneName()   const;
 
-    int GetCountY() const
-    {
-        return m_CountY;
-    }
+    inline int GetCountX() const;
 
-    int GetCount() const
-    {
-        return m_Count;
-    }
+    inline int GetCountY() const;
 
-    ETileShape GetShape()   const
-    {
-        return m_Shape;
-    }
+    inline int GetCount() const;
 
-    const Vector2& GetTileSize()    const
-    {
-        return m_TileSize;
-    }
+    inline ETileShape GetShape()   const;
 
-    class CMaterial* GetTileMaterial()  const
-    {
-        return m_TileMaterial;
-    }
+    inline const Vector2& GetTileSize()    const;
+
+    inline class CMaterial* GetTileMaterial()  const;
 
 
 public:
@@ -126,3 +112,37 @@ public:
     virtual void Load(FILE* File);
 };
 
+inline const std::string& CTileMapComponent::GetSceneName()   const
+{
+    return m_SceneName;
+}
+
+inline int CTileMapComponent::GetCountX() const
+{
+    return m_CountX;
+}
+
+inline int CTileMapComponent::GetCountY() const
+{
+    return m_CountY;
+}
+
+inline int CTileMapComponent::GetCount() const
+{
+    return m_Count;
+}
+
+inline ETileShape CTileMapComponent::GetShape()   const
+{
+    return m_Shape;
+}
+
+inline const Vector2& CTileMapComponent::GetTileSize()    const
+{
+    return m_TileSize;
+}
+
+inline class CMaterial* CTileMapComponent::GetTileMaterial()  const
+{
+    return m_TileMaterial;
+}

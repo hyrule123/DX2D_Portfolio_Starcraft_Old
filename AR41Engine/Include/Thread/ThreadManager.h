@@ -15,6 +15,8 @@ public:
 	bool ReStart(const std::string& Name);
 	bool Delete(const std::string& Name);
 	bool Start(const std::string& Name);
+	void CreateNavigationThread(class CTileMapComponent* TileMap);
+	void DeleteNavigationThread(class CTileMapComponent* TileMap);
 	CThread* FindThread(const std::string& Name);
 
 	bool CreateCriticalSection(const std::string& Name);

@@ -18,27 +18,35 @@ CObjectComponent::~CObjectComponent()
 
 void CObjectComponent::Destroy()
 {
+	CComponent::Destroy();
 }
 
 void CObjectComponent::Start()
 {
+	CComponent::Start();
 }
 
 bool CObjectComponent::Init()
 {
+	if (!CComponent::Init())
+		return false;
+
 	return true;
 }
 
 void CObjectComponent::Update(float DeltaTime)
 {
+	CComponent::Update(DeltaTime);
 }
 
 void CObjectComponent::PostUpdate(float DeltaTime)
 {
+	CComponent::PostUpdate(DeltaTime);
 }
 
 void CObjectComponent::Render()
 {
+	CComponent::Render();
 }
 
 CObjectComponent* CObjectComponent::Clone() const

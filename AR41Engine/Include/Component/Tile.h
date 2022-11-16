@@ -105,5 +105,7 @@ public:
 	void Update(float DeltaTime);
 	void UpdateTransform(float DeltaTime);
 	CTile* Clone();
+	void Save(FILE* File);
+	void Load(FILE* File);
 };
 

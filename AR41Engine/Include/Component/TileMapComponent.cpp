@@ -10,6 +10,7 @@
 #include "../Resource/Shader/StructuredBuffer.h"
 #include "CameraComponent.h"
 #include "../Scene/CameraManager.h"
+#include "../Thread/ThreadManager.h"
 
 CTileMapComponent::CTileMapComponent()	:
 	m_CountX(0),
@@ -18,7 +19,8 @@ CTileMapComponent::CTileMapComponent()	:
 	m_RenderCount(0),
 	m_TileMapCBuffer(nullptr),
 	m_TileInfoBuffer(nullptr),
-	m_EditorMouseOnTile(nullptr)
+	m_EditorMouseOnTile(nullptr),
+	m_TileInfoCount(0)
 {
 
 	m_ComponentTypeName = "TileMapComponent";
@@ -31,6 +33,8 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 	CPrimitiveComponent(component)
 {
 	m_TileMesh = component.m_TileMesh;
+
+	m_TileInfoCount = component.m_TileInfoCount;
 
 	if (component.m_TileMaterial)
 		m_TileMaterial = component.m_TileMaterial->Clone();
@@ -69,6 +73,8 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 
 CTileMapComponent::~CTileMapComponent()
 {
+	CThreadManager::GetInst()->DeleteNavigationThread(this);
+
 	SAFE_DELETE(m_TileMapCBuffer);
 	SAFE_DELETE(m_TileInfoBuffer);
 
@@ -323,7 +329,7 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		RenderCountX = (int)(CDevice::GetInst()->GetResolution().Width /
 			m_TileSize.x) + 3;
 		RenderCountY = (int)(CDevice::GetInst()->GetResolution().Height /
-			m_TileSize.y) * 2 + 5;
+			m_TileSize.y) * 2 + 6;
 
 		float	StartX = 0.f;
 
@@ -353,10 +359,12 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 	// 하기 때문에 출력되는 최대 타일 개수를 이용해서 생성한다.
 	SAFE_DELETE(m_TileInfoBuffer);
 
+	m_TileInfoCount = RenderCountX * RenderCountY;
+
 	m_TileInfoBuffer = new CStructuredBuffer;
 
 	m_TileInfoBuffer->Init("TileInfo", sizeof(TileInfo),
-		RenderCountX * RenderCountY, 40, true, 
+		m_TileInfoCount, 40, true,
 		(int)EShaderBufferType::Vertex);
 
 	m_vecTileInfo.resize((size_t)m_Count);
@@ -366,6 +374,12 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		m_vecTileInfo[i].TypeColor = Vector4(1.f, 1.f, 1.f, 1.f);
 		m_vecTileInfo[i].Opacity = 1.f;
 	}
+
+	m_SceneName = m_Scene->GetName();
+
+	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
+	// 생성해준다.
+	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
 
 int CTileMapComponent::GetTileIndexX(const Vector2& Pos)
@@ -976,10 +990,165 @@ CTileMapComponent* CTileMapComponent::Clone() const
 void CTileMapComponent::Save(FILE* File)
 {
 	CPrimitiveComponent::Save(File);
+
+	int	Count = (int)m_vecTile.size();
+
+	fwrite(&Count, sizeof(int), 1, File);
+
+	for (int i = 0; i < Count; ++i)
+	{
+		m_vecTile[i]->Save(File);
+	}
+
+	bool	TileMaterial = false;
+
+	if (m_TileMaterial)
+		TileMaterial = true;
+
+	fwrite(&TileMaterial, sizeof(bool), 1, File);
+
+	if (TileMaterial)
+		m_TileMaterial->Save(File);
+
+	bool BackTexture = false;
+
+	if (m_TileBackTexture)
+		BackTexture = true;
+
+	fwrite(&BackTexture, sizeof(bool), 1, File);
+
+	if (BackTexture)
+	{
+		int	Length = (int)m_TileBackTexture->GetName().length();
+		fwrite(&Length, sizeof(int), 1, File);
+		fwrite(m_TileBackTexture->GetName().c_str(), sizeof(char), Length, File);
+	}
+
+	fwrite(&m_Shape, sizeof(ETileShape), 1, File);
+
+	fwrite(&m_CountX, sizeof(int), 1, File);
+	fwrite(&m_CountY, sizeof(int), 1, File);
+	fwrite(&m_Count, sizeof(int), 1, File);
+	fwrite(&m_TileInfoCount, sizeof(int), 1, File);
+
+	fwrite(&m_TileSize, sizeof(Vector2), 1, File);
+	fwrite(&m_TileStartFrame, sizeof(Vector2), 1, File);
+	fwrite(&m_TileEndFrame, sizeof(Vector2), 1, File);
+
+	int	FrameCount = (int)m_vecTileFrame.size();
+
+	fwrite(&FrameCount, sizeof(int), 1, File);
+	
+	for (int i = 0; i < FrameCount; ++i)
+	{
+		fwrite(&m_vecTileFrame[i], sizeof(Animation2DFrameData), 1, File);
+	}
 }
 
 void CTileMapComponent::Load(FILE* File)
 {
 	CPrimitiveComponent::Load(File);
+
+	int	Count = 0;
+
+	fread(&Count, sizeof(int), 1, File);
+
+	size_t	Size = m_vecTile.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		SAFE_DELETE(m_vecTile[i]);
+	}
+
+	m_vecTile.clear();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		CTile* Tile = new CTile;
+
+		Tile->m_Owner = this;
+
+		Tile->Load(File);
+
+		m_vecTile.push_back(Tile);
+	}
+
+	bool	TileMaterial = false;
+
+	fread(&TileMaterial, sizeof(bool), 1, File);
+
+	if (TileMaterial)
+	{
+		CMaterial* Material = m_Mesh->GetMaterial(0);
+
+		m_TileMaterial = Material->Clone();
+
+		m_TileMaterial->SetScene(m_Scene);
+
+		m_TileMaterial->Load(File);
+	}
+
+	bool BackTexture = false;
+
+	fread(&BackTexture, sizeof(bool), 1, File);
+
+	if (BackTexture)
+	{
+		int	Length = 0;
+		char	TexName[256] = {};
+		fread(&Length, sizeof(int), 1, File);
+		fread(TexName, sizeof(char), Length, File);
+
+		m_TileBackTexture = CResourceManager::GetInst()->FindTexture(TexName);
+	}
+
+	fread(&m_Shape, sizeof(ETileShape), 1, File);
+
+	fread(&m_CountX, sizeof(int), 1, File);
+	fread(&m_CountY, sizeof(int), 1, File);
+	fread(&m_Count, sizeof(int), 1, File);
+	fread(&m_TileInfoCount, sizeof(int), 1, File);
+
+	fread(&m_TileSize, sizeof(Vector2), 1, File);
+	fread(&m_TileStartFrame, sizeof(Vector2), 1, File);
+	fread(&m_TileEndFrame, sizeof(Vector2), 1, File);
+
+	int	FrameCount = 0;
+
+	fread(&FrameCount, sizeof(int), 1, File);
+
+	if (FrameCount > 0)
+		m_vecTileFrame.resize((size_t)FrameCount);
+
+	for (int i = 0; i < FrameCount; ++i)
+	{
+		fread(&m_vecTileFrame[i], sizeof(Animation2DFrameData), 1, File);
+	}
+
+	m_TileMapCBuffer->SetStart(m_TileStartFrame);
+	m_TileMapCBuffer->SetEnd(m_TileEndFrame);
+	m_TileMapCBuffer->SetFrame(0);
+
+	SAFE_DELETE(m_TileInfoBuffer);
+
+	m_TileInfoBuffer = new CStructuredBuffer;
+
+	m_TileInfoBuffer->Init("TileInfo", sizeof(TileInfo),
+		m_TileInfoCount, 40, true,
+		(int)EShaderBufferType::Vertex);
+
+	m_vecTileInfo.resize((size_t)m_Count);
+
+	for (int i = 0; i < m_Count; ++i)
+	{
+		m_vecTileInfo[i].TypeColor = Vector4(1.f, 1.f, 1.f, 1.f);
+		m_vecTileInfo[i].Opacity = 1.f;
+	}
+
+	m_SceneName = m_Scene->GetName();
+
+	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
+	// 생성해준다.
+	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
 

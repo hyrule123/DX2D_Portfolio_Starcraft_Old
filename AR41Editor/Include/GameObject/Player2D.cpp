@@ -6,6 +6,7 @@
 #include "Component/ColliderBox2D.h"
 #include "Component/ColliderSphere2D.h"
 #include "Component/ColliderOBB2D.h"
+#include "Component/NavigationAgent.h"
 #include "Input.h"
 #include "Scene/Scene.h"
 #include "Scene/CameraManager.h"
@@ -13,6 +14,11 @@
 #include "Bullet.h"
 #include "Resource/Material/Material.h"
 #include "Animation/Animation2D.h"
+
+
+//맵 로딩되는지 확인용 임시(나중에 보면 삭제)
+#include "Resource/ResourceManager.h"
+#include "Resource/Map/MapManager.h"
 
 CPlayer2D::CPlayer2D()
 {
@@ -28,6 +34,7 @@ CPlayer2D::CPlayer2D(const CPlayer2D& Obj)	:
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
 	m_Body = (CColliderOBB2D*)FindComponent("Body");
+	m_NavAgent = (CNavigationAgent*)FindComponent("NavAgent");
 }
 
 CPlayer2D::~CPlayer2D()
@@ -51,6 +58,9 @@ void CPlayer2D::Start()
 	CInput::GetInst()->AddBindFunction<CPlayer2D>("MoveDown", Input_Type::Push,
 		this, &CPlayer2D::MoveDown, m_Scene);
 
+	CInput::GetInst()->AddBindFunction<CPlayer2D>("MoveClick", Input_Type::Down,
+		this, &CPlayer2D::MoveClick, m_Scene);
+
 	CInput::GetInst()->AddBindFunction<CPlayer2D>("Fire", Input_Type::Down,
 		this, &CPlayer2D::Fire, m_Scene);
 }
@@ -65,6 +75,7 @@ bool CPlayer2D::Init()
 	m_Camera = CreateComponent<CCameraComponent>("Camera");
 	m_Arm = CreateComponent<CTargetArm>("Arm");
 	m_Body = CreateComponent<CColliderOBB2D>("Body");
+	m_NavAgent = CreateComponent<CNavigationAgent>("NavAgent");
 
 	SetRootComponent(m_Body);
 
@@ -74,7 +85,7 @@ bool CPlayer2D::Init()
 
 	m_Sprite->AddChild(m_RightChild);
 
-	//m_Sprite->GetMaterial(0)->SetBaseColorUnsignedChar(255, 255, 0, 255);
+	m_Sprite->GetMaterial(0)->SetBaseColorUnsignedChar(255, 255, 0, 255);
 
 	m_Sprite->AddChild(m_Arm);
 	m_Arm->AddChild(m_Camera);
@@ -96,6 +107,11 @@ bool CPlayer2D::Init()
 	//m_Sprite->SetRelativeRotationZ(30.f);
 
 	CMaterial* Material = m_Sprite->GetMaterial(0);
+	CTexture* Tex = Material->GetTexture(0);
+
+	CResourceManager::GetInst()->Ge
+
+	Tex->LoadTextureByScratchImage("Map", )
 
 	//Material->SetOpacity(0.5f);
 	//Material->SetRenderState("DepthDisable");
@@ -107,13 +123,6 @@ bool CPlayer2D::Init()
 	m_SpriteChild->SetRelativePosition(100.f, 0.f);
 	m_SpriteChild->SetInheritRotZ(true);
 
-	CAnimation2D* Anim = m_Sprite->SetAnimation<CAnimation2D>("PlayerAnim");
-
-	Anim->AddAnimation("UltraIdle", "UltraIdle");
-	Anim->SetLoop("UltraIdle", true);
-	Anim->SetPlayTime("UltraIdle", 30.f);
-
-	Anim->SetCurrentAnimation("UltraIdle");
 
 	return true;
 }
@@ -174,4 +183,12 @@ void CPlayer2D::Fire()
 	Bullet->SetWorldPosition(GetWorldPos());
 	Bullet->SetWorldRotation(GetWorldRot());
 	Bullet->SetCollisionProfileName("PlayerAttack");
+}
+
+void CPlayer2D::MoveClick()
+{
+	const Vector2&	MousePos = CInput::GetInst()->GetMouseWorldPos();
+
+	if (m_NavAgent)
+		m_NavAgent->Move(MousePos);
 }

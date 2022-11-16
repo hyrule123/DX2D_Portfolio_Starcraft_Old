@@ -55,3 +55,84 @@ CTile* CTile::Clone()
 {
 	return new CTile(*this);
 }
+
+void CTile::Save(FILE* File)
+{
+	fwrite(&m_Enable, sizeof(bool), 1, File);
+
+	fwrite(&m_TileOption, sizeof(ETileOption), 1, File);
+
+	fwrite(&m_Pos, sizeof(Vector3), 1, File);
+	fwrite(&m_Size, sizeof(Vector3), 1, File);
+	fwrite(&m_Center, sizeof(Vector3), 1, File);
+
+	fwrite(&m_IndexX, sizeof(int), 1, File);
+	fwrite(&m_IndexY, sizeof(int), 1, File);
+	fwrite(&m_Index, sizeof(int), 1, File);
+
+	fwrite(&m_TileStart, sizeof(Vector2), 1, File);
+	fwrite(&m_TileEnd, sizeof(Vector2), 1, File);
+
+	int	FrameCount = (int)m_vecFrameData.size();
+
+	fwrite(&FrameCount, sizeof(int), 1, File);
+	
+	for (int i = 0; i < FrameCount; ++i)
+	{
+		fwrite(&m_vecFrameData[i], sizeof(Animation2DFrameData), 1, File);
+	}
+
+	fwrite(&m_Anim2DType, sizeof(EAnimation2DType), 1, File);
+
+	fwrite(&m_Frame, sizeof(int), 1, File);
+
+	fwrite(&m_FrameTime, sizeof(float), 1, File);
+	fwrite(&m_PlayTime, sizeof(float), 1, File);
+	fwrite(&m_PlayScale, sizeof(float), 1, File);
+
+	fwrite(&m_Loop, sizeof(bool), 1, File);
+	fwrite(&m_Reverse, sizeof(bool), 1, File);
+	fwrite(&m_Opacity, sizeof(float), 1, File);
+}
+
+void CTile::Load(FILE* File)
+{
+	fread(&m_Enable, sizeof(bool), 1, File);
+
+	fread(&m_TileOption, sizeof(ETileOption), 1, File);
+
+	fread(&m_Pos, sizeof(Vector3), 1, File);
+	fread(&m_Size, sizeof(Vector3), 1, File);
+	fread(&m_Center, sizeof(Vector3), 1, File);
+
+	fread(&m_IndexX, sizeof(int), 1, File);
+	fread(&m_IndexY, sizeof(int), 1, File);
+	fread(&m_Index, sizeof(int), 1, File);
+
+	fread(&m_TileStart, sizeof(Vector2), 1, File);
+	fread(&m_TileEnd, sizeof(Vector2), 1, File);
+
+	int	FrameCount = 0;
+
+	fread(&FrameCount, sizeof(int), 1, File);
+
+	if (FrameCount > 0)
+		m_vecFrameData.resize((size_t)FrameCount);
+
+	for (int i = 0; i < FrameCount; ++i)
+	{
+		fread(&m_vecFrameData[i], sizeof(Animation2DFrameData), 1, File);
+	}
+
+	fread(&m_Anim2DType, sizeof(EAnimation2DType), 1, File);
+
+	fread(&m_Frame, sizeof(int), 1, File);
+
+	fread(&m_FrameTime, sizeof(float), 1, File);
+	fread(&m_PlayTime, sizeof(float), 1, File);
+	fread(&m_PlayScale, sizeof(float), 1, File);
+
+	fread(&m_Loop, sizeof(bool), 1, File);
+	fread(&m_Reverse, sizeof(bool), 1, File);
+	fread(&m_Opacity, sizeof(float), 1, File);
+}

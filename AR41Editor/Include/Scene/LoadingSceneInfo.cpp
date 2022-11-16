@@ -58,7 +58,7 @@ void CLoadingSceneInfo::SceneChangeComplete()
 	// 로딩 스레드 생성
 	m_LoadingThread = CThreadManager::GetInst()->Create<CLoadingThread>("Loading");
 
-	m_LoadingThread->SetLoadingSceneFileName("Main.scn");
+	m_LoadingThread->SetLoadingSceneFileName("Main2.scn");
 	//m_LoadingThread->SetLoadingScenePathName(SCENE_PATH);
 
 	m_LoadingQueue = m_LoadingThread->GetQueue();

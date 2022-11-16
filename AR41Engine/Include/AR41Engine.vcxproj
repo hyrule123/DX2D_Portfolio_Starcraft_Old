@@ -32,6 +32,7 @@
     <ClInclude Include="Component\ColliderPixel.h" />
     <ClInclude Include="Component\ColliderSphere2D.h" />
     <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Component\NavigationAgent.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\PrimitiveComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Resource\Font\Font.h" />
     <ClInclude Include="Resource\Font\FontCollection.h" />
     <ClInclude Include="Resource\Font\FontManager.h" />
+    <ClInclude Include="Resource\Map\Map.h" />
     <ClInclude Include="Resource\Map\MapManager.h" />
     <ClInclude Include="Resource\Map\StormLib.h" />
     <ClInclude Include="Resource\Map\StormPort.h" />
@@ -133,6 +135,7 @@
     <ClInclude Include="Scene\CameraManager.h" />
     <ClInclude Include="Scene\CollisionSection2D.h" />
     <ClInclude Include="Scene\CollisionSection3D.h" />
+    <ClInclude Include="Scene\NavigationManager.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneCollision.h" />
     <ClInclude Include="Scene\SceneInfo.h" />
@@ -142,6 +145,8 @@
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Thread\DataStream.h" />
     <ClInclude Include="Thread\LoadingThread.h" />
+    <ClInclude Include="Thread\Navigation.h" />
+    <ClInclude Include="Thread\NavigationThread.h" />
     <ClInclude Include="Thread\Sync.h" />
     <ClInclude Include="Thread\Thread.h" />
     <ClInclude Include="Thread\ThreadManager.h" />
@@ -172,6 +177,7 @@
     <ClCompile Include="Component\ColliderPixel.cpp" />
     <ClCompile Include="Component\ColliderSphere2D.cpp" />
     <ClCompile Include="Component\Component.cpp" />
+    <ClCompile Include="Component\NavigationAgent.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\PrimitiveComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
@@ -218,6 +224,7 @@
     <ClCompile Include="Resource\Font\Font.cpp" />
     <ClCompile Include="Resource\Font\FontCollection.cpp" />
     <ClCompile Include="Resource\Font\FontManager.cpp" />
+    <ClCompile Include="Resource\Map\Map.cpp" />
     <ClCompile Include="Resource\Map\MapManager.cpp" />
     <ClCompile Include="Resource\Material\Material.cpp" />
     <ClCompile Include="Resource\Material\MaterialManager.cpp" />
@@ -255,6 +262,7 @@
     <ClCompile Include="Scene\CameraManager.cpp" />
     <ClCompile Include="Scene\CollisionSection2D.cpp" />
     <ClCompile Include="Scene\CollisionSection3D.cpp" />
+    <ClCompile Include="Scene\NavigationManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneCollision.cpp" />
     <ClCompile Include="Scene\SceneInfo.cpp" />
@@ -263,6 +271,8 @@
     <ClCompile Include="Scene\SceneViewport.cpp" />
     <ClCompile Include="Thread\DataStream.cpp" />
     <ClCompile Include="Thread\LoadingThread.cpp" />
+    <ClCompile Include="Thread\Navigation.cpp" />
+    <ClCompile Include="Thread\NavigationThread.cpp" />
     <ClCompile Include="Thread\Thread.cpp" />
     <ClCompile Include="Thread\ThreadManager.cpp" />
     <ClCompile Include="Thread\ThreadQueue.cpp" />

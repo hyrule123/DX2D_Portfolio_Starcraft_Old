@@ -100,6 +100,8 @@ void CDefaultSetting::SetInput()
     CInput::GetInst()->AddBindKey("MoveDown", 'S');
 
     CInput::GetInst()->AddBindKey("Fire", VK_SPACE);
+
+    CInput::GetInst()->AddBindKey("MoveClick", VK_RBUTTON);
 }
 
 void CDefaultSetting::SetCollision()

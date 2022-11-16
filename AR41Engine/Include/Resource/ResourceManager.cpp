@@ -623,3 +623,11 @@ void CResourceManager::ReleaseFontCollection(const std::string& Name)
 {
 	m_FontManager->ReleaseFontCollection(Name);
 }
+
+DirectX::ScratchImage* CResourceManager::GetMapImage(tstring MapName)
+{
+	if (!m_MapManager)
+		return nullptr;
+
+	return m_MapManager->GetMapImage(MapName);
+}

@@ -224,3 +224,13 @@ enum class EResourceType
 	Map,
 	End
 };
+
+
+//맵데이터로부터 로드해야하는 데이터들의 플래그
+enum EMapDataType
+{
+	Terrain,
+	MapSize,
+	TileMap,
+	EMapDataTypeEnd
+};

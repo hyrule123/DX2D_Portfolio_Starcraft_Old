@@ -29,12 +29,16 @@ CGameObject::CGameObject(const CGameObject& Obj)    :
 	}
 
 	{
+		m_vecObjectComponent.clear();
+
 		auto	iter = Obj.m_vecObjectComponent.begin();
 		auto	iterEnd = Obj.m_vecObjectComponent.end();
 
 		for (; iter != iterEnd; ++iter)
 		{
 			CObjectComponent* Component = (*iter)->Clone();
+
+			Component->SetOwner(this);
 
 			m_vecObjectComponent.push_back(Component);
 		}
@@ -43,6 +47,15 @@ CGameObject::CGameObject(const CGameObject& Obj)    :
 
 CGameObject::~CGameObject()
 {
+	if (m_RootComponent)
+		m_RootComponent->Destroy();
+
+	size_t	Size = m_vecObjectComponent.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecObjectComponent[i]->Destroy();
+	}
 }
 
 void CGameObject::SetScene(CScene* Scene)
@@ -51,6 +64,13 @@ void CGameObject::SetScene(CScene* Scene)
 
 	if (m_RootComponent)
 		m_RootComponent->SetScene(Scene);
+
+	size_t	Size = m_vecObjectComponent.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_vecObjectComponent[i]->SetScene(Scene);
+	}
 }
 
 void CGameObject::Destroy()
@@ -249,6 +269,8 @@ void CGameObject::Load(FILE* File)
 
 		fread(&Count, 4, 1, File);
 
+		bool	Empty = m_vecObjectComponent.empty();
+
 		for (int i = 0; i < Count; ++i)
 		{
 			int	Length = 0;
@@ -257,14 +279,26 @@ void CGameObject::Load(FILE* File)
 			fread(&Length, 4, 1, File);
 			fread(TypeName, 1, Length, File);
 
-			// CDO를 얻어온다.
-			CComponent* CDO = CComponent::FindCDO(TypeName);
+			if (Empty)
+			{
+				// CDO를 얻어온다.
+				CComponent* CDO = CComponent::FindCDO(TypeName);
 
-			CComponent* Component = CDO->Clone();
+				CComponent* Component = CDO->Clone();
 
-			Component->Load(File);
+				Component->SetOwner(this);
+				Component->SetScene(m_Scene);
+				Component->Load(File);
 
-			m_vecObjectComponent.push_back((CObjectComponent*)Component);
+				m_vecObjectComponent.push_back((CObjectComponent*)Component);
+			}
+
+			else
+			{
+				m_vecObjectComponent[i]->SetOwner(this);
+				m_vecObjectComponent[i]->SetScene(m_Scene);
+				m_vecObjectComponent[i]->Load(File);
+			}
 		}
 	}
 }

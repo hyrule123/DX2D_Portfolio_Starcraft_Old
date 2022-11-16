@@ -178,6 +178,8 @@ public:	// ============================ Font ================================
 	void ReleaseFont(const std::string& Name);
 	void ReleaseFontCollection(const std::string& Name);
 
+public:
+	DirectX::ScratchImage* GetMapImage(tstring MapName);
 
 
 	DECLARE_SINGLE(CResourceManager)

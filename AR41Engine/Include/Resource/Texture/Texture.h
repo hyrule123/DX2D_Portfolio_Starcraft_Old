@@ -91,6 +91,8 @@ public:
 	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+	bool LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image);
+
 
 private:
 	bool CreateResource(int Index);

@@ -14,6 +14,14 @@ protected:
 	HANDLE	m_Thread;
 	HANDLE	m_StartEvent;
 	bool	m_Loop;
+	bool	m_Suspend;
+	CRITICAL_SECTION	m_CRT;
+
+public:
+	bool IsSuspend()	const
+	{
+		return m_Suspend;
+	}
 
 public:
 	void SetLoop(bool Loop)

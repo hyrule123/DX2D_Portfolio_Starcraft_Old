@@ -13,6 +13,13 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "../Bin/fmod64_vc.lib")
+
+//stormlib include
+#define STORMLIB_NO_AUTO_LINK
+#pragma comment(lib, "../Bin/StormLib.lib")
 
 float	g_DeltaTime;
 

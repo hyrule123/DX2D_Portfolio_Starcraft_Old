@@ -31,9 +31,10 @@ bool CClientManager::Init(HINSTANCE hInst)
     CInput::GetInst()->AddBindKey("MoveDown", 'S');
 
     CInput::GetInst()->AddBindKey("Fire", VK_SPACE);
-
+    
     // SceneInfo »ý¼º
-    CSceneManager::GetInst()->CreateSceneInfo<CMainSceneInfo>();
+    //CSceneManager::GetInst()->CreateSceneInfo<CMainSceneInfo>();
+    CSceneManager::GetInst()->GetScene()->Load("Start.scn", SCENE_PATH);
 
     return true;
 }

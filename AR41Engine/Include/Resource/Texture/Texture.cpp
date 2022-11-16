@@ -401,6 +401,15 @@ bool CTexture::LoadTextureArrayFullPath(const std::string& Name, const std::vect
 	return true;
 }
 
+bool CTexture::LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image)
+{
+	Info->Image = Image;
+
+	m_vecTextureInfo.push_back(Info);
+
+	return CreateResource(0);
+}
+
 bool CTexture::CreateResource(int Index)
 {
 	if (FAILED(DirectX::CreateShaderResourceView(CDevice::GetInst()->GetDevice(),

@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <crtdbg.h>
 #include <typeinfo>
-#include <typeindex>
 #include <string>
 #include <functional>
 #include <algorithm>
@@ -22,8 +21,7 @@
 #include <d2d1.h>
 #include <process.h>
 
-#pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "d2d1.lib")
+
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -33,7 +31,10 @@
 #include "Resource/Texture/DirectXTex.h"
 #include "fmod.hpp"
 
-#pragma comment(lib, "../Bin/fmod64_vc.lib")
+
+#ifndef STORMLIB_NO_AUTO_LINK
+#define STORMLIB_NO_AUTO_LINK
+#endif
 
 extern float g_DeltaTime;
 
