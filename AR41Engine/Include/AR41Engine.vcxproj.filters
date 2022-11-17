@@ -654,6 +654,9 @@
     <ClInclude Include="Resource\Map\Map.h">
       <Filter>02. Resource\08. Map</Filter>
     </ClInclude>
+    <ClInclude Include="CSVEditor.h">
+      <Filter>01. Manager\11. CDO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -1027,6 +1030,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Map\Map.cpp">
       <Filter>02. Resource\08. Map</Filter>
+    </ClCompile>
+    <ClCompile Include="CSVEditor.cpp">
+      <Filter>01. Manager\11. CDO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

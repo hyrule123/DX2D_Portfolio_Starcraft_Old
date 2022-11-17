@@ -22,7 +22,6 @@ CTileMapComponent::CTileMapComponent()	:
 	m_EditorMouseOnTile(nullptr),
 	m_TileInfoCount(0)
 {
-
 	m_ComponentTypeName = "TileMapComponent";
 
 	m_TileTypeColor[(int)ETileOption::None] = Vector4::White;
@@ -30,11 +29,21 @@ CTileMapComponent::CTileMapComponent()	:
 }
 
 CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
-	CPrimitiveComponent(component)
-{
-	m_TileMesh = component.m_TileMesh;
+	CPrimitiveComponent(component),
+	m_TileMesh(component.m_TileMesh),
+	m_TileInfoCount(component.m_TileInfoCount),
+	m_Shape(component.m_Shape),
+	m_CountX(component.m_CountX),
+	m_CountY(component.m_CountY),
+	m_Count(component.m_Count),
+	m_RenderCount(component.m_RenderCount),
+	m_TileSize(component.m_TileSize),
+	m_TileBackTexture(component.m_TileBackTexture),
+	m_TileStartFrame(component.m_TileStartFrame),
+	m_TileEndFrame(component.m_TileEndFrame),
+	m_EditorMouseOnTile(nullptr)
 
-	m_TileInfoCount = component.m_TileInfoCount;
+{
 
 	if (component.m_TileMaterial)
 		m_TileMaterial = component.m_TileMaterial->Clone();
@@ -45,15 +54,6 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 	if (component.m_TileInfoBuffer)
 		m_TileInfoBuffer = component.m_TileInfoBuffer->Clone();
 
-
-	m_Shape = component.m_Shape;
-	m_CountX = component.m_CountX;
-	m_CountY = component.m_CountY;
-	m_Count = component.m_Count;
-	m_RenderCount = component.m_RenderCount;
-	m_TileSize = component.m_TileSize;
-	m_TileTypeColor[(int)ETileOption::None] = component.m_TileTypeColor[(int)ETileOption::None];
-	m_TileTypeColor[(int)ETileOption::Wall] = component.m_TileTypeColor[(int)ETileOption::Wall];
 
 	m_vecTile.clear();
 
@@ -69,6 +69,15 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 	}
 
 	m_vecTileInfo.resize(m_vecTile.size());
+
+	m_TileTypeColor[(int)ETileOption::None] = component.m_TileTypeColor[(int)ETileOption::None];
+	m_TileTypeColor[(int)ETileOption::Wall] = component.m_TileTypeColor[(int)ETileOption::Wall];
+
+	size_t size = component.m_vecTileFrame.size();
+	m_vecTileFrame.resize(size);
+
+	memcpy(&m_vecTileFrame, &component.m_vecTileFrame, size);
+
 }
 
 CTileMapComponent::~CTileMapComponent()
@@ -375,11 +384,6 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		m_vecTileInfo[i].Opacity = 1.f;
 	}
 
-	m_SceneName = m_Scene->GetName();
-
-	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
-	// 생성해준다.
-	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
 
 int CTileMapComponent::GetTileIndexX(const Vector2& Pos)
@@ -800,10 +804,9 @@ void CTileMapComponent::Start()
 	CPrimitiveComponent::Start();
 }
 
-bool CTileMapComponent::Init()
+bool CTileMapComponent::CDOPreload()
 {
-	if (!CPrimitiveComponent::Init())
-		return false;
+	CPrimitiveComponent::CDOPreload();
 
 	m_Transform->Set2D(true);
 
@@ -841,8 +844,20 @@ bool CTileMapComponent::Init()
 
 	AddMaterial("DefaultTileMapBack");
 
-	//CreateTile(ETileShape::Isometric, 100, 100, Vector2(160.f, 80.f));
+	return true;
+}
 
+bool CTileMapComponent::Init()
+{
+	if (!CPrimitiveComponent::Init())
+		return false;
+
+	m_SceneName = m_Scene->GetName();
+
+	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
+	// 생성해준다.
+	CThreadManager::GetInst()->CreateNavigationThread(this);
+	
 	return true;
 }
 
@@ -850,12 +865,13 @@ void CTileMapComponent::Update(float DeltaTime)
 {
 	CPrimitiveComponent::Update(DeltaTime);
 
-	size_t	Size = m_vecTile.size();
+	//여기서 애니메이션을 연산함. 애니메이션 연산은 사용 안할 것이므로 주석처리 하였음.
+	//size_t	Size = m_vecTile.size();
 
-	for (size_t i = 0; i < Size; ++i)
-	{
-		m_vecTile[i]->Update(DeltaTime);
-	}
+	//for (size_t i = 0; i < Size; ++i)
+	//{
+	//	m_vecTile[i]->Update(DeltaTime);
+	//}
 }
 
 void CTileMapComponent::PostUpdate(float DeltaTime)
@@ -972,7 +988,6 @@ void CTileMapComponent::Render()
 
 
 		m_TileMesh->RenderInstancing(m_RenderCount);
-
 
 
 		m_TileMaterial->ResetMaterial();
@@ -1144,11 +1159,5 @@ void CTileMapComponent::Load(FILE* File)
 		m_vecTileInfo[i].TypeColor = Vector4(1.f, 1.f, 1.f, 1.f);
 		m_vecTileInfo[i].Opacity = 1.f;
 	}
-
-	m_SceneName = m_Scene->GetName();
-
-	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
-	// 생성해준다.
-	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
 

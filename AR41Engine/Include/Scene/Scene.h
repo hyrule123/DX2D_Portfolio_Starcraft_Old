@@ -30,6 +30,8 @@ private:
 	std::string	m_Name;
 	std::function<void(float)>	m_LoadingCallback;
 
+	//std::unordered_map<std::string, CSharedPtr<class CCDO>> m_PreLoadedObject;
+
 public:
 	void SetName(const std::string& Name)
 	{

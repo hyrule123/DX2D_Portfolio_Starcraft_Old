@@ -15,6 +15,17 @@ protected:
     CTileMapComponent(const CTileMapComponent& component);
     virtual ~CTileMapComponent();
 
+public:
+    virtual bool CDOPreload();
+    virtual bool Init();
+    virtual void Start();
+    virtual void Update(float DeltaTime);
+    virtual void PostUpdate(float DeltaTime);
+    virtual void Render();
+    virtual CTileMapComponent* Clone()    const;
+    virtual void Save(FILE* File);
+    virtual void Load(FILE* File);
+
 protected:
     std::string m_SceneName;
     class CTileMapConstantBuffer* m_TileMapCBuffer;
@@ -36,6 +47,9 @@ protected:
     Vector2 m_TileEndFrame;
     class CTile* m_EditorMouseOnTile;
     std::vector<Animation2DFrameData>   m_vecTileFrame;
+
+
+
 
 public:
     inline const std::string& GetSceneName()   const;
@@ -101,15 +115,6 @@ public:
     void ChangeTileFrame(const Vector2& Pos, int Frame);
     void ChangeTileOption(const Vector2& Pos, ETileOption Option);
 
-public:
-    virtual void Start();
-    virtual bool Init();
-    virtual void Update(float DeltaTime);
-    virtual void PostUpdate(float DeltaTime);
-    virtual void Render();
-    virtual CTileMapComponent* Clone()    const;
-    virtual void Save(FILE* File);
-    virtual void Load(FILE* File);
 };
 
 inline const std::string& CTileMapComponent::GetSceneName()   const

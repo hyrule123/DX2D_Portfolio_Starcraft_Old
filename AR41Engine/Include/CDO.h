@@ -3,9 +3,6 @@
 #include "Ref.h"
 
 
-
-
-
 class CCDO : public CRef
 {
 	friend class CSceneManager;
@@ -15,13 +12,18 @@ protected:
 	CCDO(const CCDO& CDO);
 	virtual ~CCDO();
 
+	bool LoadMetaData();
+
+	//사전 로드해야 할 리소스가 있을 경우 여기서 m_vecRequiredResource를 동적 할당하고 값을 채워나감
+	virtual bool CDOPreload();
+
+
 	//사전 로드해놔도 문제없는 요소들은 이 메소드를 재정의해서 사용
 	//cf)Init()에서는 다른 인스턴스를 참조하는 작업을 진행한다.
 	virtual bool Init();
 
 
-	//사전 로드해야 할 리소스가 있을 경우 여기서 m_vecRequiredResource를 동적 할당하고 값을 채워나감
-	virtual bool CDOPreload();
+
 	virtual CCDO* Clone() const = 0;
 
 	virtual void Save(FILE* File);
@@ -31,12 +33,16 @@ protected:
 protected:
 	//하나만 생성해서 공유해서 사용하면 되므로 포인터로 선언
 	std::vector<RequiredResource>* m_vecRequiredResource;
-
+	//std::vector<RequiredComponent>* m_vecRequiredComponent;
 
 
 //내부 변수 저장 및 탐색 용도
 private:
 	static std::unordered_map<std::string, CSharedPtr<CCDO>>	m_mapCDO;
+
+	//문자열 별로 리소스의 열거체 번호를 저장. 로드할 때 사용됨.
+	//EngineSetting에서 초기화
+	static std::unordered_map<std::string, enum class EResourceType> m_mapResType;
 
 	template <typename T>
 	static T* FindCDO();
@@ -45,8 +51,10 @@ private:
 	static CCDO* FindCDO(const std::string& Name);
 	static CCDO* FindCDOByFileName(const std::string& FileName);
 
-
 public:
+	static void AddResourceType(const std::string& Name, EResourceType&& ResType);
+	static EResourceType FindResourceType(const std::string& Name);
+
 	template <typename T>
 	static bool CreateCDO();
 
@@ -56,6 +64,8 @@ public:
 	static class CCDO* CloneCDOByFileName(const std::string& FileName);
 	static class CCDO* CloneCDO(const size_t& hash_code);
 };
+
+
 
 
 
@@ -90,12 +100,7 @@ inline bool CCDO::CreateCDO()
 
 	CDO->SetTypeID<T>();
 
-
-	if (!CDO->CDOPreload())
-	{
-		delete CDO;
-		return false;
-	}
+	CDO->LoadMetaData();
 
 	CCDO* Cast = static_cast<CCDO*>(CDO);
 
@@ -103,6 +108,8 @@ inline bool CCDO::CreateCDO()
 
 	return true;
 }
+
+
 
 
 template<typename T>

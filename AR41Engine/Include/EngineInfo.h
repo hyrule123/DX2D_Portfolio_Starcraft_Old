@@ -46,14 +46,33 @@ typedef std::wstring tstring;
 typedef std::string tstring;
 #endif
 
-#define	ROOT_PATH		"Root"
-#define	SHADER_PATH		"Shader"
-#define	TEXTURE_PATH	"Texture"
-#define	SOUND_PATH		"Sound"
-#define	FONT_PATH		"Font"
-#define	ANIMATION2D_PATH "Animation2D"
-#define	SCENE_PATH		"Scene"
-#define MAP_PATH		"Map"
+//경로
+#define	ROOT_PATH		"RootPath"
+#define	SHADER_PATH		"ShaderPath"
+#define	TEXTURE_PATH	"TexturePath"
+#define	SOUND_PATH		"SoundPath"
+#define	FONT_PATH		"FontPath"
+#define	ANIMATION2D_PATH "Animation2DPath"
+#define	SCENE_PATH		"ScenePath"
+#define MAP_PATH		"MapPath"
+#define CDO_PATH		"CDOPath"
+
+
+//리소스 종류
+
+#define MESH "MESH"
+#define SHADER "SHADER"
+#define CBUFFER "CBUFFER"
+#define TEXTURE "TEXTURE"
+#define MATERIAL "MATERIAL"
+#define ANIMATION "ANIMATION"
+#define SOUND "SOUND"
+#define FONT "FONT"
+#define FONTCOLLECTION "FONTCOLLECTION"
+#define MAP "MAP"
+#define RESOURCEEND "RESEND"
+
+
 
 #define	DECLARE_SINGLE(Type)	\
 private:\
@@ -381,8 +400,8 @@ struct TileInfo
 //PreLoad 시 사용할 정보
 struct RequiredResource
 {
+	EResourceType ResType;
 	std::string Name;
 	tstring FileName;
 	std::string PathName;
-	EResourceType ResType;
 };

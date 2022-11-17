@@ -109,9 +109,9 @@ bool CPlayer2D::Init()
 	CMaterial* Material = m_Sprite->GetMaterial(0);
 	CTexture* Tex = Material->GetTexture(0);
 
-	CResourceManager::GetInst()->Ge
+	//CResourceManager::GetInst()->Ge
 
-	Tex->LoadTextureByScratchImage("Map", )
+	//Tex->LoadTextureByScratchImage("Map", )
 
 	//Material->SetOpacity(0.5f);
 	//Material->SetRenderState("DepthDisable");

@@ -47,6 +47,12 @@ CScene::CScene()	:
 	m_Viewport->m_Owner = this;
 
 	m_Viewport->Init();
+
+	m_NavManager = new CNavigationManager;
+
+	m_NavManager->m_Owner = this;
+
+	m_NavManager->Init();
 }
 
 CScene::~CScene()
@@ -81,6 +87,9 @@ void CScene::Start()
 
 bool CScene::Init()
 {
+
+
+
 	return true;
 }
 

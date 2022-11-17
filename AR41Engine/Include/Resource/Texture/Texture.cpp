@@ -14,7 +14,6 @@
 #endif // _DEBUG
 
 CTexture::CTexture()	:
-	m_Scene(nullptr),
 	m_ArraySRV(nullptr),
 	m_ImageType(EImageType::Atlas)
 {
@@ -401,14 +400,14 @@ bool CTexture::LoadTextureArrayFullPath(const std::string& Name, const std::vect
 	return true;
 }
 
-bool CTexture::LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image)
-{
-	Info->Image = Image;
-
-	m_vecTextureInfo.push_back(Info);
-
-	return CreateResource(0);
-}
+//bool CTexture::LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image)
+//{
+//	Info->Image = Image;
+//
+//	m_vecTextureInfo.push_back(Info);
+//
+//	return CreateResource(0);
+//}
 
 bool CTexture::CreateResource(int Index)
 {

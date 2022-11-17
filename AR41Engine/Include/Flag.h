@@ -212,6 +212,7 @@ enum class ETileOption
 
 enum class EResourceType
 {
+	None = -1,
 	Mesh,
 	Shader,
 	CBuffer,

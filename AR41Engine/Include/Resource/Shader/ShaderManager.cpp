@@ -11,6 +11,7 @@
 #include "TileMapShader.h"
 #include "TileMapConstantBuffer.h"
 #include "TileMapBackShader.h"
+#include "../../Scene/SceneManager.h"
 
 CShaderManager::CShaderManager()
 {
@@ -126,15 +127,18 @@ void CShaderManager::DeleteUnused()
 		auto iter = m_mapShader.begin();
 		auto iterEnd = m_mapShader.end();
 
+		CSceneManager* SceneMgr = CSceneManager::GetInst();
+
 		while (iter != iterEnd)
 		{
 			//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
 			if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
 			{
-				m_mapShader.erase(iter);
+				iter = m_mapShader.erase(iter);
 				continue;
 			}
 
+			SceneMgr->AddSceneResource(iter->second);
 			++iter;
 		}
 	}
@@ -143,15 +147,18 @@ void CShaderManager::DeleteUnused()
 		auto iter = m_mapCBuffer.begin();
 		auto iterEnd = m_mapCBuffer.end();
 
+		CSceneManager* SceneMgr = CSceneManager::GetInst();
+
 		while (iter != iterEnd)
 		{
 			//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
 			if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
 			{
-				m_mapCBuffer.erase(iter);
+				iter = m_mapCBuffer.erase(iter);
 				continue;
 			}
 
+			SceneMgr->AddSceneResource(iter->second);
 			++iter;
 		}
 	}

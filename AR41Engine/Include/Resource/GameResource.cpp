@@ -1,5 +1,5 @@
 #include "GameResource.h"
-
+#include "../Scene/Scene.h"
 
 CGameResource::CGameResource() :
 	m_ResourceType(),
@@ -16,4 +16,10 @@ CGameResource::CGameResource(const CGameResource& Res):
 
 CGameResource::~CGameResource()
 {
+}
+
+
+void CGameResource::SetScene(CScene* Scene)
+{
+	m_Scene = Scene;
 }

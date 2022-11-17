@@ -43,7 +43,6 @@ protected:
 	virtual ~CTexture();
 
 protected:
-	class CScene* m_Scene;
 	std::vector<TextureResourceInfo*>	m_vecTextureInfo;
 	EImageType	m_ImageType;
 	ID3D11ShaderResourceView* m_ArraySRV;
@@ -74,11 +73,6 @@ public:
 		return (int)m_vecTextureInfo.size();
 	}
 
-public:
-	void SetScene(class CScene* Scene)
-	{
-		m_Scene = Scene;
-	}
 
 
 public:
@@ -91,7 +85,7 @@ public:
 	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
-	bool LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image);
+	/*bool LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image);*/
 
 
 private:

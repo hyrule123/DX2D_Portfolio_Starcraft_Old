@@ -41,6 +41,7 @@
     <ClInclude Include="Component\Tile.h" />
     <ClInclude Include="Component\TileMapComponent.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="CSVEditor.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Editor\EditorButton.h" />
     <ClInclude Include="Editor\EditorCheckBox.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Component\Tile.cpp" />
     <ClCompile Include="Component\TileMapComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="CSVEditor.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Editor\EditorButton.cpp" />
     <ClCompile Include="Editor\EditorCheckBox.cpp" />

@@ -112,8 +112,16 @@ void CSceneManager::DeletePrevScene()
 void CSceneManager::AddSceneResource(CGameResource* ResPtr)
 {
 	if (m_NextScene)
+	{
+		ResPtr->SetScene(m_NextScene);
 		m_NextScene->GetSceneResource()->AddGameResource(ResPtr);
+	}
+		
 
 	else if (m_Scene)
+	{
+		ResPtr->SetScene(m_Scene);
 		m_Scene->GetSceneResource()->AddGameResource(ResPtr);
+	}
+		
 }

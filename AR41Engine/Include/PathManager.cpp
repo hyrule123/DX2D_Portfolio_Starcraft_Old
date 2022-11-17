@@ -70,6 +70,7 @@ bool CPathManager::Init()
 	AddPath(ANIMATION2D_PATH, TEXT("Animation2D/"));
 	AddPath(SCENE_PATH, TEXT("Scene/"));
 	AddPath(MAP_PATH, TEXT("Maps/"));
+	AddPath(CDO_PATH, TEXT("CDO/"));
 
 	return true;
 }

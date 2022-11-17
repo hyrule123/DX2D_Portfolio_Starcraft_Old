@@ -14,7 +14,6 @@ protected:
     ~CAnimationSequence2D();
 
 private:
-    class CScene* m_Scene;
     CSharedPtr<class CTexture>  m_Texture;
     std::vector<Animation2DFrameData>   m_vecFrameData;
     EAnimation2DType    m_Anim2DType;
@@ -38,10 +37,6 @@ public:
         return m_Anim2DType;
     }
 
-    void SetScene(class CScene* Scene)
-    {
-        m_Scene = Scene;
-    }
 
 public:
     class CTexture* GetTexture()    const

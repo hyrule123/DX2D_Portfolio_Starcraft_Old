@@ -26,6 +26,7 @@ bool CSceneResource::Init()
 
 void CSceneResource::AddGameResource(CGameResource* ResPtr)
 {
+
 	m_vecResource.push_back(ResPtr);
 }
 

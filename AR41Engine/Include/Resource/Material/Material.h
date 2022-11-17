@@ -34,14 +34,6 @@ protected:
     CMaterial(const CMaterial& Material);
     virtual ~CMaterial();
 
-private:
-    class CScene* m_Scene;
-
-public:
-    void SetScene(class CScene* Scene)
-    {
-        m_Scene = Scene;
-    }
 
 protected:
     CSharedPtr<class CShader>   m_Shader;

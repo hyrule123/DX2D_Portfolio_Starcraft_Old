@@ -12,12 +12,14 @@ protected:
 
     EResourceType m_ResourceType;
     bool m_Essential;
+    class CScene* m_Scene;
 
 public:
     inline void SetResourceType(const EResourceType& ResourceType);
     inline const EResourceType& GetResourceType() const;
     inline void SetEssential(const bool& b);
     inline const bool& GetEssential() const;
+    void SetScene(class CScene* Scene);
 };
 
 
@@ -40,3 +42,4 @@ inline const bool& CGameResource::GetEssential() const
 {
     return m_Essential;
 }
+

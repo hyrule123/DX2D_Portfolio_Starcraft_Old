@@ -14,3 +14,4 @@ if not exist .\AR41Editor\Include\Component ( mkdir .\AR41Editor\Include\Compone
 if not exist .\AR41Editor\Include\Animation2D ( mkdir .\AR41Editor\Include\Animation2D )
 if not exist .\AR41Editor\Bin\Scene ( mkdir .\AR41Editor\Bin\Scene )
 if not exist .\AR41Editor\Bin\Animation2D ( mkdir .\AR41Editor\Bin\Animation2D )
+if not exist .\AR41Editor\Bin\CDO ( mkdir .\AR41Editor\Bin\CDO )

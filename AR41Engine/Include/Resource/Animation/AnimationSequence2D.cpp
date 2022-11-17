@@ -6,7 +6,6 @@
 #include "../ResourceManager.h"
 
 CAnimationSequence2D::CAnimationSequence2D()	:
-	m_Scene(nullptr),
 	m_Anim2DType(EAnimation2DType::Atlas),
 	m_ColStart(-1),
 	m_RowStart(-1),

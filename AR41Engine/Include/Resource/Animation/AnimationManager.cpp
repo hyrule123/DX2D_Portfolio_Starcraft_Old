@@ -1,6 +1,7 @@
 
 #include "AnimationManager.h"
 #include "../Shader/Animation2DConstantBuffer.h"
+#include "../../Scene/SceneManager.h"
 
 CAnimationManager::CAnimationManager()	:
 	m_Anim2DBuffer(nullptr)
@@ -309,15 +310,18 @@ void CAnimationManager::DeleteUnused()
 	auto iter = m_mapSequence2D.begin();
 	auto iterEnd = m_mapSequence2D.end();
 
+	CSceneManager* SceneMgr = CSceneManager::GetInst();
+
 	while (iter != iterEnd)
 	{
 		//씬에서 사용되지 않고 필수 리소스로 설정되어 있지 않을 경우 지워준다. -> RefCount == 0 이 되므로 알아서 제거
 		if (iter->second->GetRefCount() == 1 && !(iter->second->GetEssential()))
 		{
-			m_mapSequence2D.erase(iter);
+			iter = m_mapSequence2D.erase(iter);
 			continue;
 		}
 
+		SceneMgr->AddSceneResource(iter->second);
 		++iter;
 	}
 }

@@ -15,6 +15,11 @@
 #include "Resource/Material/Material.h"
 #include "Animation/Animation2D.h"
 
+
+//맵 로딩되는지 확인용 임시(나중에 보면 삭제)
+#include "Resource/ResourceManager.h"
+#include "Resource/Map/MapManager.h"
+
 CPlayer2D::CPlayer2D()
 {
 	m_ObjectTypeName = "Player2D";
@@ -102,6 +107,11 @@ bool CPlayer2D::Init()
 	//m_Sprite->SetRelativeRotationZ(30.f);
 
 	CMaterial* Material = m_Sprite->GetMaterial(0);
+	CTexture* Tex = Material->GetTexture(0);
+
+	//CResourceManager::GetInst()->Ge
+
+	//Tex->LoadTextureByScratchImage("Map", )
 
 	//Material->SetOpacity(0.5f);
 	//Material->SetRenderState("DepthDisable");

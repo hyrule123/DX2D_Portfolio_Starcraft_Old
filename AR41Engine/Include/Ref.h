@@ -12,6 +12,7 @@ public:
 protected:
 	std::string	m_Name;
 	std::string	m_TypeName;
+	std::string m_FileName;
 	size_t	m_TypeID;
 	int		m_RefCount;
 	bool	m_Enable;	// 활성, 비활성
@@ -55,6 +56,8 @@ void CRef::SetTypeID()
 {
 	// 타입 이름을 문자열로 얻어온다.
 	m_TypeName = typeid(T).name();
+
+	m_FileName.assign(m_TypeName.begin() + 7, m_TypeName.end());
 
 	// 타입의 고유한 번호를 얻어온다.
 	m_TypeID = typeid(T).hash_code();

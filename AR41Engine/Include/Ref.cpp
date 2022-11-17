@@ -14,7 +14,8 @@ CRef::CRef(const CRef& ref):
 	m_Active(ref.m_Active),
 	m_Name(ref.m_Name),
 	m_TypeID(ref.m_TypeID),
-	m_TypeName(ref.m_TypeName)
+	m_TypeName(ref.m_TypeName),
+	m_FileName(ref.m_FileName)
 {
 }
 
