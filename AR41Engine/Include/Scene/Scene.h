@@ -15,6 +15,15 @@ private:
 	CScene();
 	~CScene();
 
+public:
+	void Start();
+	bool Init();
+	void Update(float DeltaTime);
+	void PostUpdate(float DeltaTime);
+	void Collision(float DeltaTime);
+	void Save(const char* FullPath);
+	void Load(const char* FullPath);
+	void GetAllGameObjectHierarchyName(std::vector<HierarchyObjectName>& vecName);
 
 
 private:
@@ -30,109 +39,116 @@ private:
 	std::string	m_Name;
 	std::function<void(float)>	m_LoadingCallback;
 
-	//std::unordered_map<std::string, CSharedPtr<class CCDO>> m_PreLoadedObject;
+	//사용준비가 완료된 오브젝트들 모음
+	std::unordered_map<std::string, CSharedPtr<class CCDO>> m_PreLoadedObject;
 
 public:
-	void SetName(const std::string& Name)
-	{
-		m_Name = Name;
-	}
-
-	const std::string& GetName()	const
-	{
-		return m_Name;
-	}
-
-	CSceneInfo* GetSceneInfo()	const
-	{
-		return m_SceneInfo;
-	}
-
-	CSceneResource* GetSceneResource()	const
-	{
-		return m_SceneResource;
-	}
-
-	CCameraManager* GetCameraManager()	const
-	{
-		return m_CameraManager;
-	}
-
-	CSceneCollision* GetCollisionManager()	const
-	{
-		return m_CollisionManager;
-	}
-
-	CSceneViewport* GetViewport()	const
-	{
-		return m_Viewport;
-	}
-
-	CNavigationManager* GetNavigationManager()	const
-	{
-		return m_NavManager;
-	}
-
-
-public:
-	void Start();
-	bool Init();
-	void Update(float DeltaTime);
-	void PostUpdate(float DeltaTime);
-	void Collision(float DeltaTime);
-	void Save(const char* FullPath);
-	void Load(const char* FullPath);
-	void GetAllGameObjectHierarchyName(std::vector<HierarchyObjectName>& vecName);
-	
+	inline void SetName(const std::string& Name);
+	inline const std::string& GetName()	const;
+	inline CSceneInfo* GetSceneInfo()	const;
+	inline CSceneResource* GetSceneResource()	const;
+	inline CCameraManager* GetCameraManager()	const;
+	inline CSceneCollision* GetCollisionManager()	const;
+	inline CSceneViewport* GetViewport()	const;
+	inline CNavigationManager* GetNavigationManager()	const;
 
 public:
 	class CGameObject* FindObject(const std::string& Name);
+	
 
 public:
 	template <typename T>
-	bool CreateSceneInfo()
-	{
-		SAFE_DELETE(m_SceneInfo);
-
-		m_SceneInfo = CCDO::CloneCDO<T>();
-
-		m_SceneInfo->m_Owner = this;
-
-		if (!m_SceneInfo->Init())
-		{
-			SAFE_DELETE(m_SceneInfo);
-			return false;
-		}
-
-		return true;
-	}
+	bool CreateSceneInfo();
 
 	template <typename T>
-	T* CreateObject(const std::string& Name)
-	{
-		T* Obj = CCDO::CloneCDO<T>();
-
-		Obj->SetName(Name);
-		Obj->SetScene(this);
-
-		if (!Obj->Init())
-		{
-			SAFE_RELEASE(Obj);
-			return nullptr;
-		}
-
-		m_ObjList.push_back(Obj);
-
-		if (m_Start)
-			Obj->Start();
-
-		return Obj;
-	}
+	T* CreateObject(const std::string& Name);
 
 	template <typename T>
-	void SetLoadingCallback(T* Obj, void(T::* Func)(float))
-	{
-		m_LoadingCallback = std::bind(Func, Obj, std::placeholders::_1);
-	}
+	void SetLoadingCallback(T* Obj, void(T::* Func)(float));
 };
 
+inline void CScene::SetName(const std::string& Name)
+{
+	m_Name = Name;
+}
+
+inline const std::string& CScene::GetName()	const
+{
+	return m_Name;
+}
+
+inline CSceneInfo* CScene::GetSceneInfo()	const
+{
+	return m_SceneInfo;
+}
+
+inline CSceneResource* CScene::GetSceneResource()	const
+{
+	return m_SceneResource;
+}
+
+inline CCameraManager* CScene::GetCameraManager()	const
+{
+	return m_CameraManager;
+}
+
+inline CSceneCollision* CScene::GetCollisionManager()	const
+{
+	return m_CollisionManager;
+}
+
+inline CSceneViewport* CScene::GetViewport()	const
+{
+	return m_Viewport;
+}
+
+inline CNavigationManager* CScene::GetNavigationManager()	const
+{
+	return m_NavManager;
+}
+
+template <typename T>
+bool CScene::CreateSceneInfo()
+{
+	SAFE_DELETE(m_SceneInfo);
+
+	m_SceneInfo = CCDO::CloneCDO<T>();
+
+	m_SceneInfo->m_Owner = this;
+
+	if (!m_SceneInfo->Init())
+	{
+		SAFE_DELETE(m_SceneInfo);
+		return false;
+	}
+
+	return true;
+}
+
+template <typename T>
+T* CScene::CreateObject(const std::string& Name)
+{
+	T* Obj = CCDO::CloneCDO<T>();
+
+	Obj->SetName(Name);
+	Obj->SetScene(this);
+
+	if (!Obj->Init())
+	{
+		SAFE_RELEASE(Obj);
+		return nullptr;
+	}
+
+	m_ObjList.push_back(Obj);
+
+	if (m_Start)
+		Obj->Start();
+
+	return Obj;
+}
+
+template <typename T>
+void CScene::SetLoadingCallback(T* Obj, void(T::* Func)(float))
+{
+	m_LoadingCallback = std::bind(Func, Obj, std::placeholders::_1);
+}

@@ -405,3 +405,10 @@ struct RequiredResource
 	tstring FileName;
 	std::string PathName;
 };
+enum class ERequiredResource
+{
+	ResType,
+	Name,
+	FileName,
+	PathName
+};
