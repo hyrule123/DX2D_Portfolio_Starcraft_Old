@@ -359,6 +359,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="fmod.cs" />
     <None Include="fmod_dsp.cs" />
     <None Include="fmod_errors.cs" />

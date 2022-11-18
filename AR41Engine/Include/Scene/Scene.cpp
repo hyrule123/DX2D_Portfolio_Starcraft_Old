@@ -1,5 +1,7 @@
 
 #include "Scene.h"
+#include "SceneManager.h"
+
 #include "../GameObject/GameObject.h"
 #include "../Input.h"
 #include "../Component/SpriteComponent.h"
@@ -59,6 +61,7 @@ CScene::~CScene()
 {
 	CInput::GetInst()->ClearCallback(this);
 
+	SAFE_DELETE(m_NavManager);
 	SAFE_DELETE(m_Viewport);
 	SAFE_DELETE(m_CollisionManager);
 	SAFE_DELETE(m_CameraManager);
@@ -414,3 +417,24 @@ CGameObject* CScene::FindObject(const std::string& Name)
 
 	return nullptr;
 }
+
+void CScene::AddPLO(CCDO* CDO)
+{
+	auto iter = m_listUsingPLO.begin();
+	auto iterEnd = m_listUsingPLO.end();
+
+	while (iter != iterEnd)
+	{
+		if ((*iter) == CDO)
+		{
+			return;
+		}
+
+		++iter;
+	}
+
+	m_listUsingPLO.push_back(CDO);
+}
+
+
+

@@ -17,7 +17,6 @@ CSpriteComponent::CSpriteComponent(const CSpriteComponent& component)	:
 		m_Animation = component.m_Animation->Clone();
 		m_Animation->SetOwner(this);
 	}
-		
 }
 
 CSpriteComponent::~CSpriteComponent()

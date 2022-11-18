@@ -13,8 +13,6 @@ CSceneResource::~CSceneResource()
 {
 	//클래스가 제거됨 -> 씬이 더이상 쓰이지 않음 -> 자신이 쓰던 리소스의 참조 카운트를 내린 다음 사용하지 않는 자원을 제거하도록 요청.
 	m_vecResource.clear();
-
-	CResourceManager::GetInst()->DeleteUnused();
 }
 
 bool CSceneResource::Init()

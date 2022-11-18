@@ -24,6 +24,7 @@ bool CMaterialManager::Init()
 		TEXT("teemo.png"));
 
 	Material = CreateMaterial<CMaterial>("TileMap");
+	Material->SetEssential(true);
 
 	std::vector<const TCHAR*>	vecFileNames;
 

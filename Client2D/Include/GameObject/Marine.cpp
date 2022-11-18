@@ -27,60 +27,10 @@ CMarine::CMarine()
 CMarine::CMarine(const CMarine& Obj) :
 	CGameObject(Obj)
 {
-	m_UnitRoot = (CSceneComponent*)FindComponent("UnitRoot");
-	m_MainSprite = (CUnitSpriteComponent*)FindComponent("MainSprite");
-	m_Anim = m_MainSprite->GetAnimation();
-	m_Camera = (CCameraComponent*)FindComponent("Camera");
-	m_Arm = (CTargetArm*)FindComponent("Arm");
-	
 }
 
 CMarine::~CMarine()
 {
-}
-
-void CMarine::Start()
-{
-	CGameObject::Start();
-
-	if (m_Scene)
-		m_Scene->GetCameraManager()->SetCurrentCamera(m_Camera);
-
-	CInput::GetInst()->AddBindFunction<CMarine>("Rotation", Input_Type::Push,
-		this, &CMarine::RotationInv, m_Scene);
-	CInput::GetInst()->AddBindFunction<CMarine>("RotationInv", Input_Type::Push,
-		this, &CMarine::Rotation, m_Scene);
-
-	CInput::GetInst()->AddBindFunction<CMarine>("MoveUp", Input_Type::Push,
-		this, &CMarine::MoveUp, m_Scene);
-	CInput::GetInst()->AddBindFunction<CMarine>("MoveDown", Input_Type::Push,
-		this, &CMarine::MoveDown, m_Scene);
-
-	CInput::GetInst()->AddBindFunction<CMarine>("Fire", Input_Type::Down,
-		this, &CMarine::Fire, m_Scene);
-}
-
-bool CMarine::Init()
-{
-	CGameObject::Init();
-
-	m_UnitRoot->SetWorldPosition(500.f, 500.f);
-
-	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
-	m_Anim->SetLoop("UltraIdle", true);
-	m_Anim->SetPlayTime("UltraIdle", 30.f);
-
-	m_Anim->AddAnimation("UltraMove", "UltraMove");
-	m_Anim->SetLoop("UltraMove", true);
-	m_Anim->SetPlayTime("UltraMove", 1.f);
-
-	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
-	m_Anim->SetLoop("UltraAttack", true);
-	m_Anim->SetPlayTime("UltraAttack", 0.5f);
-
-	m_Anim->SetCurrentAnimation("UltraAttack");
-
-	return true;
 }
 
 bool CMarine::CDOPreload()
@@ -89,7 +39,7 @@ bool CMarine::CDOPreload()
 
 	m_UnitRoot = CreateComponent<CUnitRootComponent>("UnitRoot");
 	SetRootComponent(m_UnitRoot);
-	
+
 
 	m_MainSprite = CreateComponent<CUnitSpriteComponent>("MainSprite");
 	m_UnitRoot->AddChild((CSceneComponent*)m_MainSprite);
@@ -112,8 +62,6 @@ bool CMarine::CDOPreload()
 
 
 	CMaterial* Material = m_MainSprite->GetMaterial(0);
-
-
 
 	m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
@@ -139,6 +87,60 @@ bool CMarine::CDOPreload()
 
 	return true;
 }
+
+bool CMarine::Init()
+{
+	CGameObject::Init();
+
+	m_UnitRoot = (CSceneComponent*)FindComponent("UnitRoot");
+	m_MainSprite = (CUnitSpriteComponent*)FindComponent("MainSprite");
+	m_Anim = m_MainSprite->GetAnimation();
+	m_Camera = (CCameraComponent*)FindComponent("Camera");
+	m_Arm = (CTargetArm*)FindComponent("Arm");
+
+	m_UnitRoot->SetWorldPosition(500.f, 500.f);
+
+	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
+	m_Anim->SetLoop("UltraIdle", true);
+	m_Anim->SetPlayTime("UltraIdle", 30.f);
+
+	m_Anim->AddAnimation("UltraMove", "UltraMove");
+	m_Anim->SetLoop("UltraMove", true);
+	m_Anim->SetPlayTime("UltraMove", 1.f);
+
+	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
+	m_Anim->SetLoop("UltraAttack", true);
+	m_Anim->SetPlayTime("UltraAttack", 0.5f);
+
+	m_Anim->SetCurrentAnimation("UltraAttack");
+
+	return true;
+}
+
+void CMarine::Start()
+{
+	CGameObject::Start();
+
+	if (m_Scene)
+		m_Scene->GetCameraManager()->SetCurrentCamera(m_Camera);
+
+	CInput::GetInst()->AddBindFunction<CMarine>("Rotation", Input_Type::Push,
+		this, &CMarine::RotationInv, m_Scene);
+	CInput::GetInst()->AddBindFunction<CMarine>("RotationInv", Input_Type::Push,
+		this, &CMarine::Rotation, m_Scene);
+
+	CInput::GetInst()->AddBindFunction<CMarine>("MoveUp", Input_Type::Push,
+		this, &CMarine::MoveUp, m_Scene);
+	CInput::GetInst()->AddBindFunction<CMarine>("MoveDown", Input_Type::Push,
+		this, &CMarine::MoveDown, m_Scene);
+
+	CInput::GetInst()->AddBindFunction<CMarine>("Fire", Input_Type::Down,
+		this, &CMarine::Fire, m_Scene);
+}
+
+
+
+
 
 void CMarine::Update(float DeltaTime)
 {

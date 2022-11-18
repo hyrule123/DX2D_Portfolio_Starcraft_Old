@@ -34,7 +34,7 @@ bool CClientManager::Init(HINSTANCE hInst)
     
     // SceneInfo »ý¼º
     //CSceneManager::GetInst()->CreateSceneInfo<CMainSceneInfo>();
-    CSceneManager::GetInst()->GetScene()->Load("Start.scn", SCENE_PATH);
+    CSceneManager::GetInst()->GetScene()->Load("Start.scn");
 
     return true;
 }

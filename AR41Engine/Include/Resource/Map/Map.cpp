@@ -528,6 +528,7 @@ bool CMap::LoadMap()
     delete vx4;
     delete vr4;
     delete wpe;
+    delete vf4;
 
 
     return Success;

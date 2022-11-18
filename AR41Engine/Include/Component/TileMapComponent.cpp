@@ -42,7 +42,6 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 	m_TileStartFrame(component.m_TileStartFrame),
 	m_TileEndFrame(component.m_TileEndFrame),
 	m_EditorMouseOnTile(nullptr)
-
 {
 
 	if (component.m_TileMaterial)
@@ -813,6 +812,19 @@ bool CTileMapComponent::CDOPreload()
 	// 배경용 메쉬 등록
 	SetMesh("LBUVRect");
 
+	return true;
+}
+
+bool CTileMapComponent::Init()
+{
+	if (!CPrimitiveComponent::Init())
+		return false;
+
+	m_SceneName = m_Scene->GetName();
+
+
+
+
 	m_TileMesh = m_Mesh;
 
 	m_Shape = ETileShape::Rect;
@@ -844,19 +856,9 @@ bool CTileMapComponent::CDOPreload()
 
 	AddMaterial("DefaultTileMapBack");
 
-	return true;
-}
-
-bool CTileMapComponent::Init()
-{
-	if (!CPrimitiveComponent::Init())
-		return false;
-
-	m_SceneName = m_Scene->GetName();
-
-	// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
-	// 생성해준다.
-	CThreadManager::GetInst()->CreateNavigationThread(this);
+	//// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
+	//// 생성해준다.
+	//CThreadManager::GetInst()->CreateNavigationThread(this);
 	
 	return true;
 }

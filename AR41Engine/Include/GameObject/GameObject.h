@@ -15,6 +15,14 @@ protected:
 	CGameObject(const CGameObject& Obj);
 	virtual ~CGameObject();
 
+public:
+	virtual void Start();
+	virtual bool Init();
+	virtual void Update(float DeltaTime);
+	virtual void PostUpdate(float DeltaTime);
+	virtual CGameObject* Clone()    const;
+	virtual void Save(FILE* File);
+	virtual void Load(FILE* File);
 
 protected:
 	class CScene* m_Scene;
@@ -116,21 +124,14 @@ public:
 	}
 
 
-public:
-	virtual void Start();
-	virtual bool Init();
-	virtual void Update(float DeltaTime);
-	virtual void PostUpdate(float DeltaTime);
-	virtual CGameObject* Clone()    const;
-	virtual void Save(FILE* File);
-	virtual void Load(FILE* File);
+
 
 
 public:
 	template <typename T>
 	T* CreateComponent(const std::string& Name)
 	{
-		T* Component = CloneCDO<T>();
+		T* Component = ClonePLO<T>();
 
 		Component->SetName(Name);
 		Component->SetScene(m_Scene);
@@ -151,7 +152,7 @@ public:
 		{
 			if (!m_RootComponent)
 			{
-				m_RootComponent = Component;
+				m_RootComponent = (CSceneComponent*)Component;
 			}
 
 			m_SceneComponentList.push_back((CSceneComponent*)Component);

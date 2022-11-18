@@ -13,8 +13,12 @@ typedef struct Chunk
         TypeName{},
         length(), Data()
     {
+    }
+    ~Chunk()
+    {
         SAFE_DELETE_ARRAY(Data);
     }
+
 
 } Chunk;
 

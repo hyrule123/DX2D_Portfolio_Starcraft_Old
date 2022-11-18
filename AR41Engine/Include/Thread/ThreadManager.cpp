@@ -181,6 +181,9 @@ void CThreadManager::DeleteNavigationThread(CTileMapComponent* TileMap)
 
 		CThread* Thread = FindThread(ThreadName);
 
+		if (!Thread)
+			continue;
+
 		Thread->ReStart();
 
 		Delete(ThreadName);

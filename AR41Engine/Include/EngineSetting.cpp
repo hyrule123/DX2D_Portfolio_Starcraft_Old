@@ -26,7 +26,6 @@ CEngineSetting::~CEngineSetting()
 void CEngineSetting::Init()
 {
 	//CSV 파싱용 리소스 타입 등록
-
 	CCDO::AddResourceType(MESH, EResourceType::Mesh);
 	CCDO::AddResourceType(SHADER, EResourceType::Shader);
 	CCDO::AddResourceType(CBUFFER, EResourceType::CBuffer);
@@ -39,7 +38,7 @@ void CEngineSetting::Init()
 	CCDO::AddResourceType(MAP, EResourceType::Map);
 	CCDO::AddResourceType(RESOURCEEND, EResourceType::End);
 
-
+	CCDO::CreateCDO<CGameObject>();
 	CCDO::CreateCDO<CSceneComponent>();
 	CCDO::CreateCDO<CSpriteComponent>();
 	CCDO::CreateCDO<CCameraComponent>();

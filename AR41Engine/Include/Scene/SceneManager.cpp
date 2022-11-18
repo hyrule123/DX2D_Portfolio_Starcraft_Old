@@ -9,6 +9,7 @@
 #include "../UI/UIWindow.h"
 #include "../UI/UIWidget.h"
 
+#include "../Resource/ResourceManager.h"
 #include "../Resource/GameResource.h"
 
 DEFINITION_SINGLE(CSceneManager)
@@ -22,6 +23,8 @@ CSceneManager::CSceneManager()	:
 
 CSceneManager::~CSceneManager()
 {
+	CCDO::ClearAll();
+
 	SAFE_DELETE(m_NextScene);
 	SAFE_DELETE(m_Scene);
 	SAFE_DELETE(m_PrevScene);
@@ -82,6 +85,10 @@ bool CSceneManager::ChangeScene()
 			//씬 로드가 완료되면 이전 씬의 인스턴스를 제거해서 리소스 관리
 			//만약 멀티스레드를 사용중일 경우에는 이미 제거되어 있을 것임. 그렇지 않을 경우 여기서 제거
 			SAFE_DELETE(m_PrevScene);
+			CResourceManager::GetInst()->DeleteUnused();
+
+			//PreLoaded Object도 제거
+			CCDO::DeleteUnusedPLO();
 
 			return true;
 		}
@@ -89,6 +96,8 @@ bool CSceneManager::ChangeScene()
 
 	return false;
 }
+
+
 
 void CSceneManager::CreateNextScene(bool AutoChange)
 {
@@ -125,3 +134,24 @@ void CSceneManager::AddSceneResource(CGameResource* ResPtr)
 	}
 		
 }
+
+void CSceneManager::AddPLO(CCDO* PLO)
+{
+	if (m_NextScene)
+	{
+		m_NextScene->AddPLO(PLO);
+	}
+	else if (m_Scene)
+	{
+		m_Scene->AddPLO(PLO);
+	}
+		
+
+	
+}
+
+
+
+
+
+

@@ -6,6 +6,7 @@
 
 std::unordered_map<std::string, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
 std::unordered_map<std::string, EResourceType> CCDO::m_mapResType;
+std::unordered_map<std::string, CSharedPtr<CCDO>> CCDO::m_mapPreLoadObject;
 
 CCDO::CCDO():
 	m_vecRequiredResource()
@@ -16,12 +17,11 @@ CCDO::CCDO(const CCDO& CDO):
 	CRef(CDO),
 	m_vecRequiredResource(CDO.m_vecRequiredResource)
 {
+	//m_vecRequiredResource는 복사 X
 }
 
 CCDO::~CCDO()
 {
-	if (m_vecRequiredResource)
-		SAFE_DELETE(m_vecRequiredResource);
 }
 
 
@@ -76,10 +76,6 @@ bool CCDO::LoadMetaData()
 					else
 					{
 						FoundVal = true;
-						//없으면 새 CSV 파일을 생성해주고
-						if (!m_vecRequiredResource)
-							m_vecRequiredResource = new std::vector<RequiredResource>;
-
 						//리소스 타입을 일단 등록
 						Res.ResType = Type;
 					}
@@ -128,55 +124,57 @@ bool CCDO::LoadMetaData()
 
 			//만들어진 리소스 정보를 벡터 컨테이너에 삽입
 			if(FoundVal)
-				m_vecRequiredResource->emplace_back(Res);
+				m_vecRequiredResource.emplace_back(Res);
 		}
 		
+
+		SAFE_DELETE(CSV);
 		return true;
 	}
+
+	SAFE_DELETE(CSV);
 	return false;
 }
 
 
 bool CCDO::CDOPreload()
 {
-	if (m_vecRequiredResource)
-	{
-		if (!(*m_vecRequiredResource).empty())
-		{
-			size_t size = (*m_vecRequiredResource).size();
 
-			for (size_t i = 0; i < size; ++i)
+	if (!m_vecRequiredResource.empty())
+	{
+		size_t size = m_vecRequiredResource.size();
+
+		for (size_t i = 0; i < size; ++i)
+		{
+			switch (m_vecRequiredResource[i].ResType)
 			{
-				switch ((*m_vecRequiredResource)[i].ResType)
-				{
-				case EResourceType::Mesh:
-					break;
-				case EResourceType::Shader:
-					break;
-				case EResourceType::CBuffer:
-					break;
-				case EResourceType::Texture:
-				{
-					CResourceManager::GetInst()->LoadTexture((*m_vecRequiredResource)[i].Name, (*m_vecRequiredResource)[i].FileName.c_str(), (*m_vecRequiredResource)[i].PathName);
-					break;
-				}
-				case EResourceType::Material:
-					break;
-				case EResourceType::Animation:
-					break;
-				case EResourceType::Sound:
-					break;
-				case EResourceType::Font:
-					break;
-				case EResourceType::FontCollection:
-					break;
-				case EResourceType::Map:
-					break;
-				case EResourceType::End:
-					break;
-				default:
-					break;
+			case EResourceType::Mesh:
+				break;
+			case EResourceType::Shader:
+				break;
+			case EResourceType::CBuffer:
+				break;
+			case EResourceType::Texture:
+			{
+				CResourceManager::GetInst()->LoadTexture(m_vecRequiredResource[i].Name, m_vecRequiredResource[i].FileName.c_str(), m_vecRequiredResource[i].PathName);
+				break;
 			}
+			case EResourceType::Material:
+				break;
+			case EResourceType::Animation:
+				break;
+			case EResourceType::Sound:
+				break;
+			case EResourceType::Font:
+				break;
+			case EResourceType::FontCollection:
+				break;
+			case EResourceType::Map:
+				break;
+			case EResourceType::End:
+				break;
+			default:
+				break;
 		}
 	}
 }
@@ -317,3 +315,66 @@ CCDO* CCDO::CloneCDO(const size_t& hash_code)
 	return CDO->Clone();
 }
 
+void CCDO::ClearAll()
+{
+	m_mapCDO.clear();
+	m_mapResType.clear();
+	m_mapPreLoadObject.clear();
+}
+
+
+CCDO* CCDO::FindPLO(const std::string& ClassName)
+{
+	auto iter = m_mapPreLoadObject.find(ClassName);
+	if (iter != m_mapPreLoadObject.end())
+		return iter->second;
+
+	return nullptr;
+}
+
+CCDO* CCDO::ClonePLO(const std::string& ClassName)
+{
+	CCDO* PLO = FindPLO(ClassName);
+
+	if (!PLO)
+	{
+		PLO = CreatePLO(ClassName);
+	}
+
+	return PLO->Clone();
+}
+
+CCDO* CCDO::CreatePLO(const std::string& ClassName)
+{
+	CCDO* PLO = CCDO::CloneCDO(ClassName);
+
+	if (!PLO)
+	{
+		assert(0);
+		return nullptr;
+	}
+
+	PLO->CDOPreload();
+	m_mapPreLoadObject.insert(std::make_pair(ClassName, PLO));
+
+	CSceneManager::GetInst()->AddPLO(PLO);
+
+	return PLO;
+}
+
+void CCDO::DeleteUnusedPLO()
+{
+	auto iter = m_mapPreLoadObject.begin();
+	auto iterEnd = m_mapPreLoadObject.end();
+
+	while (iter != iterEnd)
+	{
+		if (1 == iter->second->GetRefCount())
+		{
+			iter = m_mapPreLoadObject.erase(iter);
+			continue;
+		}
+
+		++iter;
+	}
+}

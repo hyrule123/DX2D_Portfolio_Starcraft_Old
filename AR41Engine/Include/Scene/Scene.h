@@ -39,8 +39,8 @@ private:
 	std::string	m_Name;
 	std::function<void(float)>	m_LoadingCallback;
 
-	//사용준비가 완료된 오브젝트들 모음
-	std::unordered_map<std::string, CSharedPtr<class CCDO>> m_PreLoadedObject;
+	//씬에서 사용하기로 한 PLO 목록을 등록한다(참조카운트용)
+	std::list<CSharedPtr<class CCDO>> m_listUsingPLO;
 
 public:
 	inline void SetName(const std::string& Name);
@@ -54,7 +54,8 @@ public:
 
 public:
 	class CGameObject* FindObject(const std::string& Name);
-	
+	void AddPLO(class CCDO* CDO);
+
 
 public:
 	template <typename T>
@@ -107,6 +108,8 @@ inline CNavigationManager* CScene::GetNavigationManager()	const
 	return m_NavManager;
 }
 
+
+
 template <typename T>
 bool CScene::CreateSceneInfo()
 {
@@ -127,8 +130,9 @@ bool CScene::CreateSceneInfo()
 
 template <typename T>
 T* CScene::CreateObject(const std::string& Name)
-{
-	T* Obj = CCDO::CloneCDO<T>();
+{	
+	T* Obj = CCDO::ClonePLO<T>();
+
 
 	Obj->SetName(Name);
 	Obj->SetScene(this);
@@ -147,8 +151,10 @@ T* CScene::CreateObject(const std::string& Name)
 	return Obj;
 }
 
+
 template <typename T>
 void CScene::SetLoadingCallback(T* Obj, void(T::* Func)(float))
 {
 	m_LoadingCallback = std::bind(Func, Obj, std::placeholders::_1);
 }
+
