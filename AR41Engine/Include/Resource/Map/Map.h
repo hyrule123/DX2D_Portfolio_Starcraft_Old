@@ -32,7 +32,6 @@ protected:
     CMap();
     virtual ~CMap();
     
-
     inline bool LoadComplete();
 
 protected:

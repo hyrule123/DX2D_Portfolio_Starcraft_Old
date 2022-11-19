@@ -41,6 +41,7 @@ bool CCDO::LoadMetaData()
 	FilePath += TEXT(".csv");
 
 	CCSVEditor* CSV = new CCSVEditor;
+	bool ret = false;
 
 	//파일을 읽었다는것은 CDO에서 요구하는 리소스가 있다는 뜻이므로
 	if (CSV->ReadFile(FilePath))
@@ -109,9 +110,6 @@ bool CCDO::LoadMetaData()
 						break;
 					}
 
-					case ERequiredResource::PathName:
-						Res.PathName = CellVal;
-						break;
 					default:
 						break;
 					}
@@ -128,12 +126,11 @@ bool CCDO::LoadMetaData()
 		}
 		
 
-		SAFE_DELETE(CSV);
-		return true;
+		ret = true;
 	}
 
 	SAFE_DELETE(CSV);
-	return false;
+	return ret;
 }
 
 
@@ -156,7 +153,7 @@ bool CCDO::CDOPreload()
 				break;
 			case EResourceType::Texture:
 			{
-				CResourceManager::GetInst()->LoadTexture(m_vecRequiredResource[i].Name, m_vecRequiredResource[i].FileName.c_str(), m_vecRequiredResource[i].PathName);
+				CResourceManager::GetInst()->LoadTexture(m_vecRequiredResource[i].Name, m_vecRequiredResource[i].FileName.c_str(), TEXTURE_PATH);
 				break;
 			}
 			case EResourceType::Material:
@@ -184,35 +181,12 @@ bool CCDO::CDOPreload()
 
 void CCDO::Save(FILE* File)
 {
-	int	Length = (int)m_Name.length();
-
-	fwrite(&Length, sizeof(int), 1, File);
-	fwrite(m_Name.c_str(), sizeof(char), Length, File);
-
-	Length = (int)m_TypeName.length();
-
-	fwrite(&Length, sizeof(int), 1, File);
-	fwrite(m_TypeName.c_str(), sizeof(char), Length, File);
-
-	fwrite(&m_TypeID, sizeof(size_t), 1, File);
+	//저장할 거 없음
 }
 
 void CCDO::Load(FILE* File)
 {
-	int	Length = 0;
-	char	Text[256] = {};
 
-	fread(&Length, sizeof(int), 1, File);
-	fread(Text, sizeof(char), Length, File);
-	m_Name = Text;
-
-	memset(Text, 0, 256);
-
-	fread(&Length, sizeof(int), 1, File);
-	fread(Text, sizeof(char), Length, File);
-	m_TypeName = Text;
-
-	fread(&m_TypeID, sizeof(size_t), 1, File);
 }
 
 

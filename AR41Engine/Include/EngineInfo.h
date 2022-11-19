@@ -403,12 +403,10 @@ struct RequiredResource
 	EResourceType ResType;
 	std::string Name;
 	tstring FileName;
-	std::string PathName;
 };
 enum class ERequiredResource
 {
 	ResType,
 	Name,
-	FileName,
-	PathName
+	FileName
 };

@@ -145,7 +145,6 @@ void CSceneManager::AddPLO(CCDO* PLO)
 	{
 		m_Scene->AddPLO(PLO);
 	}
-		
 
 	
 }

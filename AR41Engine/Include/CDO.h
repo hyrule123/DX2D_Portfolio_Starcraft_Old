@@ -64,7 +64,7 @@ public:
 
 
 
-
+//Preloaded Objects
 protected:
 	//사용준비가 완료된 오브젝트들 모음(Clone() -> Init() 해주면 사용 가능)
 	static std::unordered_map<std::string, CSharedPtr<class CCDO>> m_mapPreLoadObject;

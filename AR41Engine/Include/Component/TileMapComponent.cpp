@@ -812,6 +812,10 @@ bool CTileMapComponent::CDOPreload()
 	// 배경용 메쉬 등록
 	SetMesh("LBUVRect");
 
+	m_TileMesh = m_Mesh;
+
+	m_Shape = ETileShape::Rect;
+
 	return true;
 }
 
@@ -822,17 +826,8 @@ bool CTileMapComponent::Init()
 
 	m_SceneName = m_Scene->GetName();
 
-
-
-
-	m_TileMesh = m_Mesh;
-
-	m_Shape = ETileShape::Rect;
-
 	m_TileMapCBuffer = new CTileMapConstantBuffer;
-
 	m_TileMapCBuffer->Init();
-
 	m_TileMapCBuffer->SetStart(Vector2(0.f, 0.f));
 	m_TileMapCBuffer->SetEnd(Vector2(160.f, 80.f));
 	m_TileMapCBuffer->SetFrame(0);

@@ -65,15 +65,15 @@ bool CMarine::CDOPreload()
 
 	m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-
-	CResourceManager::GetInst()->CreateAnimationSequence2D(
-		"UltraIdle", "UltraLisk", TEXT("_SCAssets\\Unit\\zerg\\ultra(Ultralisk).bmp"));
-
 	CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
-
 
 	if (!UltraTex)
 		assert(0);
+
+	CResourceManager::GetInst()->CreateAnimationSequence2D(
+		"UltraIdle", UltraTex);
+
+
 	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
