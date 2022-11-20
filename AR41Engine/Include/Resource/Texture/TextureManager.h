@@ -25,7 +25,13 @@ public:
 	class CTexture* LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	class CTexture* LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+
+	//MapManager에서 직접 리소스 로딩하는 용도
+	class CTexture* LoadTextureArrayByvecTextureResourceInfo(
+		const std::string& Name, const std::vector<struct TextureResourceInfo*>& vecTexResInfo);
+
 	class CTexture* FindTexture(const std::string& Name);
+
 	void ReleaseTexture(const std::string& Name);
 	void DeleteUnused();
 

@@ -24,82 +24,32 @@ private:
 	int				m_Index;
 	Vector2			m_TileStart;
 	Vector2			m_TileEnd;
-	std::vector<Animation2DFrameData>   m_vecFrameData;
-	EAnimation2DType    m_Anim2DType;
-	int					m_Frame;
-	float				m_Time;
-	float				m_FrameTime;
-	float				m_PlayTime;
-	float				m_PlayScale;
-	bool				m_Loop;
-	bool				m_Reverse;
-	float				m_Opacity;
+	int				m_Frame;
+
 
 public:
-	Animation2DFrameData GetFrameData()
-	{
-		return m_vecFrameData[m_Frame];
-	}
+	inline void SetFrame(const int& Frame);
+	inline int GetFrame() const;
 
-	bool FrameEmpty()	const
-	{
-		return m_vecFrameData.empty();
-	}
+	inline bool GetEnable()	const;
 
-	bool GetEnable()	const
-	{
-		return m_Enable;
-	}
+	inline ETileOption GetTileOption()	const;
 
-	float GetOpacity()	const
-	{
-		return m_Opacity;
-	}
+	inline const Vector3& GetPos()	const;
 
-	ETileOption GetTileOption()	const
-	{
-		return m_TileOption;
-	}
+	inline const Vector3& GetCenter()	const;
 
-	const Vector3& GetPos()	const
-	{
-		return m_Pos;
-	}
+	inline const Matrix& GetWorldMatrix()	const;
 
-	const Vector3& GetCenter()	const
-	{
-		return m_Center;
-	}
+	inline int GetIndexX()	const;
 
-	const Matrix& GetWorldMatrix()	const
-	{
-		return m_matWorld;
-	}
+	inline int GetIndexY()	const;
 
-	int GetIndexX()	const
-	{
-		return m_IndexX;
-	}
+	inline int GetIndex()	const;
 
-	int GetIndexY()	const
-	{
-		return m_IndexY;
-	}
+	inline const Vector2& GetTileStart()	const;
 
-	int GetIndex()	const
-	{
-		return m_Index;
-	}
-
-	const Vector2& GetTileStart()	const
-	{
-		return m_TileStart;
-	}
-
-	const Vector2& GetTileEnd()	const
-	{
-		return m_TileEnd;
-	}
+	inline const Vector2& GetTileEnd()	const;
 
 public:
 	void Update(float DeltaTime);
@@ -109,3 +59,62 @@ public:
 	void Load(FILE* File);
 };
 
+inline void CTile::SetFrame(const int& Frame)
+{
+	m_Frame = Frame;
+}
+
+inline int CTile::GetFrame() const
+{
+	return m_Frame;
+}
+
+inline bool CTile::GetEnable()	const
+{
+	return m_Enable;
+}
+
+inline ETileOption CTile::GetTileOption()	const
+{
+	return m_TileOption;
+}
+
+inline const Vector3& CTile::GetPos()	const
+{
+	return m_Pos;
+}
+
+inline const Vector3& CTile::GetCenter()	const
+{
+	return m_Center;
+}
+
+inline const Matrix& CTile::GetWorldMatrix()	const
+{
+	return m_matWorld;
+}
+
+inline int CTile::GetIndexX()	const
+{
+	return m_IndexX;
+}
+
+inline int CTile::GetIndexY()	const
+{
+	return m_IndexY;
+}
+
+inline int CTile::GetIndex()	const
+{
+	return m_Index;
+}
+
+inline const Vector2& CTile::GetTileStart()	const
+{
+	return m_TileStart;
+}
+
+inline const Vector2& CTile::GetTileEnd()	const
+{
+	return m_TileEnd;
+}

@@ -298,6 +298,19 @@ bool CResourceManager::LoadTextureArrayFullPath(const std::string& Name, const s
 	return false;
 }
 
+bool CResourceManager::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, const std::vector<struct TextureResourceInfo*>& vecTexResInfo)
+{
+	CTexture* Texture = m_TextureManager->LoadTextureArrayByvecTextureResourceInfo(Name, vecTexResInfo);
+
+	if (Texture)
+	{
+		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));
+		return true;
+	}
+
+	return false;
+}
+
 CTexture* CResourceManager::FindTexture(const std::string& Name)
 {
 	return m_TextureManager->FindTexture(Name);

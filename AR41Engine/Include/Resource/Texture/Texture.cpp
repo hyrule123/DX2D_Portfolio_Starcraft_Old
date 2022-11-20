@@ -400,6 +400,25 @@ bool CTexture::LoadTextureArrayFullPath(const std::string& Name, const std::vect
 	return true;
 }
 
+bool CTexture::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, const std::vector<TextureResourceInfo*>& vecTexResInfo)
+{
+	m_vecTextureInfo.resize(vecTexResInfo.size());
+	std::move(vecTexResInfo.begin(), vecTexResInfo.end(), m_vecTextureInfo);
+
+	SetName(Name);
+
+	m_ImageType = EImageType::Array;
+
+	// Shader Resource View Array »ý¼º
+	if (!CreateResourceArray())
+		return false;
+
+	return true;
+}
+
+
+
+
 //bool CTexture::LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image)
 //{
 //	Info->Image = Image;

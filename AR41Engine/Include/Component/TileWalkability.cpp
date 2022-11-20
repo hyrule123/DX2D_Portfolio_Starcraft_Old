@@ -1,56 +1,50 @@
-#include "Tile.h"
+#include "TileWalkability.h"
+
 #include "TileMapComponent.h"
 
-CTile::CTile()	:
+
+CTileWalkability::CTileWalkability() :
 	m_Owner(nullptr),
 	m_Enable(true),
 	m_TileOption(ETileOption::None),
 	m_IndexX(0),
 	m_IndexY(0),
-	m_Index(0),
-	m_Frame()
+	m_Index(0)
 {
 }
 
-CTile::CTile(const CTile& Tile)
+CTileWalkability::CTileWalkability(const CTileWalkability& Tile)
 {
 	*this = Tile;
 
 	m_Owner = nullptr;
 }
 
-CTile::~CTile()
+CTileWalkability::~CTileWalkability()
 {
 }
 
+bool CTileWalkability::Init()
+{
+	return true;
+}
 
-
-void CTile::Update(float DeltaTime)
+void CTileWalkability::Update(float DeltaTime)
 {
 	// 애니메이션 연산
 }
 
-void CTile::UpdateTransform(float DeltaTime)
+void CTileWalkability::UpdateTransform(float DeltaTime)
 {
-	// 트랜스폼 연산
-	Vector3	OwnerPos = m_Owner->GetWorldPos();
 
-	Vector3	Pos = OwnerPos + m_Pos;
-
-	Matrix	matScale, matTranslate;
-
-	matScale.Scaling(m_Size.x, m_Size.y, 1.f);
-	matTranslate.Translation(Pos);
-
-	m_matWorld = matScale * matTranslate;
 }
 
-CTile* CTile::Clone()
+CTileWalkability* CTileWalkability::Clone()
 {
-	return new CTile(*this);
+	return new CTileWalkability(*this);
 }
 
-void CTile::Save(FILE* File)
+void CTileWalkability::Save(FILE* File)
 {
 	fwrite(&m_Enable, sizeof(bool), 1, File);
 
@@ -64,12 +58,9 @@ void CTile::Save(FILE* File)
 	fwrite(&m_IndexY, sizeof(int), 1, File);
 	fwrite(&m_Index, sizeof(int), 1, File);
 
-	fwrite(&m_TileStart, sizeof(Vector2), 1, File);
-	fwrite(&m_TileEnd, sizeof(Vector2), 1, File);
-
 }
 
-void CTile::Load(FILE* File)
+void CTileWalkability::Load(FILE* File)
 {
 	fread(&m_Enable, sizeof(bool), 1, File);
 
@@ -82,8 +73,4 @@ void CTile::Load(FILE* File)
 	fread(&m_IndexX, sizeof(int), 1, File);
 	fread(&m_IndexY, sizeof(int), 1, File);
 	fread(&m_Index, sizeof(int), 1, File);
-
-	fread(&m_TileStart, sizeof(Vector2), 1, File);
-	fread(&m_TileEnd, sizeof(Vector2), 1, File);
-
 }

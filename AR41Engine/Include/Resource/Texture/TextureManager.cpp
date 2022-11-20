@@ -188,6 +188,30 @@ CTexture* CTextureManager::LoadTextureArrayFullPath(const std::string& Name, con
 	return Texture;
 }
 
+
+CTexture* CTextureManager::LoadTextureArrayByvecTextureResourceInfo(
+	const std::string& Name,
+	const std::vector<TextureResourceInfo*>& vecTexResInfo)
+{
+	CTexture* Texture = FindTexture(Name);
+
+	if (Texture)
+		return Texture;
+
+	Texture = new CTexture;
+	Texture->SetResourceType(EResourceType::Texture);
+
+	if (!Texture->LoadTextureArrayByvecTextureResourceInfo(Name, vecTexResInfo))
+	{
+		SAFE_DELETE(Texture);
+		return nullptr;
+	}
+
+	m_mapTexture.insert(std::make_pair(Name, Texture));
+
+	return Texture;
+}
+
 CTexture* CTextureManager::FindTexture(const std::string& Name)
 {
 	auto	iter = m_mapTexture.find(Name);

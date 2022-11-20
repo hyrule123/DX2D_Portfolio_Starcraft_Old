@@ -383,7 +383,42 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		m_vecTileInfo[i].Opacity = 1.f;
 	}
 
+
+	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
+
+void CTileMapComponent::CreateTileWalkibility(int WalkabilityCountX, int WalkabilityCountY, Vector2 TileWalkabilitySize)
+{
+	m_WalkabilityCountX = WalkabilityCountX;
+	m_WalkabilityCountY = WalkabilityCountY;
+	m_WalkabilityCount = m_WalkabilityCountX * m_WalkabilityCountY;
+	m_TileWalkabilitySize = TileWalkabilitySize;
+	m_vecTileWalkability.resize(m_WalkabilityCount);
+
+	Vector2 TilePos;
+	Vector2 HalfSize = m_TileWalkabilitySize / 2.f;
+
+	for (int i = 0; i < m_WalkabilityCountY; ++i)
+	{
+		TilePos.y += TileWalkabilitySize.y;
+
+		for (int j = 0; j < m_WalkabilityCountX; ++j)
+		{
+			TilePos.x += TileWalkabilitySize.x;
+
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].Pos = TilePos;
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].Center = TilePos + HalfSize;
+
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].Index = i * j;
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].IndexX = j;
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].IndexY = i;
+			m_vecTileWalkability[m_WalkabilityCountX * i + j].TileOption = ETileOption::None;
+		}
+
+	}
+}
+
+
 
 int CTileMapComponent::GetTileIndexX(const Vector2& Pos)
 {
@@ -591,6 +626,29 @@ CTile* CTileMapComponent::GetTile(int Index)
 		return nullptr;
 
 	return m_vecTile[Index];
+}
+
+int CTileMapComponent::GetTileTextureFrame(int X, int Y)
+{
+	if (X < 0 || X >= m_CountX || Y < 0 || Y >= m_CountY)
+		return -1;
+
+	return m_vecTile[Y * m_CountX + X]->GetFrame();
+}
+
+int CTileMapComponent::GetTileTextureFrame(int TileIndex)
+{
+	if (TileIndex < 0 || TileIndex > m_Count)
+		return -1;
+
+	return m_vecTile[TileIndex]->GetFrame();
+}
+
+void CTileMapComponent::GetWalkabilityRegion(int StartX, int StartY, int SizeX, int SizeY, std::vector<ETileOption>&)
+{
+
+
+	for(int y = StartY; )
 }
 
 int CTileMapComponent::GetTileRenderIndexX(const Vector3& Pos)
@@ -853,7 +911,7 @@ bool CTileMapComponent::Init()
 
 	//// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
 	//// 생성해준다.
-	//CThreadManager::GetInst()->CreateNavigationThread(this);
+	
 	
 	return true;
 }

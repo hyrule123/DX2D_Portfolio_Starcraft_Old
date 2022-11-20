@@ -24,6 +24,17 @@ struct TextureResourceInfo
 		memset(PathName, 0, sizeof(char) * MAX_PATH);
 	}
 
+	//경로정보가 없을경우 동적할당하지 않기 위한 용도
+	TextureResourceInfo(bool b) :
+		SRV(nullptr),
+		Width(0),
+		Height(0),
+		FileName(),
+		PathName()
+	{
+		Image = new DirectX::ScratchImage;
+	}
+
 	~TextureResourceInfo()
 	{
 		SAFE_RELEASE(SRV);
@@ -38,6 +49,9 @@ class CTexture :
 {
 	friend class CTextureManager;
 
+	//맵에서 직접 TextureInfo를 만들어서 배열텍스처를 만들어야함.
+	friend class CMap;
+
 protected:
 	CTexture();
 	virtual ~CTexture();
@@ -48,30 +62,15 @@ protected:
 	ID3D11ShaderResourceView* m_ArraySRV;
 
 public:
-	EImageType GetImageType()	const
-	{
-		return m_ImageType;
-	}
+	inline EImageType GetImageType()	const;
 
-	ID3D11ShaderResourceView* GetResource(int Index = 0)	const
-	{
-		return m_vecTextureInfo[Index]->SRV;
-	}
+	inline ID3D11ShaderResourceView* GetResource(int Index = 0)	const;
 
-	unsigned int GetWidth(int Index = 0)	const
-	{
-		return m_vecTextureInfo[Index]->Width;
-	}
+	inline unsigned int GetWidth(int Index = 0)	const;
 
-	unsigned int GetHeight(int Index = 0)	const
-	{
-		return m_vecTextureInfo[Index]->Height;
-	}
+	inline unsigned int GetHeight(int Index = 0)	const;
 
-	int GetImageCount()	const
-	{
-		return (int)m_vecTextureInfo.size();
-	}
+	inline int GetImageCount()	const;
 
 
 
@@ -85,7 +84,11 @@ public:
 	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
-	/*bool LoadTextureByScratchImage(const std::string& Name, DirectX::ScratchImage& Image);*/
+
+	//MapManager 용
+	//MapManager에서 직접 TextureResourceInfo를 생성하고 여기로 전달
+	bool LoadTextureArrayByvecTextureResourceInfo(
+		const std::string& Name, const std::vector<TextureResourceInfo*>& vecTexResInfo);
 
 
 private:
@@ -102,3 +105,23 @@ public:
 	void Load(FILE* File);
 };
 
+inline EImageType CTexture::GetImageType()	const
+{
+	return m_ImageType;
+}
+
+inline ID3D11ShaderResourceView* CTexture::GetResource(int Index = 0)	const
+{
+	return m_vecTextureInfo[Index]->SRV;
+}
+
+inline unsigned int CTexture::GetHeight(int Index)	const
+{
+	return m_vecTextureInfo[Index]->Height;
+}
+
+
+inline int CTexture::GetImageCount()	const
+{
+	return (int)m_vecTextureInfo.size();
+}
