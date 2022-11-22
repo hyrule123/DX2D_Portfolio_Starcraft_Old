@@ -400,10 +400,10 @@ bool CTexture::LoadTextureArrayFullPath(const std::string& Name, const std::vect
 	return true;
 }
 
-bool CTexture::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, const std::vector<TextureResourceInfo*>& vecTexResInfo)
+bool CTexture::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, std::vector<TextureResourceInfo*>& vecTexResInfo)
 {
 	m_vecTextureInfo.resize(vecTexResInfo.size());
-	std::move(vecTexResInfo.begin(), vecTexResInfo.end(), m_vecTextureInfo);
+	m_vecTextureInfo = std::move(vecTexResInfo);
 
 	SetName(Name);
 
@@ -468,7 +468,34 @@ bool CTexture::CreateResourceArray()
 			const DirectX::Image* Dest = &Images[j];
 
 			memcpy(Src->pixels, Dest->pixels, Src->slicePitch);
+
+
+			//{
+			//	FILE* file = nullptr;
+			//	std::string filename = "C:/Users/ekdrn/Downloads/asdf/";
+			//	filename += "test";
+			//	filename += std::to_string(i) + "_" + std::to_string(j) + ".txt";
+			//	fopen_s(&file, filename.c_str(), "wt");
+			//	size_t size = 32 * 32;
+			//	for (size_t i = 0; i < size; ++i)
+			//	{
+			//		size_t pixel = 4;
+			//		std::string pixelstr;
+			//		for (size_t j = 0; j < pixel; ++j)
+			//		{
+			//			pixelstr += std::to_string(Dest->pixels[i * 4 + j]) + " ";
+
+			//		}
+			//		pixelstr += "\n";
+			//		fwrite(pixelstr.c_str(), sizeof(uint8_t), pixelstr.size(), file);
+			//	}
+
+			//	fclose(file);
+			//}
+
 		}
+
+
 
 		CreateResource((int)i);
 	}

@@ -190,6 +190,7 @@
     <ClCompile Include="GameObject\Marine.cpp" />
     <ClCompile Include="GameObject\Monster.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
+    <ClCompile Include="GameObject\TileMapHolder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\EditorDefaultScene.cpp" />
     <ClCompile Include="Scene\LoadingSceneInfo.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="GameObject\Marine.h" />
     <ClInclude Include="GameObject\Monster.h" />
     <ClInclude Include="GameObject\Player2D.h" />
+    <ClInclude Include="GameObject\TileMapHolder.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\EditorDefaultScene.h" />
     <ClInclude Include="Scene\LoadingSceneInfo.h" />

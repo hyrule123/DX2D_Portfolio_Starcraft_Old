@@ -53,7 +53,8 @@ protected:
 
 protected:
     // ============맵 데이터===========
-    std::wstring m_FileName;
+    tstring m_FileName;
+    std::string m_FileNameMultiByte;
 
     //로드된 맵 데이터를 보관하는 변수
     Chunk m_MapDataChunk[EMapDataTypeEnd];
@@ -70,21 +71,27 @@ protected:
     int m_MapSizeY;
     TerrainInfo m_Terrain;
 
-
-
     //타일맵
-    class CTileMapComponent* m_TileMap;
-    //로드된 맵 데이터를 읽어서 타일맵을 생성.
-    bool LoadMap();
-
-    //========== 이미지 데이터 보관 ==========
+    CSharedPtr<class CTileMapComponent> m_TileMap;
 
 
 
 public:
-    int LoadMapDataFromFile(const TCHAR* FullPath);
-    inline DirectX::ScratchImage* GetMapImage() const;
 
+    //-----------------------------------------------------------------------------
+// Extracts an archived file and saves it to the disk.
+//
+// Parameters :
+//
+//   char * szArchiveName  - Archive file name - 아카이브의 파일명(풀경로)
+//   char * szArchivedFile - Name/number of archived file. 
+//							- 아카이브 내부의 파일명(맵만 뽑아낼것이므로 "staredit\\scenario.chk"로 고정
+//   char * szFileName     - Name of the target disk file.
+    int LoadMapDataFromFile(const TCHAR* FullPath);
+
+    //로드된 맵 데이터를 읽어서 타일맵을 생성.
+    bool LoadTileMap();
+    class CTileMapComponent* GetTileMap() const;
     
 
 
@@ -97,7 +104,3 @@ inline bool CMap::LoadComplete()
     return (m_LoadCheck == m_LoadRef);
 }
 
-inline DirectX::ScratchImage* CMap::GetMapImage() const
-{
-    return m_MapImage;
-}

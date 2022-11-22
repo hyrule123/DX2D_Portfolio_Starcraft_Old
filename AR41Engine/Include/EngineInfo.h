@@ -31,6 +31,14 @@
 #include "Resource/Texture/DirectXTex.h"
 #include "fmod.hpp"
 
+#ifdef _DEBUG
+#include "lodepng/lodepng.h"
+
+#else
+
+
+#endif
+
 
 #ifndef STORMLIB_NO_AUTO_LINK
 #define STORMLIB_NO_AUTO_LINK
@@ -395,6 +403,13 @@ struct TileInfo
 	int		AnimationType;
 	int		Frame;
 	float	Empty;
+
+	TileInfo():
+		Opacity(1.f),
+		TypeColor(1.f, 1.f, 1.f, 1.f),
+		AnimationType(),
+		Frame(0)
+	{}
 };
 
 //PreLoad 시 사용할 정보

@@ -220,6 +220,9 @@
     <Filter Include="03. Scene\06. Navigation">
       <UniqueIdentifier>{30f3c114-893f-40bc-b586-e91608c16e70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99. DebugUtil">
+      <UniqueIdentifier>{4f930324-fc22-4241-b864-495fc330e1ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -660,6 +663,9 @@
     <ClInclude Include="Component\TileWalkability.h">
       <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
     </ClInclude>
+    <ClInclude Include="lodepng\lodepng.h">
+      <Filter>99. DebugUtil</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -1039,6 +1045,9 @@
     </ClCompile>
     <ClCompile Include="Component\TileWalkability.cpp">
       <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng\lodepng.cpp">
+      <Filter>99. DebugUtil</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

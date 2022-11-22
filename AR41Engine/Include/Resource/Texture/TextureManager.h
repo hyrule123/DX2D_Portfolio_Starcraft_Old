@@ -28,7 +28,7 @@ public:
 
 	//MapManager에서 직접 리소스 로딩하는 용도
 	class CTexture* LoadTextureArrayByvecTextureResourceInfo(
-		const std::string& Name, const std::vector<struct TextureResourceInfo*>& vecTexResInfo);
+		const std::string& Name, std::vector<struct TextureResourceInfo*>& vecTexResInfo);
 
 	class CTexture* FindTexture(const std::string& Name);
 

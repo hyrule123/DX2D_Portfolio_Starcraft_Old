@@ -86,8 +86,11 @@ public:
     void AddTextureArray(int Register, int ShaderBufferType, const std::string& Name,
         const std::vector<const TCHAR*>& vecFileName,
         const std::string& PathName = TEXTURE_PATH);
+    void AddTextureArray(int Register, int ShaderBufferType, const std::string& TexName);
+
     void AddTextureArrayFullPath(int Register, int ShaderBufferType,
         const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+    void AddTextureArrayFullPath(int Register, int ShaderBufferType, const std::string& TexName);
 
     // === 추가되어 있는 Texture 변경 ===
     void SetTexture(int Index, int Register, int ShaderBufferType, const std::string& Name,
@@ -106,6 +109,7 @@ public:
         const std::string& PathName = TEXTURE_PATH);
     void SetTextureArrayFullPath(int Index, int Register, int ShaderBufferType,
         const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+    void SetTextureArray(int Index, int Register, int ShaderBufferType, const std::string& TexName);
 
     void SetTextureSamplerType(int Index, ESamplerType Type);
 

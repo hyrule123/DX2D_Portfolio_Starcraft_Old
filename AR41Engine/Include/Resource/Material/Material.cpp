@@ -58,6 +58,12 @@ CMaterial::CMaterial(const CMaterial& Material)	:
 		m_vecTextureInfo.push_back(Info);
 	}
 
+	int max = static_cast<int>(ERenderStateType::End);
+	for (int i = 0; i < max; ++i)
+	{
+		m_RenderState[i] = Material.m_RenderState[i];
+	}
+
 	m_Scene = nullptr;
 }
 
@@ -301,6 +307,24 @@ void CMaterial::AddTextureArray(int Register, int ShaderBufferType,
 	m_vecTextureInfo.push_back(Info);
 }
 
+void CMaterial::AddTextureArray(int Register, int ShaderBufferType, const std::string& TexName)
+{
+	MaterialTextureInfo* Info = new MaterialTextureInfo;
+
+	Info->Register = Register;
+	Info->ShaderBufferType = ShaderBufferType;
+	Info->Name = TexName;
+
+	Info->Texture = CResourceManager::GetInst()->FindTexture(TexName);
+	if (!Info->Texture)
+	{
+		SAFE_DELETE(Info);
+		return;
+	}
+
+	m_vecTextureInfo.push_back(Info);
+}
+
 void CMaterial::AddTextureArrayFullPath(int Register, int ShaderBufferType,
 	const std::string& Name, const std::vector<const TCHAR*>& vecFullPath)
 {
@@ -316,6 +340,19 @@ void CMaterial::AddTextureArrayFullPath(int Register, int ShaderBufferType,
 
 	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
+
+	m_vecTextureInfo.push_back(Info);
+}
+
+void CMaterial::AddTextureArrayFullPath(int Register, int ShaderBufferType, const std::string& TexName)
+{
+	MaterialTextureInfo* Info = new MaterialTextureInfo;
+
+	Info->Register = Register;
+	Info->ShaderBufferType = ShaderBufferType;
+	Info->Name = TexName;
+
+	Info->Texture = CResourceManager::GetInst()->FindTexture(TexName);
 
 	m_vecTextureInfo.push_back(Info);
 }
@@ -454,6 +491,20 @@ void CMaterial::SetTextureArrayFullPath(int Index, int Register,
 
 	Info->Texture = CResourceManager::GetInst()->FindTexture(Name);
 
+}
+
+void CMaterial::SetTextureArray(int Index, int Register, int ShaderBufferType, const std::string& TexName)
+{
+	if (Index < 0 || Index >= (int)m_vecTextureInfo.size())
+		return;
+
+	MaterialTextureInfo* Info = m_vecTextureInfo[Index];
+
+	Info->Register = Register;
+	Info->ShaderBufferType = ShaderBufferType;
+	Info->Name = TexName;
+
+	Info->Texture = CResourceManager::GetInst()->FindTexture(TexName);
 }
 
 void CMaterial::SetTextureSamplerType(int Index, ESamplerType Type)

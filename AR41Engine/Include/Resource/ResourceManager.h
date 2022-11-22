@@ -33,6 +33,9 @@ public:
 
 	bool Init();
 	void Update();
+
+	//맵 매니저는 초기화 타이밍이 다르다.
+	bool InitMapManager();
 	
 	//사용하지 않는 리소스인지 확인하고 제거
 	void DeleteUnused();
@@ -78,7 +81,7 @@ public:	// ===================== Texture =========================
 	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 
 	bool LoadTextureArrayByvecTextureResourceInfo(
-		const std::string& Name, const std::vector<struct TextureResourceInfo*>& vecTexResInfo);
+		const std::string& Name, std::vector<struct TextureResourceInfo*>& vecTexResInfo);
 
 	class CTexture* FindTexture(const std::string& Name);
 	void ReleaseTexture(const std::string& Name);
@@ -182,8 +185,10 @@ public:	// ============================ Font ================================
 	void ReleaseFont(const std::string& Name);
 	void ReleaseFontCollection(const std::string& Name);
 
+
 public:
-	DirectX::ScratchImage* GetMapImage(tstring MapName);
+	bool LoadMapDataFromFile(const TCHAR* FileName, const char* PathName = MAP_PATH);
+	class CTileMapComponent* LoadTileMap(const TCHAR* FileName);
 
 
 	DECLARE_SINGLE(CResourceManager)

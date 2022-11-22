@@ -191,7 +191,7 @@ CTexture* CTextureManager::LoadTextureArrayFullPath(const std::string& Name, con
 
 CTexture* CTextureManager::LoadTextureArrayByvecTextureResourceInfo(
 	const std::string& Name,
-	const std::vector<TextureResourceInfo*>& vecTexResInfo)
+	std::vector<TextureResourceInfo*>& vecTexResInfo)
 {
 	CTexture* Texture = FindTexture(Name);
 

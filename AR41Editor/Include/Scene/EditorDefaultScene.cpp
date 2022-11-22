@@ -4,6 +4,10 @@
 #include "Scene/SceneViewport.h"
 #include "../UI/StartSceneUI.h"
 
+//Used Objects
+#include "../GameObject/TileMapHolder.h"
+#include "../GameObject/Marine.h";
+
 CEditorDefaultScene::CEditorDefaultScene()
 {
 	m_ClassTypeName = "EditorDefaultScene";
@@ -20,7 +24,10 @@ CEditorDefaultScene::~CEditorDefaultScene()
 
 bool CEditorDefaultScene::Init()
 {
-	m_Owner->GetViewport()->CreateUIWindow<CStartSceneUI>("StartUI");
+	//m_Owner->GetViewport()->CreateUIWindow<CStartSceneUI>("StartUI");
+
+	m_Owner->CreateObject<CTileMapHolder>("TileMapHolder");
+	m_Owner->CreateObject<CMarine>("Marine");
 
 	return true;
 }

@@ -28,6 +28,11 @@ bool CMaterialManager::Init()
 	Material->SetShader("TileMapBackShader");
 	Material->SetRenderState("DepthLessEqual");
 
+	Material = CreateMaterial<CMaterial>("TileMap");
+	Material->SetShader("TileMapShader");
+	Material->SetRenderState("DepthLessEqual");
+	Material->SetRenderState("AlphaBlend");
+
 	return true;
 }
 

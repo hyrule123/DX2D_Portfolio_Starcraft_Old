@@ -92,6 +92,23 @@ typedef struct {
     } data[256];
 }WPE;
 
+struct WPEFloatData
+{
+    float r;
+    float g;
+    float b;
+    float padding;
+
+    WPEFloatData(const WPE::WPEData& Data) :
+        r(Data.r / 255.f),
+        g(Data.g / 255.f),
+        b(Data.b / 255.f),
+        padding(1.f)
+    {
+    }
+};
+
+
 typedef struct RGBAbyte {
     uint8 r;
     uint8 g;
@@ -202,6 +219,11 @@ int CMap::LoadMapDataFromFile(const TCHAR* FullPath)
     return nError;
 }
 
+CTileMapComponent* CMap::GetTileMap() const
+{
+    return m_TileMap;
+}
+
 
 
 
@@ -310,7 +332,7 @@ void CMap::ResetMapData()
 }
 
 
-bool CMap::LoadMap()
+bool CMap::LoadTileMap()
 {
     if (!LoadComplete())
         return false;
@@ -435,9 +457,33 @@ bool CMap::LoadMap()
 
     _fcloseall();
 
+    //프로젝트는 UNORM을 사용중이므로 픽셀 색상정보를 전부 UNORM(0.f ~ 1.f로 변환해줘야한다.)
+    // *************** 아님 픽셀정보는 0~255값으로 일단 등록함**********
+    //std::vector<WPEFloatData> vecWPEFloat;
+    //vecWPEFloat.reserve(256);
+    //for (int i = 0; i < 256; ++i)
+    //{
+    //    vecWPEFloat.emplace_back(WPEFloatData(wpe->data[i]));
+    //}
+    for (int i = 0; i < 256; ++i)
+    {
+        wpe->data[i].padding = 255;
+    }
 
+
+    //memset(wpefloat, 0, sizeof(WPEFloat));
+    //for (int i = 0; i < 256; ++i)
+    //{
+    //    for (int j = 0; j < 4; ++j)
+    //    {
+    //        wpefloat[i].data->r = static_cast<float>(wpe[i].data->r) / 255.f;
+    //    }
+    //    wpe[256]
+    //}
+
+    //mxtmdata 데이터는 2바이트 * 맵 사이즈 이다.
     uint16* mtxmdata = new uint16[w * h];
-    memcpy(mtxmdata, m_MapDataChunk[TileMap].Data, w * h);
+    memcpy(mtxmdata, m_MapDataChunk[TileMap].Data, w * h * 2);
 
     array2d<uint16> mtxm(mtxmdata, w);
 
@@ -475,18 +521,27 @@ bool CMap::LoadMap()
 
     //메가타일 사이즈의 이미지 데이터를 생성(픽셀 정보는 Img->pixels에 들어갈 예정.)
     DirectX::Image* Img = new DirectX::Image;
-    Img->format = DXGI_FORMAT_R8G8B8A8_UINT;
+    Img->format = DXGI_FORMAT_R8G8B8A8_UNORM;
     Img->width = static_cast<size_t>(32);
     Img->height = static_cast<size_t>(32);
     Img->pixels = new uint8_t[32 * 32 * 4];
     Img->rowPitch = 4 * 32;
     Img->slicePitch = Img->rowPitch * 32;
 
+    //실제 타일맵에 추가될 인덱스 순서
+    //타일에서 사용할 프레임 번호(스타크래프트 타일맵과 프레임워크의 타일맵 인덱스는 정 반대)
+    int RealTileIndexY = h - 1;
+    int MegaTileSavedIndex = 0;
 
+    //size_t UNORMPitch = sizeof(float) * 4;
 
-    //메가타일
-    for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++) {
+    //메가타일. 
+    // 스타크래프트의 타일맵 시작은 좌상단부터이고
+    // 현재 프레임워크의 타일맵 시작은 좌하단 부터이므로 y축은 거꾸로 순회돌아 준다.
+    for (y = 0; y < h; ++y) {
+        --RealTileIndexY;
+
+        for (x = 0; x < w; ++x) {
             int group = mtxm[y][x] >> 4;
             int index = mtxm[y][x] & 0xf;
             //megatile을 얻고 안의 4*4개의 minitile들을 얻어서
@@ -494,8 +549,12 @@ bool CMap::LoadMap()
 
             auto iter = mapMegatile.find(megatile);
 
+            int MiniTileIndexX = x * 4;
+            int MiniTileIndexY = RealTileIndexY * 4;
+
+            // 여기에서 타일맵에 실제로 추가해야 
             //등록되어있지 않을경우 메가타일을 순회
-            if (iter != iterEnd)
+            if (iter == iterEnd)
             {
                 //메가타일 안의 미니타일 4*4 순회
                 for (suby = 0; suby < 4; suby++)
@@ -518,11 +577,9 @@ bool CMap::LoadMap()
 
 
                         //해당 미니타일의 이동가능여부를 계산.
-                        //나중에 타일맵에 실제 연결할 때 추가 작업 해줘야 함
-                        bool Walkable = false;
                         if (vf4data.MiniTileFlags[suby * 4 + subx] & 0x0001)
                         {
-                            m_TileMap->SetTileWalkability(x * 4, y * 4, ETileOption::Wall);
+                            m_TileMap->SetTileWalkability(MiniTileIndexX + subx , MiniTileIndexY + suby, ETileOption::Wall);
                         }
                             
 
@@ -533,12 +590,14 @@ bool CMap::LoadMap()
                             {
                                 int drawx = draw_offsetx + (flipped ? 7 - i : i);
                                 int drawy = draw_offsety + j;
+                                //const WPEFloatData& wpefloat = vecWPEFloat[vr4data.color[j * 8 + i]];
                                 const WPE::WPEData& wpedata = wpe->data[vr4data.color[j * 8 + i]];
 
                                 //메가타일에 픽셀을 작성한다.
-                                int CurIdx = drawx * drawy;
-                                memcpy(&Img->pixels[CurIdx], &wpedata, 3);
-                                Img->pixels[CurIdx + 3] = 255;
+                                int CurIdx = (drawy * 32 + drawx) * 4;
+                                //memcpy(&Img->pixels[CurIdx], &wpefloat, UNORMPitch);
+                                memcpy(&Img->pixels[CurIdx], &wpedata, 4);
+
 
                                 //RGBAbyte color = { wpedata.r, wpedata.g, wpedata.b, 255 };
                                 //int curIdx = (drawy * 8 + drawx) * 4;
@@ -550,9 +609,6 @@ bool CMap::LoadMap()
                     }
                 }
 
-                
-                mapMegatile.insert(std::make_pair(megatile, x * y));
-
 
                 //메가타일에 이미지를 추가
                 TextureResourceInfo* TexInfo = new TextureResourceInfo(true);
@@ -561,38 +617,61 @@ bool CMap::LoadMap()
                     assert(0);
                 }
 
-                vecInfo.push_back(TexInfo);
+                vecInfo.emplace_back(TexInfo);
 
+
+
+                //메가타일의 인덱스번호를 사용했다고 저장한다.
+                mapMegatile.insert(std::make_pair(megatile, MegaTileSavedIndex));
+
+
+                //타일에 프레임 번호를 저장
+                m_TileMap->ChangeTileFrame(MegaTileSavedIndex, x, RealTileIndexY);
+                ++MegaTileSavedIndex;
+
+
+                
             }
 
             //메가타일이 이미 등록되어 있을 경우
             else
             {
-                //출력해야할 타일 프레임을 같은걸로 등록
-                int PrevIdx = iter->second;
-                m_TileMap->GetTileTextureFrame(PrevIdx);
+                //출력해야할 타일 프레임을 unordered map에 저장되어 있는 프레임으로 등록
+                int SavedMegaTileFrame = iter->second;
+                m_TileMap->ChangeTileFrame(SavedMegaTileFrame, x, RealTileIndexY);
 
                 //walkability map도 같은 부분의 인덱스를 가져와서 등록
+                //메가타일 안의 미니타일 4*4 순회
+                //기존에 등록되어있는 정보를 예외처리하면서 가져오는 것보다 이게 훨씬 빠르다
+                for (suby = 0; suby < 4; suby++)
+                {
+                    for (subx = 0; subx < 4; subx++)
+                    {
+                        const VF4::VF4Data& vf4data = vf4->data[megatile];
 
+
+                        //해당 미니타일의 이동가능여부를 계산.
+                        if (vf4data.MiniTileFlags[suby * 4 + subx] & 0x0001)
+                        {
+                            m_TileMap->SetTileWalkability(MiniTileIndexX + subx, MiniTileIndexY + suby, ETileOption::Wall);
+                        }
+                    }
+                }
             }
-            
-
         }
     }
 
+
     //만들어낸 메가타일 이미지를 이미지파일로 등록
-    CTexture* Tex = CResourceManager::GetInst()->LoadTextureArrayByvecTextureResourceInfo();
+    bool Success = CResourceManager::GetInst()->LoadTextureArrayByvecTextureResourceInfo(m_FileNameMultiByte, vecInfo);
 
+    CTexture* Tex = CResourceManager::GetInst()->FindTexture(m_FileNameMultiByte);
     
-
-    Tex->SetName("TileTexture");
+    m_TileMap->AddTileTextureArray(m_FileNameMultiByte);
+    //Tex->SetName("TileTexture");
 
     //PNG 파일로 출력!
     //lodepng_encode32_file("Rendered.png", (unsigned char*)imgdata, imgw, imgh);
-
-    bool Success = false;
-
-
     
 
     delete[] Img->pixels;
@@ -605,7 +684,6 @@ bool CMap::LoadMap()
     delete vr4;
     delete wpe;
     delete vf4;
-
 
     return Success;
 }

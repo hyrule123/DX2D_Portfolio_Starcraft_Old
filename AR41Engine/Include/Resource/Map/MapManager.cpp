@@ -47,24 +47,10 @@ bool CMapManager::Init()
         m_LoadRef += 1 << i;
     }
 
-    LoadMapDataFromFile(TEXT("(2)BlueStorm1.2.scx"));
-
-    CMap* map = FindMap(TEXT("(2)BlueStorm1.2.scx"));
-    map->LoadMap();
-
 
     return true;
 }
 
-DirectX::ScratchImage* CMapManager::GetMapImage(tstring MapName)
-{
-    CMap* map = FindMap(MapName);
-
-    if (!map)
-        return nullptr;
-
-    return map->GetMapImage();
-}
 
 
 
@@ -85,10 +71,16 @@ bool CMapManager::LoadMapDataFromFile(const TCHAR* FileName, const char* PathNam
 
     lstrcat(FullPath, FileName);
 
-    //맵 클래스 동적할당
+    //맵 클래스 동적할당 및 이름 지정
     CMap* Map = new CMap;
     Map->m_LoadRef = m_LoadRef;
     Map->m_FileName = FileName;
+
+#ifdef UNICODE
+    CPathManager::ConvertUnicodeToMultibyte(Map->m_FileNameMultiByte, FileName, sizeof(FileName));
+#else
+    Map->m_FileNameMultiByte = FileName;
+#endif
 
     //파일로부터 맵 로드 시도
     if (Map->LoadMapDataFromFile(FullPath) != 0)
@@ -101,6 +93,19 @@ bool CMapManager::LoadMapDataFromFile(const TCHAR* FileName, const char* PathNam
     m_mapMap.insert(std::make_pair(FileName, Map));
 
     return true;
+}
+
+CTileMapComponent* CMapManager::LoadTileMap(const TCHAR* FileName)
+{
+    CMap* Map = FindMap(FileName);
+
+    if (!Map)
+        return nullptr;
+
+    if (!Map->LoadTileMap())
+        return nullptr;
+
+    return Map->GetTileMap();
 }
 
 

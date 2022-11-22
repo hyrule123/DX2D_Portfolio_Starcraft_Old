@@ -66,9 +66,10 @@ public:
 
 	inline ID3D11ShaderResourceView* GetResource(int Index = 0)	const;
 
-	inline unsigned int GetWidth(int Index = 0)	const;
+	inline unsigned int GetWidth(int Index = 0)		const;
 
 	inline unsigned int GetHeight(int Index = 0)	const;
+	inline bool GetvecTextureInfoEmpty() const;
 
 	inline int GetImageCount()	const;
 
@@ -88,7 +89,7 @@ public:
 	//MapManager 용
 	//MapManager에서 직접 TextureResourceInfo를 생성하고 여기로 전달
 	bool LoadTextureArrayByvecTextureResourceInfo(
-		const std::string& Name, const std::vector<TextureResourceInfo*>& vecTexResInfo);
+		const std::string& Name, std::vector<TextureResourceInfo*>& vecTexResInfo);
 
 
 private:
@@ -110,14 +111,24 @@ inline EImageType CTexture::GetImageType()	const
 	return m_ImageType;
 }
 
-inline ID3D11ShaderResourceView* CTexture::GetResource(int Index = 0)	const
+inline ID3D11ShaderResourceView* CTexture::GetResource(int Index)	const
 {
 	return m_vecTextureInfo[Index]->SRV;
+}
+
+inline unsigned int CTexture::GetWidth(int Index)	const
+{
+	return m_vecTextureInfo[Index]->Width;
 }
 
 inline unsigned int CTexture::GetHeight(int Index)	const
 {
 	return m_vecTextureInfo[Index]->Height;
+}
+
+inline bool CTexture::GetvecTextureInfoEmpty() const
+{
+	return m_vecTextureInfo.empty();
 }
 
 

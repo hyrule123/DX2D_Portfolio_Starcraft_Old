@@ -22,17 +22,9 @@ private:
 
 public:
 	bool Init();
-	DirectX::ScratchImage* GetMapImage(tstring MapName);
 
 	bool LoadMapDataFromFile(const TCHAR* FileName, const char* PathName = MAP_PATH);
-	//-----------------------------------------------------------------------------
-	// Extracts an archived file and saves it to the disk.
-	//
-	// Parameters :
-	//
-	//   char * szArchiveName  - Archive file name - 아카이브의 파일명(풀경로)
-	//   char * szArchivedFile - Name/number of archived file. 
-	//							- 아카이브 내부의 파일명(맵만 뽑아낼것이므로 "staredit\\scenario.chk"로 고정
-	//   char * szFileName     - Name of the target disk file.
+	class CTileMapComponent* LoadTileMap(const TCHAR* FileName);
+
 };
 

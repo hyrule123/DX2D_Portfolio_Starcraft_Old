@@ -59,6 +59,7 @@ protected:
     //타일 기본 정보
     std::string m_SceneName;
     ETileShape      m_Shape;
+    EImageType  m_TileTextureType;
 
     //출력용 타일 정보
     class CTileMapConstantBuffer* m_TileMapCBuffer;
@@ -90,8 +91,10 @@ protected:
 
 public:
     void CreateTileWalkibility(int WalkabilityCountX, int WalkabilityCountY,
-        Vector2 TileWalkabilitySize = Vector2(8.f, 8.f));
+        const Vector2& TileWalkabilitySize = Vector2(8.f, 8.f));
     inline void SetTileWalkability(int IndexX, int IndexY, ETileOption TileOption);
+    void GetTileWalkabilityRegion(int StartX, int StartY, int SizeX, int SizeY, __out std::vector<ETileOption>& vecTileOption);
+    void GetTileWalkabilityRegion(int Index, int SizeX, int SizeY, __out std::vector<ETileOption>& vecTileOption);
 
 protected:
     //디버그용 선 메쉬
@@ -119,6 +122,7 @@ public:
     void SetTileTextureFullPath(const std::string& Name, const TCHAR* FullPath);
     void SetTileTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
         const std::string& PathName = TEXTURE_PATH);
+    void AddTileTextureArray(const std::string& Name);
     void SetTileTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 
 
@@ -150,7 +154,7 @@ public:
     int GetTileTextureFrame(int X, int Y);
     int GetTileTextureFrame(int TileIndex);
 
-    void GetWalkabilityRegion(int StartX, int StartY, int SizeX, int SizeY, __out std::vector<ETileOption>&);
+    
 
 private:
     int GetTileRenderIndexX(const Vector3& Pos);
@@ -158,7 +162,14 @@ private:
 
 
 public:
+
+    //m_vecTileFrame에 프레임 데이터를 추가
+    void AddvecTileFrame(const Vector2& Start, const Vector2& End);
+
     void ChangeTileFrame(const Vector2& Pos, int Frame);
+    
+    //인덱스를 하나만 입력하면 전체 인덱스 번호로 간주
+    void ChangeTileFrame(int Frame, int IndexXOrAll, int IndexY = -1);
     void ChangeTileOption(const Vector2& Pos, ETileOption Option);
 
 };

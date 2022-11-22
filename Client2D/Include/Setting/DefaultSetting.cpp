@@ -6,9 +6,12 @@
 
 #include "CDO.h"
 
+//GameObject CDO Preload
 #include "../GameObject/Player2D.h"
 #include "../GameObject/Monster.h"
 #include "../GameObject/Bullet.h"
+#include "../GameObject/TileMapHolder.h"
+
 #include "../UI/StartSceneUI.h"
 #include "Scene/Scene.h"
 #include "Input.h"
@@ -44,6 +47,7 @@ void CDefaultSetting::CreateCDO()
     CCDO::CreateCDO<CMonster>();
     CCDO::CreateCDO<CBullet>();
     CCDO::CreateCDO<CMarine>();
+    CCDO::CreateCDO<CTileMapHolder>();
 
     CCDO::CreateCDO<CUnitRootComponent>();
     CCDO::CreateCDO<CUnitSpriteComponent>();

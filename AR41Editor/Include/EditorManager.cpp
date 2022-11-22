@@ -44,23 +44,24 @@ bool CEditorManager::Init(HINSTANCE hInst)
     {
         return false;
     }
-    
+
+    CEngineShareSetting::Setting();
     CCDO::CreateCDO<CEditorDefaultScene>();
     CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>(true);
 
-    CEngineShareSetting::Setting();
+    
 
     CEngine::SetWndProcCallback<CEditorManager>(this, &CEditorManager::WndProc);
 
     //CEditorGUIManager::GetInst()->CreateEditorWindow<CTestWindow>("TestWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CObjectWindow>("ObjectWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CClassWindow>("ClassWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CComponentWindow>("ComponentWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CTransformWindow>("TransformWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CSceneWindow>("SceneWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CDetailWindow>("DetailWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CAnimation2DWindow>("Animation2DWindow");
-    CEditorGUIManager::GetInst()->CreateEditorWindow<CResourceWindow>("ResourceWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CObjectWindow>("ObjectWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CClassWindow>("ClassWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CComponentWindow>("ComponentWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CTransformWindow>("TransformWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CSceneWindow>("SceneWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CDetailWindow>("DetailWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CAnimation2DWindow>("Animation2DWindow");
+    //CEditorGUIManager::GetInst()->CreateEditorWindow<CResourceWindow>("ResourceWindow");
 
     // SceneInfo »ý¼º
     CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>();

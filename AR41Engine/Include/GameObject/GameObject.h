@@ -30,17 +30,11 @@ protected:
 	int		m_ComponentSerialNumber;
 
 public:
-	class CScene* GetScene()    const
-	{
-		return m_Scene;
-	}
+	inline class CScene* GetScene()    const;
 
 	void SetScene(class CScene* Scene);
 
-	const std::string& GetObjectTypeName()	const
-	{
-		return m_ObjectTypeName;
-	}
+	inline const std::string& GetObjectTypeName()	const;
 
 public:
 	// 여기에 재정의하는 이유는 이 오브젝트가 제거될때 가지고 있는 모든 컴포넌트들도 제거를 해주기
@@ -55,118 +49,30 @@ protected:
 	bool		m_Start;
 
 public:
-	void SetLifeTime(float LifeTime)
-	{
-		m_LifeTime = LifeTime;
-	}
+	inline void SetLifeTime(float LifeTime);
 
-	void SetRootComponent(CSceneComponent* Component)
-	{
-		m_RootComponent = Component;
-	}
+	inline void SetRootComponent(CSceneComponent* Component);
 
-	void AddSceneComponent(CSceneComponent* Component)
-	{
-		m_SceneComponentList.push_back(Component);
-	}
+	inline void AddSceneComponent(CSceneComponent* Component);
 
-	void DeleteSceneComponent(CSceneComponent* Component)
-	{
-		auto	iter = m_SceneComponentList.begin();
-		auto	iterEnd = m_SceneComponentList.end();
-
-		for (; iter != iterEnd; ++iter)
-		{
-			if (*iter == Component)
-			{
-				m_SceneComponentList.erase(iter);
-				return;
-			}
-		}
-	}
+	inline void DeleteSceneComponent(CSceneComponent* Component);
 
 	void GetAllComponentHierarchyName(std::vector<HierarchyName>& vecName);
 
-	CSceneComponent* GetRootComponent() const
-	{
-		return m_RootComponent;
-	}
+	inline CSceneComponent* GetRootComponent() const;
 
-	const std::list<CSceneComponent*>& GetSceneComponents() const
-	{
-		return m_SceneComponentList;
-	}
+	inline const std::list<CSceneComponent*>& GetSceneComponents() const;
 
 	CComponent* FindComponent(const std::string& Name);
 
 	template <typename T>
-	T* FindComponentFromType()  const
-	{
-		auto    iter = m_SceneComponentList.begin();
-		auto    iterEnd = m_SceneComponentList.end();
-
-		for (; iter != iterEnd; ++iter)
-		{
-			if ((*iter)->CheckTypeID<T>())
-				return (T*)*iter;
-		}
-
-		auto    iter1 = m_vecObjectComponent.begin();
-		auto    iter1End = m_vecObjectComponent.end();
-
-		for (; iter1 != iter1End; ++iter1)
-		{
-			if ((*iter1)->CheckTypeID<T>())
-				return (T*)(*iter1).Get();
-		}
-
-		return nullptr;
-	}
-
-
-
+	T* FindComponentFromType()  const;
 
 
 public:
 	template <typename T>
-	T* CreateComponent(const std::string& Name)
-	{
-		T* Component = ClonePLO<T>();
+	T* CreateComponent(const std::string& Name);
 
-		Component->SetName(Name);
-		Component->SetScene(m_Scene);
-		Component->SetOwner(this);
-
-		if(!Component->Init())
-		{
-			SAFE_RELEASE(Component);
-			return nullptr;
-		}
-
-		if (Component->GetComponentType() == ComponentType::Object)
-		{
-			m_vecObjectComponent.push_back((CObjectComponent*)Component);
-		}
-
-		else
-		{
-			if (!m_RootComponent)
-			{
-				m_RootComponent = (CSceneComponent*)Component;
-			}
-
-			m_SceneComponentList.push_back((CSceneComponent*)Component);
-		}
-
-		Component->SetSerialNumber(m_ComponentSerialNumber);
-
-		++m_ComponentSerialNumber;
-
-		if (m_Start)
-			Component->Start();
-
-		return Component;
-	}
 
 public:
 	void SetInheritScale(bool Inherit);
@@ -300,3 +206,121 @@ public:
 	void AddWorldPositionZ(float z);
 };
 
+
+inline class CScene* CGameObject::GetScene()    const
+{
+	return m_Scene;
+}
+
+inline const std::string& CGameObject::GetObjectTypeName()	const
+{
+	return m_ObjectTypeName;
+}
+
+inline void CGameObject::SetLifeTime(float LifeTime)
+{
+	m_LifeTime = LifeTime;
+}
+
+inline void CGameObject::SetRootComponent(CSceneComponent* Component)
+{
+	m_RootComponent = Component;
+}
+
+inline void CGameObject::AddSceneComponent(CSceneComponent* Component)
+{
+	Component->SetScene(m_Scene);
+	Component->SetOwner(this);
+	Component->Init();
+
+	m_SceneComponentList.push_back(Component);
+}
+
+inline void CGameObject::DeleteSceneComponent(CSceneComponent* Component)
+{
+	auto	iter = m_SceneComponentList.begin();
+	auto	iterEnd = m_SceneComponentList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if (*iter == Component)
+		{
+			m_SceneComponentList.erase(iter);
+			return;
+		}
+	}
+}
+
+inline CSceneComponent* CGameObject::GetRootComponent() const
+{
+	return m_RootComponent;
+}
+
+inline const std::list<CSceneComponent*>& CGameObject::GetSceneComponents() const
+{
+	return m_SceneComponentList;
+}
+
+template <typename T>
+T* CGameObject::FindComponentFromType()  const
+{
+	auto    iter = m_SceneComponentList.begin();
+	auto    iterEnd = m_SceneComponentList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->CheckTypeID<T>())
+			return (T*)*iter;
+	}
+
+	auto    iter1 = m_vecObjectComponent.begin();
+	auto    iter1End = m_vecObjectComponent.end();
+
+	for (; iter1 != iter1End; ++iter1)
+	{
+		if ((*iter1)->CheckTypeID<T>())
+			return (T*)(*iter1).Get();
+	}
+
+	return nullptr;
+}
+
+template <typename T>
+T* CGameObject::CreateComponent(const std::string& Name)
+{
+	T* Component = ClonePLO<T>();
+
+	Component->SetName(Name);
+	Component->SetScene(m_Scene);
+	Component->SetOwner(this);
+
+	if (!Component->Init())
+	{
+		SAFE_RELEASE(Component);
+		return nullptr;
+	}
+
+	if (Component->GetComponentType() == ComponentType::Object)
+	{
+		m_vecObjectComponent.push_back((CObjectComponent*)Component);
+	}
+
+	else
+	{
+		if (!m_RootComponent)
+		{
+			m_RootComponent = (CSceneComponent*)Component;
+		}
+
+		m_SceneComponentList.push_back((CSceneComponent*)Component);
+	}
+
+	Component->SetSerialNumber(m_ComponentSerialNumber);
+
+	++m_ComponentSerialNumber;
+
+	if (m_Start)
+		Component->Start();
+
+	return Component;
+}

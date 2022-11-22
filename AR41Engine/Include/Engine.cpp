@@ -88,6 +88,8 @@ bool CEngine::Init(HINSTANCE hInst, const TCHAR* Title,
 
 	Create(Title, ClassName);
 
+	//설정파일 생성. 단계별로 설정파일의 특정 함수를 실행
+	m_Setting = new CEngineSetting;
 
 	// Device 초기화
 	if (!CDevice::GetInst()->Init(m_hWnd, DeviceWidth, DeviceHeight, WindowMode))
@@ -136,10 +138,9 @@ bool CEngine::Init(HINSTANCE hInst, const TCHAR* Title,
 	m_Timer->Init();
 	
 
-	//설정 초기화
-	m_Setting = new CEngineSetting;
-
 	m_Setting->Init();
+
+	CResourceManager::GetInst()->InitMapManager();
 
 	return true;
 }

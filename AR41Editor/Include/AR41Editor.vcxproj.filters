@@ -135,6 +135,9 @@
     <ClCompile Include="GameObject\Bullet.cpp">
       <Filter>04. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\TileMapHolder.cpp">
+      <Filter>04. GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="Component\UnitSpriteComponent.h">
       <Filter>04. GameObject\01.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\TileMapHolder.h">
+      <Filter>04. GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

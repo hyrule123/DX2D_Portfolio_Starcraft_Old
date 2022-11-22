@@ -90,16 +90,19 @@ bool CResourceManager::Init()
 
 	m_FontManager->Init();
 
-	m_MapManager = new CMapManager;
-
-	m_MapManager->Init();
-
 	return true;
 }
 
 void CResourceManager::Update()
 {
 	m_SoundManager->Update();
+}
+
+bool CResourceManager::InitMapManager()
+{
+	m_MapManager = new CMapManager;
+
+	return m_MapManager->Init();
 }
 
 void CResourceManager::DeleteUnused()
@@ -298,7 +301,7 @@ bool CResourceManager::LoadTextureArrayFullPath(const std::string& Name, const s
 	return false;
 }
 
-bool CResourceManager::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, const std::vector<struct TextureResourceInfo*>& vecTexResInfo)
+bool CResourceManager::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, std::vector<struct TextureResourceInfo*>& vecTexResInfo)
 {
 	CTexture* Texture = m_TextureManager->LoadTextureArrayByvecTextureResourceInfo(Name, vecTexResInfo);
 
@@ -638,10 +641,20 @@ void CResourceManager::ReleaseFontCollection(const std::string& Name)
 	m_FontManager->ReleaseFontCollection(Name);
 }
 
-DirectX::ScratchImage* CResourceManager::GetMapImage(tstring MapName)
+bool CResourceManager::LoadMapDataFromFile(const TCHAR* FileName, const char* PathName)
+{
+	if (!m_MapManager)
+		return false;
+
+	return m_MapManager->LoadMapDataFromFile(FileName, PathName);
+}
+
+CTileMapComponent* CResourceManager::LoadTileMap(const TCHAR* FileName)
 {
 	if (!m_MapManager)
 		return nullptr;
 
-	return m_MapManager->GetMapImage(MapName);
+	return m_MapManager->LoadTileMap(FileName);
 }
+
+

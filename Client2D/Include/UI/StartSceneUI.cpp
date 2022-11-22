@@ -8,6 +8,8 @@
 #include "../Scene/LoadingSceneInfo.h"
 #include "Engine.h"
 
+#include "../GameObject/TileMapHolder.h"
+
 CStartSceneUI::CStartSceneUI()
 {
     m_WindowTypeName = "StartSceneUI";
@@ -100,6 +102,9 @@ bool CStartSceneUI::Init()
         m_Number->AddFrameData(Vector2(i * 46.4f, 0.f), Vector2((i + 1) * 46.4f, 68.5f));
     }
 
+
+    m_Scene->CreateObject<CTileMapHolder>("TileMapHolder");
+
     return true;
 }
 
@@ -122,7 +127,7 @@ void CStartSceneUI::Render()
     CUIWindow::Render();
 }
 
-CStartSceneUI* CStartSceneUI::Clone()
+CStartSceneUI* CStartSceneUI::Clone() const
 {
     return new CStartSceneUI(*this);
 }

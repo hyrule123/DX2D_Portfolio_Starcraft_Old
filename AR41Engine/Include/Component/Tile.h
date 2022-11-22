@@ -19,6 +19,7 @@ private:
 	Vector3			m_Size;
 	Vector3			m_Center;
 	Matrix			m_matWorld;
+	float			m_Opacity;
 	int				m_IndexX;
 	int				m_IndexY;
 	int				m_Index;

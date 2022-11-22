@@ -8,7 +8,8 @@ CTile::CTile()	:
 	m_IndexX(0),
 	m_IndexY(0),
 	m_Index(0),
-	m_Frame()
+	m_Frame(),
+	m_Opacity(1.f)
 {
 }
 

@@ -20,7 +20,8 @@ CTileMapComponent::CTileMapComponent()	:
 	m_TileMapCBuffer(nullptr),
 	m_TileInfoBuffer(nullptr),
 	m_EditorMouseOnTile(nullptr),
-	m_TileInfoCount(0)
+	m_TileInfoCount(0),
+	m_TileTextureType()
 {
 	m_ComponentTypeName = "TileMapComponent";
 
@@ -41,7 +42,8 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 	m_TileBackTexture(component.m_TileBackTexture),
 	m_TileStartFrame(component.m_TileStartFrame),
 	m_TileEndFrame(component.m_TileEndFrame),
-	m_EditorMouseOnTile(nullptr)
+	m_EditorMouseOnTile(nullptr),
+	m_TileTextureType(component.m_TileTextureType)
 {
 
 	if (component.m_TileMaterial)
@@ -108,16 +110,24 @@ void CTileMapComponent::SetEditorMouseOnTile(int Index)
 
 void CTileMapComponent::SetTileMaterial(const std::string& Name)
 {
-
 	m_TileMaterial = CResourceManager::GetInst()->FindMaterial(Name);
+	if (m_TileMaterial)
+		m_TileMaterial = m_TileMaterial->Clone();
 
-	m_TileMapCBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTexture(0)->GetWidth(),
-		(float)m_TileMaterial->GetTexture(0)->GetHeight()));
+	CTexture* Tex = m_TileMaterial->GetTexture(0);
+	if (!Tex)
+		return;
+
+	if (!Tex->GetvecTextureInfoEmpty())
+	{
+		m_TileMapCBuffer->SetImageSize(Vector2((float)m_TileMaterial->GetTexture(0)->GetWidth(),
+			(float)m_TileMaterial->GetTexture(0)->GetHeight()));
+	}
 }
 
 void CTileMapComponent::SetTileMaterial(CMaterial* Material)
 {
-	m_TileMaterial = Material;
+	m_TileMaterial = Material->Clone();
 }
 
 void CTileMapComponent::SetTileTexture(CTexture* Texture)
@@ -148,12 +158,22 @@ void CTileMapComponent::SetTileTextureArray(const std::string& Name,
 		Name, vecFileName, PathName);
 }
 
+void CTileMapComponent::AddTileTextureArray(const std::string& Name)
+{
+	m_TileMaterial->AddTextureArray(10, (int)EShaderBufferType::Pixel, Name);
+
+	m_TileTextureType = EImageType::Array;
+}
+
+
 void CTileMapComponent::SetTileTextureArrayFullPath(
 	const std::string& Name,
 	const std::vector<const TCHAR*>& vecFullPath)
 {
 	m_TileMaterial->SetTextureArrayFullPath(0, 0, (int)EShaderBufferType::Pixel,
 		Name, vecFullPath);
+
+	m_TileTextureType = EImageType::Array;
 }
 
 void CTileMapComponent::SetTileBackTexture(CTexture* Texture)
@@ -305,7 +325,7 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 			Tile->m_TileStart = m_TileStartFrame;
 			Tile->m_TileEnd = m_TileEndFrame;
 
-			Tile->m_Frame = 3;
+			//Tile->m_Frame = 3;
 
 			m_vecTile[Index] = Tile;
 		}
@@ -361,7 +381,6 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		break;
 	}
 
-	m_TileMapCBuffer->SetTileSize(m_TileSize);
 
 	// 구조화 버퍼를 생성한다. 구조화버퍼에는 출력할 타일정보가 들어가야
 	// 하기 때문에 출력되는 최대 타일 개수를 이용해서 생성한다.
@@ -375,19 +394,17 @@ void CTileMapComponent::CreateTile(ETileShape Shape, int CountX,
 		m_TileInfoCount, 40, true,
 		(int)EShaderBufferType::Vertex);
 
-	m_vecTileInfo.resize((size_t)m_Count);
+	m_vecTileInfo.resize((size_t)m_TileInfoCount);
 
-	for (int i = 0; i < m_Count; ++i)
+	for (size_t i = 0; i < (size_t)m_TileInfoCount; ++i)
 	{
-		m_vecTileInfo[i].TypeColor = Vector4(1.f, 1.f, 1.f, 1.f);
-		m_vecTileInfo[i].Opacity = 1.f;
+		m_vecTileInfo[i].End = m_TileSize;
 	}
+	m_TileMapCBuffer->SetTileSize(m_TileSize);
 
-
-	CThreadManager::GetInst()->CreateNavigationThread(this);
 }
 
-void CTileMapComponent::CreateTileWalkibility(int WalkabilityCountX, int WalkabilityCountY, Vector2 TileWalkabilitySize)
+void CTileMapComponent::CreateTileWalkibility(int WalkabilityCountX, int WalkabilityCountY, const Vector2& TileWalkabilitySize)
 {
 	m_WalkabilityCountX = WalkabilityCountX;
 	m_WalkabilityCountY = WalkabilityCountY;
@@ -405,14 +422,15 @@ void CTileMapComponent::CreateTileWalkibility(int WalkabilityCountX, int Walkabi
 		for (int j = 0; j < m_WalkabilityCountX; ++j)
 		{
 			TilePos.x += TileWalkabilitySize.x;
+			int Idx = m_WalkabilityCountX * i + j;
 
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].Pos = TilePos;
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].Center = TilePos + HalfSize;
-
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].Index = i * j;
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].IndexX = j;
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].IndexY = i;
-			m_vecTileWalkability[m_WalkabilityCountX * i + j].TileOption = ETileOption::None;
+			m_vecTileWalkability[Idx].Pos = TilePos;
+			m_vecTileWalkability[Idx].Center = TilePos + HalfSize;
+			
+			m_vecTileWalkability[Idx].Index = Idx;
+			m_vecTileWalkability[Idx].IndexX = j;
+			m_vecTileWalkability[Idx].IndexY = i;
+			m_vecTileWalkability[Idx].TileOption = ETileOption::None;
 		}
 
 	}
@@ -644,12 +662,49 @@ int CTileMapComponent::GetTileTextureFrame(int TileIndex)
 	return m_vecTile[TileIndex]->GetFrame();
 }
 
-void CTileMapComponent::GetWalkabilityRegion(int StartX, int StartY, int SizeX, int SizeY, std::vector<ETileOption>&)
+void CTileMapComponent::GetTileWalkabilityRegion(int StartX, int StartY, int SizeX, int SizeY, std::vector<ETileOption>& vecTileOption)
 {
+	//지정한 타일 범위를 순회를 돌아주면서 in으로 들어온 이동가능여부 벡터에 값을 추가한다.
+	int EndX = StartX + SizeX;
+	int EndY = StartY + SizeY;
+	if (
+		StartX < 0 || StartY < 0 || SizeX < 0 || SizeY < 0 ||
+		m_WalkabilityCountX <= EndX || m_WalkabilityCountY <= EndY
+		)
+		return;
 
-
-	for(int y = StartY; )
+	for (int y = StartY; y < EndY; ++y)
+	{
+		for (int x = StartX; x < EndX; ++x)
+		{
+			vecTileOption.push_back(m_vecTileWalkability[y * m_WalkabilityCountX + x].TileOption);
+		}
+	}
 }
+
+void CTileMapComponent::GetTileWalkabilityRegion(int Index, int SizeX, int SizeY, std::vector<ETileOption>& vecTileOption)
+{
+	//지정한 타일 범위를 순회를 돌아주면서 in으로 들어온 이동가능여부 벡터에 값을 추가한다.
+	int StartX = Index % m_WalkabilityCountX;
+	int StartY = Index / m_WalkabilityCountX;
+
+	int EndX = StartX + SizeX;
+	int EndY = StartY + SizeY;
+	if (
+		StartX < 0 || StartY < 0 || SizeX < 0 || SizeY < 0 ||
+		m_WalkabilityCountX <= EndX || m_WalkabilityCountY <= EndY
+		)
+		return;
+
+	for (int y = StartY; y < EndY; ++y)
+	{
+		for (int x = StartX; x < EndX; ++x)
+		{
+			vecTileOption.push_back(m_vecTileWalkability[y * m_WalkabilityCountX + x].TileOption);
+		}
+	}
+}
+
 
 int CTileMapComponent::GetTileRenderIndexX(const Vector3& Pos)
 {
@@ -833,6 +888,15 @@ int CTileMapComponent::GetTileRenderIndexY(const Vector3& Pos)
 	return -1;
 }
 
+void CTileMapComponent::AddvecTileFrame(const Vector2& Start, const Vector2& End)
+{
+	Animation2DFrameData Data;
+	Data.Start = Start;
+	Data.End = End;
+
+	m_vecTileFrame.emplace_back(Data);
+}
+
 void CTileMapComponent::ChangeTileFrame(const Vector2& Pos, int Frame)
 {
 	CTile* Tile = GetTile(Pos);
@@ -844,6 +908,25 @@ void CTileMapComponent::ChangeTileFrame(const Vector2& Pos, int Frame)
 	Tile->m_TileEnd = m_vecTileFrame[Frame].End;
 
 	Tile->m_Frame = Frame;
+}
+
+void CTileMapComponent::ChangeTileFrame(int Frame, int IndexXOrAll, int IndexY)
+{
+	CTile* Tile;
+
+	if (IndexY < 0)
+	{
+		Tile = GetTile(IndexXOrAll);
+	}
+	else
+	{
+		Tile = GetTile(IndexXOrAll, IndexY);
+	}
+
+	if (!Tile)
+		return;
+
+	Tile->SetFrame(Frame);
 }
 
 void CTileMapComponent::ChangeTileOption(const Vector2& Pos, ETileOption Option)
@@ -874,6 +957,11 @@ bool CTileMapComponent::CDOPreload()
 
 	m_Shape = ETileShape::Rect;
 
+	m_TileMapCBuffer = new CTileMapConstantBuffer;
+	m_TileMapCBuffer->Init();
+
+	SetTileMaterial("TileMap");
+
 	return true;
 }
 
@@ -884,26 +972,26 @@ bool CTileMapComponent::Init()
 
 	m_SceneName = m_Scene->GetName();
 
-	m_TileMapCBuffer = new CTileMapConstantBuffer;
-	m_TileMapCBuffer->Init();
+
+	m_TileMapCBuffer->SetTileSize(m_TileSize);
 	m_TileMapCBuffer->SetStart(Vector2(0.f, 0.f));
-	m_TileMapCBuffer->SetEnd(Vector2(160.f, 80.f));
+	m_TileMapCBuffer->SetEnd(m_TileSize);
 	m_TileMapCBuffer->SetFrame(0);
 
-	SetTileMaterial("TileMap");
+	
 
-	for (int i = 0; i <= 379; ++i)
-	{
-		Animation2DFrameData	Data;
+	//for (int i = 0; i <= 379; ++i)
+	//{
+	//	Animation2DFrameData	Data;
 
-		Data.Start = Vector2(0.f, 0.f);
-		Data.End = Vector2(160.f, 80.f);
+	//	Data.Start = Vector2(0.f, 0.f);
+	//	Data.End = Vector2(160.f, 80.f);
 
-		m_vecTileFrame.push_back(Data);
-	}
+	//	m_vecTileFrame.push_back(Data);
+	//}
 
-	m_TileStartFrame = Vector2(0.f, 0.f);
-	m_TileEndFrame = Vector2(160.f, 80.f);
+	//m_TileStartFrame = Vector2(0.f, 0.f);
+	//m_TileEndFrame = Vector2(160.f, 80.f);
 
 	m_vecMaterial.clear();
 
@@ -911,8 +999,9 @@ bool CTileMapComponent::Init()
 
 	//// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
 	//// 생성해준다.
-	
-	
+	CThreadManager::GetInst()->CreateNavigationThread(this);
+
+
 	return true;
 }
 
@@ -953,12 +1042,11 @@ void CTileMapComponent::PostUpdate(float DeltaTime)
 		if (m_Shape == ETileShape::Isometric)
 		{
 			--StartX;
-			--StartY;
-			--StartY;
+			StartY -= 2;
+
 
 			++EndX;
-			++EndY;
-			++EndY;
+			EndY += 2;
 
 			StartX = StartX < 0 ? 0 : StartX;
 			StartY = StartY < 0 ? 0 : StartY;
@@ -985,20 +1073,30 @@ void CTileMapComponent::PostUpdate(float DeltaTime)
 					matView * matProj;
 				m_vecTileInfo[m_RenderCount].matWVP.Transpose();
 
-				if (!m_vecTile[Index]->FrameEmpty())
+				//if (!m_vecTile[Index]->FrameEmpty())
+				//{
+				//	m_vecTileInfo[m_RenderCount].Start = m_vecTile[Index]->GetFrameData().Start;
+				//	m_vecTileInfo[m_RenderCount].End = m_vecTile[Index]->GetFrameData().End;
+				//}
+
+				//Matrix	matWVP;
+				//Vector2	Start;
+				//Vector2	End;
+				//Vector4	TypeColor;
+				//float	Opacity;
+				//int		AnimationType;
+				//int		Frame;
+				//float	Empty;
+
+				if (m_TileMaterial->GetTexture()->GetImageType() == EImageType::Frame)
 				{
-					m_vecTileInfo[m_RenderCount].Start = m_vecTile[Index]->GetFrameData().Start;
-					m_vecTileInfo[m_RenderCount].End = m_vecTile[Index]->GetFrameData().End;
+					m_vecTileInfo[m_RenderCount].Start = m_vecTileFrame[m_vecTile[Index]->GetFrame()].Start;
+					m_vecTileInfo[m_RenderCount].End = m_vecTileFrame[m_vecTile[Index]->GetFrame()].End;
 				}
 
-				else
-				{
-					m_vecTileInfo[m_RenderCount].Start = m_vecTile[Index]->m_TileStart;
-					m_vecTileInfo[m_RenderCount].End = m_vecTile[Index]->m_TileEnd;
-				}
+
 
 				m_vecTileInfo[m_RenderCount].Opacity = m_vecTile[Index]->m_Opacity;
-				m_vecTileInfo[m_RenderCount].AnimationType = (int)m_vecTile[Index]->m_Anim2DType;
 				m_vecTileInfo[m_RenderCount].Frame = m_vecTile[Index]->m_Frame;
 				m_vecTileInfo[m_RenderCount].TypeColor = m_TileTypeColor[(int)m_vecTile[Index]->m_TileOption];
 
