@@ -60,6 +60,7 @@ private:
 	bool PostUpdate(float DeltaTime);
 	bool Collision(float DeltaTime);
 	void Render(float DeltaTime);
+	
 
 
 private:

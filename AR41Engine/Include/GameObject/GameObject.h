@@ -44,7 +44,7 @@ public:
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
 	std::list<CSceneComponent*> m_SceneComponentList;
-	std::vector<CSharedPtr<CObjectComponent>>   m_vecObjectComponent;
+	std::vector<CObjectComponent*>   m_vecObjectComponent;
 	float       m_LifeTime;
 	bool		m_Start;
 
@@ -53,6 +53,7 @@ public:
 
 	inline void SetRootComponent(CSceneComponent* Component);
 
+	//Init은 자동으로 되지 않으므로 주의할것
 	inline void AddSceneComponent(CSceneComponent* Component);
 
 	inline void DeleteSceneComponent(CSceneComponent* Component);
@@ -227,11 +228,14 @@ inline void CGameObject::SetRootComponent(CSceneComponent* Component)
 	m_RootComponent = Component;
 }
 
+
 inline void CGameObject::AddSceneComponent(CSceneComponent* Component)
 {
 	Component->SetScene(m_Scene);
 	Component->SetOwner(this);
-	Component->Init();
+
+	if (!m_RootComponent)
+		m_RootComponent = Component;
 
 	m_SceneComponentList.push_back(Component);
 }

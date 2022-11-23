@@ -166,10 +166,26 @@ void CGameObject::Update(float DeltaTime)
 
 	size_t	Size = m_vecObjectComponent.size();
 
-	for (size_t i = 0; i < Size; ++i)
+	for (size_t i = 0; i < Size; )
 	{
+		if (!m_vecObjectComponent[i]->GetActive())
+		{
+			SAFE_DELETE(m_vecObjectComponent[i]);
+			i = m_vecObjectComponent.erase(m_vecObjectComponent.begin() + i) - m_vecObjectComponent.begin();
+			continue;
+		}
+		else if (!m_vecObjectComponent[i]->GetEnable())
+		{
+			++i;
+			continue;
+		}
+
 		m_vecObjectComponent[i]->Update(DeltaTime);
+
+		++i;
 	}
+
+
 
 	if (m_RootComponent)
 		m_RootComponent->Update(DeltaTime);
@@ -179,10 +195,26 @@ void CGameObject::PostUpdate(float DeltaTime)
 {
 	size_t	Size = m_vecObjectComponent.size();
 
-	for (size_t i = 0; i < Size; ++i)
+
+	for (size_t i = 0; i < Size; )
 	{
+		if (!m_vecObjectComponent[i]->GetActive())
+		{
+			SAFE_DELETE(m_vecObjectComponent[i]);
+			i = m_vecObjectComponent.erase(m_vecObjectComponent.begin() + i) - m_vecObjectComponent.begin();
+			continue;
+		}
+		else if (!m_vecObjectComponent[i]->GetEnable())
+		{
+			++i;
+			continue;
+		}
+
 		m_vecObjectComponent[i]->PostUpdate(DeltaTime);
+
+		++i;
 	}
+
 
 	if (m_RootComponent)
 		m_RootComponent->PostUpdate(DeltaTime);

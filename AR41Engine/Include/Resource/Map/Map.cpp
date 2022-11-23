@@ -147,7 +147,8 @@ CMap::CMap() :
 
 CMap::~CMap()
 {
-    SAFE_DELETE(m_TileMap);
+    //m_TileMap = nullptr;
+    //SAFE_RELEASE(m_TileMap);
 }
 
 
@@ -530,7 +531,7 @@ bool CMap::LoadTileMap()
 
     //실제 타일맵에 추가될 인덱스 순서
     //타일에서 사용할 프레임 번호(스타크래프트 타일맵과 프레임워크의 타일맵 인덱스는 정 반대)
-    int RealTileIndexY = h - 1;
+    int RealTileIndexY = h;
     int MegaTileSavedIndex = 0;
 
     //size_t UNORMPitch = sizeof(float) * 4;
@@ -673,7 +674,7 @@ bool CMap::LoadTileMap()
     //PNG 파일로 출력!
     //lodepng_encode32_file("Rendered.png", (unsigned char*)imgdata, imgw, imgh);
     
-
+    //vecInfo.clear();
     delete[] Img->pixels;
     delete Img;
 

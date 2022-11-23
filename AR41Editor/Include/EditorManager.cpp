@@ -49,8 +49,6 @@ bool CEditorManager::Init(HINSTANCE hInst)
     CCDO::CreateCDO<CEditorDefaultScene>();
     CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>(true);
 
-    
-
     CEngine::SetWndProcCallback<CEditorManager>(this, &CEditorManager::WndProc);
 
     //CEditorGUIManager::GetInst()->CreateEditorWindow<CTestWindow>("TestWindow");
@@ -64,7 +62,7 @@ bool CEditorManager::Init(HINSTANCE hInst)
     //CEditorGUIManager::GetInst()->CreateEditorWindow<CResourceWindow>("ResourceWindow");
 
     // SceneInfo »ý¼º
-    CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>();
+    //CSceneManager::GetInst()->CreateSceneInfo<CEditorDefaultScene>();
 
     return true;
 }

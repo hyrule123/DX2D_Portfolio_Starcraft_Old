@@ -37,7 +37,8 @@ CEngine::CEngine()	:
 	m_ClearColor{}
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(4399);
+	//_CrtSetBreakAlloc(1603592);
+
 
 	m_ClearColor[0] = 0.3f;
 	m_ClearColor[1] = 0.3f;
@@ -57,10 +58,11 @@ CEngine::~CEngine()
 
 	CInput::DestroyInst();
 
-	CThreadManager::DestroyInst();
-
 	CPathManager::DestroyInst();
+
 	CResourceManager::DestroyInst();
+
+	CThreadManager::DestroyInst();
 
 	SAFE_DELETE(m_Setting);
 
