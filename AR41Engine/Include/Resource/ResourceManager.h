@@ -125,6 +125,9 @@ public:	// ===================== Animation =========================
 		int ColStart = -1, int ColSize = -1,
 		int RowStart = -1, int RowSize = -1
 	);
+	bool SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name,
+		int TileRowNum, int TileColNum);
+
 	bool AddAnimationSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End);
 	bool AddAnimationSequence2DFrameAll(const std::string& Name, int Count, float StartX, float StartY, float EndX,
 		float EndY);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Editor\EditorWindow.h"
+#include <stdint.h>
 
 class CResourceWindow :
     public CEditorWindow
@@ -10,6 +11,7 @@ class CResourceWindow :
 protected:
 	CResourceWindow();
 	virtual ~CResourceWindow();
+	
 
 private:
 	class CEditorListBox* m_TextureList;
@@ -20,10 +22,7 @@ private:
 	CSharedPtr<class CTexture>	m_SelectTexture;
 
 public:
-	class CTexture* GetSelectTexture()	const
-	{
-		return m_SelectTexture;
-	}
+	inline class CTexture* GetSelectTexture()	const;
 
 public:
 	virtual bool Init();
@@ -34,3 +33,7 @@ private:
 	void TextureClickCallback(int Index, const std::string& Item);
 };
 
+inline class CTexture* CResourceWindow::GetSelectTexture()	const
+{
+	return m_SelectTexture;
+}

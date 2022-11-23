@@ -83,7 +83,9 @@ CTileMapComponent::CTileMapComponent(const CTileMapComponent& component) :
 
 CTileMapComponent::~CTileMapComponent()
 {
-	CThreadManager::GetInst()->DeleteNavigationThread(this);
+	if (!m_vecTileWalkability.empty())
+		CThreadManager::GetInst()->DeleteNavigationThread(this);
+	
 
 	SAFE_DELETE(m_TileMapCBuffer);
 	SAFE_DELETE(m_TileInfoBuffer);
@@ -952,6 +954,7 @@ bool CTileMapComponent::CDOPreload()
 
 	// 배경용 메쉬 등록
 	SetMesh("LBUVRect");
+	//SetMesh("CenterUVRect");
 
 	m_TileMesh = m_Mesh;
 
@@ -978,28 +981,14 @@ bool CTileMapComponent::Init()
 	m_TileMapCBuffer->SetEnd(m_TileSize);
 	m_TileMapCBuffer->SetFrame(0);
 
-	
-
-	//for (int i = 0; i <= 379; ++i)
-	//{
-	//	Animation2DFrameData	Data;
-
-	//	Data.Start = Vector2(0.f, 0.f);
-	//	Data.End = Vector2(160.f, 80.f);
-
-	//	m_vecTileFrame.push_back(Data);
-	//}
-
-	//m_TileStartFrame = Vector2(0.f, 0.f);
-	//m_TileEndFrame = Vector2(160.f, 80.f);
 
 	m_vecMaterial.clear();
 
 	AddMaterial("DefaultTileMapBack");
 
-	//// 타일이 생성되었기 때문에 해당 타일맵의 길을 찾아줄 내비게이션 스레드를
-	//// 생성해준다.
-	CThreadManager::GetInst()->CreateNavigationThread(this);
+	//길찾기용 노드(vecTileWalkability)가 생성되어 있을 경우에만 스레드를 생성한다.
+	if(!m_vecTileWalkability.empty())
+		CThreadManager::GetInst()->CreateNavigationThread(this);
 
 
 	return true;

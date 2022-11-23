@@ -666,6 +666,9 @@
     <ClInclude Include="lodepng\lodepng.h">
       <Filter>99. DebugUtil</Filter>
     </ClInclude>
+    <ClInclude Include="Animation\Animation2DDataRoot.h">
+      <Filter>08. Animation\01. 2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -1048,6 +1051,9 @@
     </ClCompile>
     <ClCompile Include="lodepng\lodepng.cpp">
       <Filter>99. DebugUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Animation2DDataRoot.cpp">
+      <Filter>08. Animation\01. 2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

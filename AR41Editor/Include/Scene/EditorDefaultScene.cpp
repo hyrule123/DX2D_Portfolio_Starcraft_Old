@@ -6,7 +6,7 @@
 
 //Used Objects
 #include "../GameObject/TileMapHolder.h"
-#include "../GameObject/Marine.h";
+#include "../GameObject/Marine.h"
 
 CEditorDefaultScene::CEditorDefaultScene()
 {

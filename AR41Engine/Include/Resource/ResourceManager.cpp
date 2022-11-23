@@ -427,6 +427,11 @@ bool CResourceManager::AddAnimationSequence2DFrameByTileNumber(const std::string
 	return m_AnimationManager->AddAnimationSequence2DFrameByTileNumber(Name, Type, TileRowNum, TileColNum, ColStart, ColSize, RowStart, RowSize);
 }
 
+bool CResourceManager::SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name, int TileRowNum, int TileColNum)
+{
+	return m_AnimationManager->SetAnimationSequence2DFrameAllByTileNumber(Name, TileRowNum, TileColNum);
+}
+
 bool CResourceManager::AddAnimationSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End)
 {
 	return m_AnimationManager->AddSequence2DFrameAll(Name, Count, Start, End);

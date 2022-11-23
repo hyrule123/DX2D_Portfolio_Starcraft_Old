@@ -24,26 +24,14 @@ protected:
 	std::vector<std::string>	m_vecChildName;
 
 public:
-    CTransform* GetTransform()    const
-    {
-        return m_Transform;
-    }
+	inline CTransform* GetTransform()    const;
 
-	CSceneComponent* GetParent()	const
-	{
-		return m_Parent;
-	}
+	inline CSceneComponent* GetParent()	const;
 
 public:
-	const std::string& GetRenderLayerName() const
-	{
-		return m_LayerName;
-	}
+	inline const std::string& GetRenderLayerName() const;
 
-	void SetRenderLayerName(const std::string& Name)
-	{
-		m_LayerName = Name;
-	}
+	inline void SetRenderLayerName(const std::string& Name);
 
 	void AddOwner();
 
@@ -203,3 +191,22 @@ public:
 	void AddWorldPositionZ(float z);
 };
 
+inline CTransform* CSceneComponent::GetTransform()    const
+{
+	return m_Transform;
+}
+
+inline CSceneComponent* CSceneComponent::GetParent()	const
+{
+	return m_Parent;
+}
+
+inline const std::string& CSceneComponent::GetRenderLayerName() const
+{
+	return m_LayerName;
+}
+
+inline void CSceneComponent::SetRenderLayerName(const std::string& Name)
+{
+	m_LayerName = Name;
+}

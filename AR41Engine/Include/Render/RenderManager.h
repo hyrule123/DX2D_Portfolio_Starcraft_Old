@@ -9,6 +9,9 @@ struct RenderLayer
 	int				LayerPriority;
 	CSharedPtr<class CRenderState> AlphaBlend;
 	std::list<CSharedPtr<class CSceneComponent>>	RenderList;
+
+	//매 프레임마다 인스턴싱으로 그려낼 오브젝트들의 리스트를 정렬한다.
+	std::vector<CSharedPtr<class CSceneComponent>>	InstancingQueue;
 };
 
 class CRenderManager

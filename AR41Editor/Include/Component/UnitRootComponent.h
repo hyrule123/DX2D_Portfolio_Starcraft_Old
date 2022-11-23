@@ -31,7 +31,7 @@ public:
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 
-	inline INT8 GetDirection() const;;
+	inline INT8 GetDirection() const;
 
 protected:
 	float m_DirAngleUnit;	//유닛 스프라이트의 방향 1단위의 각도

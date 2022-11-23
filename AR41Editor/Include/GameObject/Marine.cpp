@@ -73,6 +73,7 @@ bool CMarine::CDOPreload()
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraIdle", UltraTex);
 
+	CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
 
 	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
 

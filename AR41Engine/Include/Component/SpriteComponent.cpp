@@ -107,7 +107,7 @@ bool CSpriteComponent::CDOPreload()
 	if (!CPrimitiveComponent::CDOPreload())
 		return false;
 
-	SetMesh("LBUVRect");
+	SetMesh("CenterUVRect");
 
 	m_Transform->Set2D(true);
 

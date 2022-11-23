@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Animation\Animation2D.h" />
     <ClInclude Include="Animation\Animation2DData.h" />
+    <ClInclude Include="Animation\Animation2DDataRoot.h" />
     <ClInclude Include="CDO.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Component\CameraComponent.h" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="Animation\Animation2D.cpp" />
     <ClCompile Include="Animation\Animation2DData.cpp" />
+    <ClCompile Include="Animation\Animation2DDataRoot.cpp" />
     <ClCompile Include="CDO.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component\CameraComponent.cpp" />

@@ -109,6 +109,7 @@ PS_OUTPUT_SINGLE TileMapPS(VS_OUTPUT_UV input)
     else
         TextureColor = g_TileTextureArray.Sample(g_PointSmp, float3(input.UV, input.Frame));
     
+    
     output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb * input.Color.rgb;
 
     output.Color.a = TextureColor.a * input.Opacity;

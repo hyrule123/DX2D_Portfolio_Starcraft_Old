@@ -15,8 +15,12 @@ CAnimationSequence2D::CAnimationSequence2D()	:
 	SetTypeID<CAnimationSequence2D>();
 }
 
-CAnimationSequence2D::CAnimationSequence2D(const CAnimationSequence2D& Anim)	:
-	CGameResource(Anim)
+CAnimationSequence2D::CAnimationSequence2D(const CAnimationSequence2D& Anim) :
+	CGameResource(Anim),
+	m_ColStart(Anim.m_ColStart),
+	m_RowStart(Anim.m_RowStart),
+	m_RowSize(Anim.m_RowSize),
+	m_ColSize(Anim.m_ColSize)
 {
 	m_Texture = Anim.m_Texture;
 	m_vecFrameData = Anim.m_vecFrameData;
@@ -224,6 +228,61 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	m_Anim2DType = Type;
 }
 
+void CAnimationSequence2D::SetFrameAllByTileNumber(int TileRowNum, int TileColNum)
+{
+	//예외처리
+	if (!m_Texture)
+	{
+		assert(0);
+		return;
+	}
+	else if (m_Anim2DType == EAnimation2DType::Frame)
+	{
+		assert(0);
+		return;
+	}
+
+	m_Anim2DType = EAnimation2DType::AtlasIndexed;
+
+	//시작 행렬 번호를 지정했을 경우 여기서 설정
+	int RStart = 0;
+	int RSize = TileRowNum;
+	int CStart = 0;
+	int CSize = TileColNum;
+
+
+	m_vecFrameData.clear();
+
+	int TileWidth = m_Texture->GetWidth() / TileRowNum;
+	int TileHeight = m_Texture->GetHeight() / TileColNum;
+
+	int CEnd = CStart + CSize;
+	int REnd = RStart + RSize;
+
+	for (int i = CStart; i < CEnd; ++i)
+	{
+		for (int j = RStart; j < REnd; ++j)
+		{
+			Animation2DFrameData Data;
+
+			Data.Start.x = (float)(j * TileWidth);
+			Data.Start.y = (float)(i * TileHeight);
+
+
+			Data.End.x = Data.Start.x + (float)TileWidth;
+			Data.End.y = Data.Start.y + (float)TileHeight;
+
+			m_vecFrameData.push_back(Data);
+		}
+	}
+
+	m_RowStart = RStart;
+	m_ColStart = CStart;
+
+	m_RowSize = RSize;
+ 	m_ColSize = CSize;
+}
+
 void CAnimationSequence2D::AddFrameAll(int Count, const Vector2& Start, const Vector2& End)
 {
 	for (int i = 0; i < Count; ++i)
@@ -282,6 +341,15 @@ bool CAnimationSequence2D::Save(const char* FullPath)
 
 	fwrite(&m_Anim2DType, sizeof(EAnimation2DType), 1, File);
 
+	if (m_Anim2DType == EAnimation2DType::AtlasIndexed)
+	{
+		fwrite(&m_RowStart, sizeof(int), 1, File);
+		fwrite(&m_ColStart, sizeof(int), 1, File);
+		fwrite(&m_RowSize, sizeof(int), 1, File);
+		fwrite(&m_ColSize, sizeof(int), 1, File);
+	}
+
+
 	bool	TexEnable = false;
 
 	if (m_Texture)
@@ -327,6 +395,15 @@ bool CAnimationSequence2D::Load(const char* FullPath)
 	m_Name = Name;
 
 	fread(&m_Anim2DType, sizeof(EAnimation2DType), 1, File);
+
+	if (m_Anim2DType == EAnimation2DType::AtlasIndexed)
+	{
+		fread(&m_RowStart, sizeof(int), 1, File);
+		fread(&m_ColStart, sizeof(int), 1, File);
+		fread(&m_RowSize, sizeof(int), 1, File);
+		fread(&m_ColSize, sizeof(int), 1, File);
+	}
+
 
 	bool	TexEnable = false;
 
