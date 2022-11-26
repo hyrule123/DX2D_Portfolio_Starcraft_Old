@@ -150,6 +150,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneResource.h" />
     <ClInclude Include="Scene\SceneViewport.h" />
+    <ClInclude Include="ShaderInfo.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Thread\DataStream.h" />
     <ClInclude Include="Thread\LoadingThread.h" />

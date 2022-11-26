@@ -3,6 +3,8 @@
 
 #include "../Resource/Shader/SharedStructuredBuffer.h"
 
+#include "ShaderInfo.h"
+
 enum class EUnitAnimLayer
 {
     UnitBackMain,
@@ -47,7 +49,7 @@ protected:
     SCUnitSBuffer m_PrivateSBuffer;
 
 
-    //딱 하나의 구조화버퍼 시스템을 생성해놓고 모두가 공유해서 사용한다.
+    //딱 하나의 구조화버퍼 주소를 생성(CDOPreloac)해놓고 모두가 공유해서 사용한다.
     CSharedPtr<CSharedStructuredBuffer<SCUnitSBuffer>> m_SBufferInfo;
     //class CStructuredBuffer* m_SBuffer;
     //std::vector<SCUnitSBuffer> m_vecSBufferInfo;

@@ -31,6 +31,7 @@
 #include "Resource/Texture/DirectXTex.h"
 #include "fmod.hpp"
 
+
 #ifdef _DEBUG
 #include "lodepng/lodepng.h"
 
@@ -116,117 +117,7 @@ struct Resolution
 	unsigned int	Height;
 };
 
-// 위치, 색상 정보를 가지고 있는 정점.
-struct VertexColor
-{
-	Vector3	Pos;
-	Vector4	Color;
 
-	VertexColor()
-	{
-	}
-
-	VertexColor(const Vector3& _Pos, const Vector4& _Color) :
-		Pos(_Pos),
-		Color(_Color)
-	{
-	}
-};
-
-struct VertexBuffer
-{
-	ID3D11Buffer* Buffer;
-	int		Size;	// 정점 1개의 크기
-	int		Count;	// 정점 개수
-	void* Data;		// 정점 정보
-
-	VertexBuffer() :
-		Buffer(nullptr),
-		Size(0),
-		Count(0),
-		Data(nullptr)
-	{
-	}
-
-	~VertexBuffer()
-	{
-		SAFE_DELETE_ARRAY(Data);
-		SAFE_RELEASE(Buffer);
-	}
-};
-
-struct IndexBuffer
-{
-	ID3D11Buffer* Buffer;
-	int		Size;		// 인덱스 1개의 크기
-	int		Count;		// 인덱스 개수
-	DXGI_FORMAT	Fmt;	// 인덱스 포멧
-	void* Data;			// 인덱스 정보
-
-	IndexBuffer() :
-		Buffer(nullptr),
-		Size(0),
-		Count(0),
-		Fmt(DXGI_FORMAT_UNKNOWN),
-		Data(nullptr)
-	{
-	}
-
-	~IndexBuffer()
-	{
-		SAFE_DELETE_ARRAY(Data);
-		SAFE_RELEASE(Buffer);
-	}
-};
-
-struct TransformCBuffer
-{
-	Matrix  matWorld;
-	Matrix  matView;
-	Matrix  matProj;
-	Matrix  matWVP;
-	Vector3 Pivot;
-	float	Empty1;
-	Vector3 MeshSize;
-	float	Empty2;
-};
-
-// 위치, 색상 정보를 가지고 있는 정점.
-struct VertexUV
-{
-	Vector3	Pos;
-	Vector2	UV;
-
-	VertexUV()
-	{
-	}
-
-	VertexUV(const Vector3& _Pos, const Vector2& _UV) :
-		Pos(_Pos),
-		UV(_UV)
-	{
-	}
-};
-
-struct MaterialCBuffer
-{
-	Vector4 BaseColor;
-	Vector4 AmbientColor;
-	Vector4 SpecularColor;
-	Vector4 EmissiveColor;
-	float Opacity;
-	int	TextureType;
-	float TextureWidth;
-	float TextureHeight;
-	Vector3 ColorKey;
-	float Empty;
-
-	MaterialCBuffer():
-		ColorKey(-1.f, -1.f, -1.f),
-		Opacity()
-	{
-	}
-};
 
 struct HierarchyName
 {
@@ -259,18 +150,7 @@ struct Animation2DFrameData
 	{}
 };
 
-struct Animation2DCBuffer
-{
-	float Anim2DImageWidth;
-	float Anim2DImageHeight;
-	Vector2 Anim2DFrameStart;
-	Vector2 Anim2DFrameEnd;
-	int Anim2DType;
-	int Anim2DEnable;
-	int	Anim2DFrame;
-	int Anim2DXFlip;
-	Vector2 Anim2DEmpty;
-};
+
 
 struct CollisionChannel
 {
@@ -305,11 +185,7 @@ struct CollisionResult
 	}
 };
 
-struct ColliderCBuffer
-{
-	Vector4	Color;
-	Matrix	matWVP;
-};
+
 
 struct Box2DInfo
 {
@@ -362,23 +238,6 @@ struct PixelInfo
 	}
 };
 
-struct UICBuffer
-{
-	Vector4 UITint;
-	Matrix	UIWVP;
-	Vector2 UIMeshSize;
-	Vector2 UIPivot;
-	int		UITextureEnable;
-	float	UIOpacity;
-	Vector2	UIEmpty;
-};
-
-struct UIProgressBarCBuffer
-{
-	int		BarDir;
-	float	Percent;
-	Vector2	Empty;
-};
 
 
 struct ThreadSyncData
@@ -388,35 +247,6 @@ struct ThreadSyncData
 	unsigned char Data[1024];
 };
 
-struct TileMapCBuffer
-{
-	Vector2	ImageSize;
-	Vector2	Start;
-	Vector2	End;
-	Vector2	TileSize;
-	Matrix	matWVP;
-	int		Frame;
-	Vector3	Empty;
-};
-
-struct TileInfo
-{
-	Matrix	matWVP;
-	Vector2	Start;
-	Vector2	End;
-	Vector4	TypeColor;
-	float	Opacity;
-	int		AnimationType;
-	int		Frame;
-	float	Empty;
-
-	TileInfo():
-		Opacity(1.f),
-		TypeColor(1.f, 1.f, 1.f, 1.f),
-		AnimationType(),
-		Frame(0)
-	{}
-};
 
 //PreLoad 시 사용할 정보
 struct RequiredResource
@@ -433,32 +263,4 @@ enum class ERequiredResource
 };
 
 
-//공통적으로 한 유닛이 특정 레이어의 텍스처 정보를 '사용하고 있는지' 여부를 저장
-enum class ERenderFlags : unsigned long
-{
-	UsingShadow = 1ul << 0,
-	UsingUnitMain = 1ul << 1,
-	UsingUnitTop = 1ul << 2,
-	UsingUnitBooster = 1ul << 3,
-	UsingUnitAttack = 1ul << 4
-};
 
-struct SCUnitCBuffer
-{
-	//한 유닛이 '공통적으로' 어떤 텍스처 파트를 사용하고 있는지 등에 대한 정보를 저장
-	unsigned int RenderFlags;
-};
-
-struct SCUnitSBuffer
-{
-	Matrix  matWVP;
-
-	Vector3 Pivot;
-	float TransformEmpty1;
-
-	Vector3  MeshSize;
-
-	//한 유닛이 '개별적으로' 특정 텍스처를 출력해야 할지 여부를 저장
-	unsigned int RenderFlags;
-	float  TransformEmpty2;
-};

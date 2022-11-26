@@ -684,6 +684,9 @@
     <ClInclude Include="Resource\Shader\SharedStructuredBuffer.h">
       <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderInfo.h">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
