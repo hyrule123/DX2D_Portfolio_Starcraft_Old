@@ -38,9 +38,9 @@ public:
 		int RowStart = -1, int RowSize = -1
 		);
 
-	bool SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name,
-		int TileRowNum, int TileColNum
-	);
+	//bool SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name,
+	//	int TileRowNum, int TileColNum
+	//);
 
 	bool AddSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End);
 	bool AddSequence2DFrameAll(const std::string& Name, int Count, float StartX, float StartY, float EndX,

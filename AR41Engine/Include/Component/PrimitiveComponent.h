@@ -16,10 +16,7 @@ protected:
     std::vector<CSharedPtr<class CMaterial>>    m_vecMaterial;
 
 public:
-    class CMaterial* GetMaterial(int Slot)
-    {
-        return m_vecMaterial[Slot];
-    }
+    inline class CMaterial* GetMaterial(int Slot);
 
 public:
     void SetMesh(const std::string& Name);
@@ -41,3 +38,7 @@ public:
     virtual void Load(FILE* File);
 };
 
+inline class CMaterial* CPrimitiveComponent::GetMaterial(int Slot)
+{
+    return m_vecMaterial[Slot];
+}

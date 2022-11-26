@@ -43,6 +43,7 @@ struct TileInfo
     float Empty;
 };
 
+
 StructuredBuffer<TileInfo> g_TileInfoArray : register(t40);
 
 Texture2DArray g_TileTextureArray : register(t10);
@@ -114,7 +115,8 @@ PS_OUTPUT_SINGLE TileMapPS(VS_OUTPUT_UV input)
 
     output.Color.a = TextureColor.a * input.Opacity;
     
-    return output;
+    
+   return output;
 }
 
 

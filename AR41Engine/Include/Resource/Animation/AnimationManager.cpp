@@ -187,17 +187,17 @@ bool CAnimationManager::AddAnimationSequence2DFrameByTileNumber(const std::strin
 	return true;
 }
 
-bool CAnimationManager::SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name, int TileRowNum, int TileColNum)
-{
-	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
-
-	if (!Sequence)
-		return false;
-
-	Sequence->SetFrameAllByTileNumber(TileRowNum, TileColNum);
-
-	return true;
-}
+//bool CAnimationManager::SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name, int TileRowNum, int TileColNum)
+//{
+//	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
+//
+//	if (!Sequence)
+//		return false;
+//
+//	Sequence->SetFrameAllByTileNumber(TileRowNum, TileColNum);
+//
+//	return true;
+//}
 
 bool CAnimationManager::AddSequence2DFrameAll(const std::string& Name, int Count, const Vector2& Start, const Vector2& End)
 {

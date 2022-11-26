@@ -93,7 +93,8 @@ enum class EAnimation2DType : int
 	Atlas,
 	Frame,
 	Array,
-	AtlasIndexed
+	AtlasIndexed,
+	MultiTexture
 };
 
 enum class ECollision_Channel
@@ -234,4 +235,13 @@ enum EMapDataType
 	MapSize,
 	TileMap,
 	EMapDataTypeEnd
+};
+
+enum ESCUnitLayers
+{
+	SCUnitShadow,
+	SCUnitBackLayer,
+	SCUnitFrontLayer,
+	SCUnitBoostEffectLayer,
+	SCUnitAttackEffectLayer
 };

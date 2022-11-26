@@ -103,6 +103,10 @@ void CRenderManager::AddRenderList(CSceneComponent* Component)
 	}
 }
 
+void CRenderManager::AddInstancedRenderQueue(CSceneComponent* Component)
+{
+}
+
 bool CRenderManager::Init()
 {
 	m_RenderStateManager = new CRenderStateManager;

@@ -17,7 +17,7 @@
 #include "Resource/Material/Material.h"
 #include "Animation/Animation2D.h"
 #include "../Component/UnitRootComponent.h"
-#include "../Component/UnitSpriteComponent.h"
+#include "Component/SCUnitSpriteComponent.h"
 
 CMarine::CMarine()
 {
@@ -41,8 +41,8 @@ bool CMarine::CDOPreload()
 	SetRootComponent(m_UnitRoot);
 
 
-	m_MainSprite = CreateComponent<CUnitSpriteComponent>("MainSprite");
-	m_UnitRoot->AddChild((CSceneComponent*)m_MainSprite);
+	m_MainSprite = CreateComponent<CSCUnitSpriteComponent>("MainSprite");
+	m_UnitRoot->AddChild((CSceneComponent*)(*m_MainSprite));
 
 	m_MainSprite->SetRelativeScale(100.f, 100.f);
 	m_MainSprite->SetPivot(0.5f, 0.5f);
@@ -73,14 +73,13 @@ bool CMarine::CDOPreload()
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraIdle", UltraTex);
 
-	CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
+	//CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
 
 	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraMove", UltraTex);
 	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
-
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraAttack", UltraTex);
@@ -94,26 +93,29 @@ bool CMarine::Init()
 	CGameObject::Init();
 
 	m_UnitRoot = (CSceneComponent*)FindComponent("UnitRoot");
-	m_MainSprite = (CUnitSpriteComponent*)FindComponent("MainSprite");
-	m_Anim = m_MainSprite->GetAnimation();
+	m_MainSprite = (CSCUnitSpriteComponent*)FindComponent("MainSprite");
+	
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
 
 	m_UnitRoot->SetWorldPosition(500.f, 500.f);
 
-	m_Anim->AddAnimation("UltraIdle", "UltraIdle");
-	m_Anim->SetLoop("UltraIdle", true);
-	m_Anim->SetPlayTime("UltraIdle", 30.f);
 
-	m_Anim->AddAnimation("UltraMove", "UltraMove");
-	m_Anim->SetLoop("UltraMove", true);
-	m_Anim->SetPlayTime("UltraMove", 1.f);
+	CAnimation2D* UnitBack = m_MainSprite->GetUnitAnimLayer(0);
 
-	m_Anim->AddAnimation("UltraAttack", "UltraAttack");
-	m_Anim->SetLoop("UltraAttack", true);
-	m_Anim->SetPlayTime("UltraAttack", 0.5f);
+	UnitBack->AddAnimation("UltraIdle", "UltraIdle");
+	UnitBack->SetLoop("UltraIdle", true);
+	UnitBack->SetPlayTime("UltraIdle", 30.f);
 
-	m_Anim->SetCurrentAnimation("UltraAttack");
+	UnitBack->AddAnimation("UltraMove", "UltraMove");
+	UnitBack->SetLoop("UltraMove", true);
+	UnitBack->SetPlayTime("UltraMove", 1.f);
+
+	UnitBack->AddAnimation("UltraAttack", "UltraAttack");
+	UnitBack->SetLoop("UltraAttack", true);
+	UnitBack->SetPlayTime("UltraAttack", 0.5f);
+
+	UnitBack->SetCurrentAnimation("UltraAttack");
 
 	return true;
 }

@@ -250,8 +250,13 @@ struct HierarchyObjectName
 
 struct Animation2DFrameData
 {
+	int TextureIndex;
 	Vector2	Start;
 	Vector2	End;
+
+	Animation2DFrameData() :
+		TextureIndex(0)
+	{}
 };
 
 struct Animation2DCBuffer
@@ -375,6 +380,7 @@ struct UIProgressBarCBuffer
 	Vector2	Empty;
 };
 
+
 struct ThreadSyncData
 {
 	int	Header;
@@ -424,4 +430,35 @@ enum class ERequiredResource
 	ResType,
 	Name,
 	FileName
+};
+
+
+//공통적으로 한 유닛이 특정 레이어의 텍스처 정보를 '사용하고 있는지' 여부를 저장
+enum class ERenderFlags : unsigned long
+{
+	UsingShadow = 1ul << 0,
+	UsingUnitMain = 1ul << 1,
+	UsingUnitTop = 1ul << 2,
+	UsingUnitBooster = 1ul << 3,
+	UsingUnitAttack = 1ul << 4
+};
+
+struct SCUnitCBuffer
+{
+	//한 유닛이 '공통적으로' 어떤 텍스처 파트를 사용하고 있는지 등에 대한 정보를 저장
+	unsigned int RenderFlags;
+};
+
+struct SCUnitSBuffer
+{
+	Matrix  matWVP;
+
+	Vector3 Pivot;
+	float TransformEmpty1;
+
+	Vector3  MeshSize;
+
+	//한 유닛이 '개별적으로' 특정 텍스처를 출력해야 할지 여부를 저장
+	unsigned int RenderFlags;
+	float  TransformEmpty2;
 };

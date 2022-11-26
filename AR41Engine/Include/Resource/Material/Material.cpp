@@ -357,6 +357,32 @@ void CMaterial::AddTextureArrayFullPath(int Register, int ShaderBufferType, cons
 	m_vecTextureInfo.push_back(Info);
 }
 
+void CMaterial::AddTextureEmpty(int Register, int ShaderBufferType)
+{
+	MaterialTextureInfo* Info = new MaterialTextureInfo;
+
+	Info->Register = Register;
+	Info->ShaderBufferType = ShaderBufferType;
+
+	m_vecTextureInfo.push_back(Info);
+}
+
+void CMaterial::SetTexture(int Index, const std::string& TexName)
+{
+	if (m_vecTextureInfo.size() <= Index)
+		return;
+
+	m_vecTextureInfo[Index]->Texture = CResourceManager::GetInst()->FindTexture(TexName);
+}
+
+void CMaterial::SetTexture(CTexture* Tex, int Index)
+{
+	if (m_vecTextureInfo.size() <= Index)
+		return;
+
+	m_vecTextureInfo[Index]->Texture = Tex;
+}
+
 void CMaterial::SetTexture(int Index, int Register, int ShaderBufferType,
 	const std::string& Name, CTexture* Texture)
 {

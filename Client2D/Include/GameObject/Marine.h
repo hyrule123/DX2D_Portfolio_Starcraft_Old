@@ -13,7 +13,7 @@ protected:
 
 private:
 	CSharedPtr<class CSceneComponent> m_UnitRoot;
-	CSharedPtr<class CUnitSpriteComponent>	m_MainSprite;
+	CSharedPtr<class CSCUnitSpriteComponent>	m_MainSprite;
 	CSharedPtr<class CCameraComponent>	m_Camera;
 	CSharedPtr<class CTargetArm>		m_Arm;
 	CSharedPtr<class CColliderOBB2D>	m_Coll;

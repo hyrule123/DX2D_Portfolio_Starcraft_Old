@@ -1,5 +1,9 @@
 
 #include "ShaderManager.h"
+
+#include "../../Scene/SceneManager.h"
+
+//Shaders
 #include "SpriteColorShader.h"
 #include "SpriteShader.h"
 #include "ColliderShader.h"
@@ -11,7 +15,8 @@
 #include "TileMapShader.h"
 #include "TileMapConstantBuffer.h"
 #include "TileMapBackShader.h"
-#include "../../Scene/SceneManager.h"
+#include "SCUnitShader.h"
+
 
 CShaderManager::CShaderManager()
 {
@@ -50,6 +55,8 @@ bool CShaderManager::Init()
 	CreateShader<CTileMapBackShader>("TileMapBackShader");
 
 
+	CreateShader<CSCUnitShader>("SCUnitShader");
+
 
 	CreateConstantBuffer("Transform", sizeof(TransformCBuffer), 0);
 	CreateConstantBuffer("Material", sizeof(MaterialCBuffer), 1);
@@ -58,6 +65,7 @@ bool CShaderManager::Init()
 	CreateConstantBuffer("UI", sizeof(UICBuffer), 10);
 	CreateConstantBuffer("UIProgressBar", sizeof(UIProgressBarCBuffer), 11);
 	CreateConstantBuffer("TileMap", sizeof(TileMapCBuffer), 10);
+	CreateConstantBuffer("SCUnit", sizeof(SCUnitCBuffer), 12);
 
 	m_ColliderCBuffer = new CColliderConstantBuffer;
 

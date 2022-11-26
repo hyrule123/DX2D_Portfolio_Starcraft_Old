@@ -7,6 +7,7 @@ class CAnimation2D :
     public CRef
 {
 	friend class CUnitSpriteComponent;
+	friend class CSCUnitSpriteComponent;
     friend class CSpriteComponent;
 	friend class CSceneManager;
 	friend class CScene;

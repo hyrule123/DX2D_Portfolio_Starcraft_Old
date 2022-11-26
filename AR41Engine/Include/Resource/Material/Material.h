@@ -92,6 +92,11 @@ public:
         const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
     void AddTextureArrayFullPath(int Register, int ShaderBufferType, const std::string& TexName);
 
+    void AddTextureEmpty(int Register, int ShaderBufferType);
+    void SetTexture(int Index, const std::string& TexName);
+    void SetTexture(class CTexture* Tex, int Index);
+
+
     // === 추가되어 있는 Texture 변경 ===
     void SetTexture(int Index, int Register, int ShaderBufferType, const std::string& Name,
         class CTexture* Texture);

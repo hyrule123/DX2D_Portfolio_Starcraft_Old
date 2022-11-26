@@ -30,6 +30,105 @@ CPrimitiveComponent::~CPrimitiveComponent()
 {
 }
 
+void CPrimitiveComponent::Start()
+{
+	CSceneComponent::Start();
+
+	// Scene에 배치가 되고 Start가 호출되면 출력 목록으로 지정한다.
+	CRenderManager::GetInst()->AddRenderList(this);
+}
+
+bool CPrimitiveComponent::Init()
+{
+	if (!CSceneComponent::Init())
+		return false;
+
+	return true;
+}
+
+void CPrimitiveComponent::Update(float DeltaTime)
+{
+	CSceneComponent::Update(DeltaTime);
+}
+
+void CPrimitiveComponent::PostUpdate(float DeltaTime)
+{
+	CSceneComponent::PostUpdate(DeltaTime);
+}
+
+void CPrimitiveComponent::Render()
+{
+	CSceneComponent::Render();
+
+	int	Size = (int)m_vecMaterial.size();
+
+	for (int i = 0; i < Size; ++i)
+	{
+		m_vecMaterial[i]->SetMaterial();
+
+		m_Mesh->Render(i);
+
+		m_vecMaterial[i]->ResetMaterial();
+	}
+}
+
+CPrimitiveComponent* CPrimitiveComponent::Clone() const
+{
+	return new CPrimitiveComponent(*this);
+}
+
+void CPrimitiveComponent::Save(FILE* File)
+{
+	CSceneComponent::Save(File);
+
+	int	Length = (int)m_Mesh->GetName().length();
+
+	fwrite(&Length, 4, 1, File);
+	fwrite(m_Mesh->GetName().c_str(), 1, Length, File);
+
+	int	MaterialCount = (int)m_vecMaterial.size();
+
+	fwrite(&MaterialCount, 4, 1, File);
+
+	for (int i = 0; i < MaterialCount; ++i)
+	{
+		m_vecMaterial[i]->Save(File);
+	}
+}
+
+void CPrimitiveComponent::Load(FILE* File)
+{
+	CSceneComponent::Load(File);
+
+	int	Length = 0;
+	char	MeshName[256] = {};
+
+	fread(&Length, 4, 1, File);
+	fread(MeshName, 1, Length, File);
+
+	SetMesh(MeshName);
+
+	int	MaterialCount = 0;
+
+	fread(&MaterialCount, 4, 1, File);
+
+	m_vecMaterial.clear();
+
+	for (int i = 0; i < MaterialCount; ++i)
+	{
+		CMaterial* Material = m_Mesh->GetMaterial(i);
+
+		Material = Material->Clone();
+
+		Material->SetScene(m_Scene);
+
+		Material->Load(File);
+
+		m_vecMaterial.push_back(Material);
+	}
+}
+
+
 void CPrimitiveComponent::SetMesh(const std::string& Name)
 {
 	m_Mesh = CResourceManager::GetInst()->FindMesh(Name);
@@ -102,100 +201,3 @@ void CPrimitiveComponent::ClearMaterial()
 	m_vecMaterial.clear();
 }
 
-void CPrimitiveComponent::Start()
-{
-	CSceneComponent::Start();
-
-	// Scene에 배치가 되고 Start가 호출되면 출력 목록으로 지정한다.
-	CRenderManager::GetInst()->AddRenderList(this);
-}
-
-bool CPrimitiveComponent::Init()
-{
-	if (!CSceneComponent::Init())
-		return false;
-
-	return true;
-}
-
-void CPrimitiveComponent::Update(float DeltaTime)
-{
-	CSceneComponent::Update(DeltaTime);
-}
-
-void CPrimitiveComponent::PostUpdate(float DeltaTime)
-{
-	CSceneComponent::PostUpdate(DeltaTime);
-}
-
-void CPrimitiveComponent::Render()
-{
-	CSceneComponent::Render();
-
-	int	Size = (int)m_vecMaterial.size();
-
-	for (int i = 0; i < Size; ++i)
-	{
-		m_vecMaterial[i]->SetMaterial();
-
-		m_Mesh->Render(i);
-
-		m_vecMaterial[i]->ResetMaterial();
-	}
-}
-
-CPrimitiveComponent* CPrimitiveComponent::Clone() const
-{
-	return new CPrimitiveComponent(*this);
-}
-
-void CPrimitiveComponent::Save(FILE* File)
-{
-	CSceneComponent::Save(File);
-
-	int	Length = (int)m_Mesh->GetName().length();
-
-	fwrite(&Length, 4, 1, File);
-	fwrite(m_Mesh->GetName().c_str(), 1, Length, File);
-
-	int	MaterialCount = (int)m_vecMaterial.size();
-
-	fwrite(&MaterialCount, 4, 1, File);
-	
-	for (int i = 0; i < MaterialCount; ++i)
-	{
-		m_vecMaterial[i]->Save(File);
-	}
-}
-
-void CPrimitiveComponent::Load(FILE* File)
-{
-	CSceneComponent::Load(File);
-
-	int	Length = 0;
-	char	MeshName[256] = {};
-
-	fread(&Length, 4, 1, File);
-	fread(MeshName, 1, Length, File);
-
-	SetMesh(MeshName);
-
-	int	MaterialCount = 0;
-
-	fread(&MaterialCount, 4, 1, File);
-
-	m_vecMaterial.clear();
-
-	for (int i = 0; i < MaterialCount; ++i)
-	{
-		CMaterial* Material = m_Mesh->GetMaterial(i);
-
-		Material = Material->Clone();
-
-		Material->SetScene(m_Scene);
-
-		Material->Load(File);
-
-		m_vecMaterial.push_back(Material);
-	}
-}

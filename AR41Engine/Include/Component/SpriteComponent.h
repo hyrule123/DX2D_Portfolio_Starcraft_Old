@@ -15,38 +15,6 @@ protected:
     CSpriteComponent(const CSpriteComponent& component);
     virtual ~CSpriteComponent();
 
-protected:
-    CSharedPtr<CAnimation2D> m_Animation;
-
-public:
-    std::string GetAnimationName()  const
-    {
-        if (!m_Animation)
-            return "None";
-
-        return m_Animation->GetAnimationClassName();
-    }
-
-    CAnimation2D* GetAnimation()    const
-    {
-        return m_Animation;
-    }
-
-    void GetAnimationNames(std::vector<std::string>& vecNames);
-
-public:
-    bool SetTexture(class CTexture* Texture);
-    bool SetTexture(const std::string& Name, const TCHAR* FileName,
-        const std::string& PathName = TEXTURE_PATH);
-    bool SetTextureFullPath(const std::string& Name, const TCHAR* FullPath);
-    bool SetTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
-        const std::string& PathName = TEXTURE_PATH);
-    bool SetTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
-    void SetTextureFrameIndex(int Index);
-
-    class CTexture* GetTexture(int Index = 0)    const;
-
-    void ClearAnimation();
 
 public:
     virtual bool CDOPreload();
@@ -58,6 +26,30 @@ public:
     virtual CSpriteComponent* Clone()    const;
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
+
+protected:
+    CSharedPtr<CAnimation2D> m_Animation;
+
+public:
+    inline std::string GetAnimationName()  const;
+
+    inline CAnimation2D* GetAnimation()    const;
+
+    void GetAnimationNames(std::vector<std::string>& vecNames);
+
+public:
+    virtual bool SetTexture(class CTexture* Texture, int Index = 0);
+    bool SetTexture(const std::string& Name, const TCHAR* FileName,
+        const std::string& PathName = TEXTURE_PATH);
+    bool SetTextureFullPath(const std::string& Name, const TCHAR* FullPath);
+    bool SetTexture(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
+        const std::string& PathName = TEXTURE_PATH);
+    bool SetTextureFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+    void SetTextureFrameIndex(int Index);
+
+    class CTexture* GetTexture(int Index = 0)    const;
+
+    void ClearAnimation();
 
 public:
     template <typename T>
@@ -90,4 +82,19 @@ inline T* CSpriteComponent::SetAnimation(const std::string& Name)
 inline int CSpriteComponent::GetRowIndex() const
 {
     return 0;
+}
+
+
+
+inline std::string CSpriteComponent::GetAnimationName()  const
+{
+    if (!m_Animation)
+        return "None";
+
+    return m_Animation->GetAnimationClassName();
+}
+
+inline CAnimation2D* CSpriteComponent::GetAnimation()    const
+{
+    return m_Animation;
 }

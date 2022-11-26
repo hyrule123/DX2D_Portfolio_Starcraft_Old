@@ -23,85 +23,6 @@ CSpriteComponent::~CSpriteComponent()
 {
 }
 
-void CSpriteComponent::GetAnimationNames(std::vector<std::string>& vecNames)
-{
-	if (m_Animation)
-		m_Animation->GetAnimationNames(vecNames);
-}
-
-bool CSpriteComponent::SetTexture(CTexture* Texture)
-{
-	if (m_vecMaterial.empty())
-		return false;
-
-	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel,
-		Texture->GetName(), Texture);
-
-	return true;
-}
-
-bool CSpriteComponent::SetTexture(const std::string& Name, const TCHAR* FileName,
-	const std::string& PathName)
-{
-	if (m_vecMaterial.empty())
-		return false;
-
-	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel, Name, FileName, PathName);
-
-	return true;
-}
-
-bool CSpriteComponent::SetTextureFullPath(const std::string& Name, const TCHAR* FullPath)
-{
-	if (m_vecMaterial.empty())
-		return false;
-
-	m_vecMaterial[0]->SetTextureFullPath(0, 0, (int)EShaderBufferType::Pixel, Name, FullPath);
-
-	return true;
-}
-
-bool CSpriteComponent::SetTexture(const std::string& Name, 
-	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
-{
-	if (m_vecMaterial.empty())
-		return false;
-
-	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel, Name, vecFileName, PathName);
-
-	return true;
-}
-
-bool CSpriteComponent::SetTextureFullPath(const std::string& Name, 
-	const std::vector<const TCHAR*>& vecFullPath)
-{
-	if (m_vecMaterial.empty())
-		return false;
-
-	m_vecMaterial[0]->SetTextureFullPath(0, 0, (int)EShaderBufferType::Pixel, Name, vecFullPath);
-
-	return true;
-}
-
-void CSpriteComponent::SetTextureFrameIndex(int Index)
-{
-	m_vecMaterial[0]->SetTextureFrameIndex(0, Index);
-}
-
-CTexture* CSpriteComponent::GetTexture(int Index) const
-{
-	if (m_vecMaterial.empty())
-		return nullptr;
-
-	return m_vecMaterial[0]->GetTexture(Index);
-}
-
-void CSpriteComponent::ClearAnimation()
-{
-	m_Animation = nullptr;
-	SetTextureFrameIndex(0);
-}
-
 bool CSpriteComponent::CDOPreload()
 {
 	if (!CPrimitiveComponent::CDOPreload())
@@ -182,7 +103,7 @@ void CSpriteComponent::Save(FILE* File)
 
 		fwrite(&Length, 4, 1, File);
 		fwrite(m_Animation->m_ClassName.c_str(), 1, Length, File);
-		
+
 		m_Animation->Save(File);
 	}
 }
@@ -211,4 +132,86 @@ void CSpriteComponent::Load(FILE* File)
 		m_Animation->Load(File);
 	}
 }
+
+
+void CSpriteComponent::GetAnimationNames(std::vector<std::string>& vecNames)
+{
+	if (m_Animation)
+		m_Animation->GetAnimationNames(vecNames);
+}
+
+bool CSpriteComponent::SetTexture(CTexture* Texture, int Index)
+{
+	if (m_vecMaterial.empty())
+		return false;
+
+	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel,
+		Texture->GetName(), Texture);
+
+	return true;
+}
+
+bool CSpriteComponent::SetTexture(const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	if (m_vecMaterial.empty())
+		return false;
+
+	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel, Name, FileName, PathName);
+
+	return true;
+}
+
+bool CSpriteComponent::SetTextureFullPath(const std::string& Name, const TCHAR* FullPath)
+{
+	if (m_vecMaterial.empty())
+		return false;
+
+	m_vecMaterial[0]->SetTextureFullPath(0, 0, (int)EShaderBufferType::Pixel, Name, FullPath);
+
+	return true;
+}
+
+bool CSpriteComponent::SetTexture(const std::string& Name, 
+	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
+{
+	if (m_vecMaterial.empty())
+		return false;
+
+	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel, Name, vecFileName, PathName);
+
+	return true;
+}
+
+bool CSpriteComponent::SetTextureFullPath(const std::string& Name, 
+	const std::vector<const TCHAR*>& vecFullPath)
+{
+	if (m_vecMaterial.empty())
+		return false;
+
+	m_vecMaterial[0]->SetTextureFullPath(0, 0, (int)EShaderBufferType::Pixel, Name, vecFullPath);
+
+	return true;
+}
+
+void CSpriteComponent::SetTextureFrameIndex(int Index)
+{
+	m_vecMaterial[0]->SetTextureFrameIndex(0, Index);
+}
+
+CTexture* CSpriteComponent::GetTexture(int Index) const
+{
+	if (m_vecMaterial.empty())
+		return nullptr;
+
+	return m_vecMaterial[0]->GetTexture(Index);
+}
+
+void CSpriteComponent::ClearAnimation()
+{
+	m_Animation = nullptr;
+	SetTextureFrameIndex(0);
+}
+
+
 

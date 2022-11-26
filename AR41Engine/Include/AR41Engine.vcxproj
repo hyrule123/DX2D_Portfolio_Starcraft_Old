@@ -37,6 +37,7 @@
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\PrimitiveComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
+    <ClInclude Include="Component\SCUnitSpriteComponent.h" />
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\TargetArm.h" />
     <ClInclude Include="Component\Tile.h" />
@@ -118,8 +119,11 @@
     <ClInclude Include="Resource\Shader\ConstantBufferData.h" />
     <ClInclude Include="Resource\Shader\GraphicShader.h" />
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
+    <ClInclude Include="Resource\Shader\SCUnitConstantBuffer.h" />
+    <ClInclude Include="Resource\Shader\SCUnitShader.h" />
     <ClInclude Include="Resource\Shader\Shader.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h" />
+    <ClInclude Include="Resource\Shader\SharedStructuredBuffer.h" />
     <ClInclude Include="Resource\Shader\SpriteColorShader.h" />
     <ClInclude Include="Resource\Shader\SpriteShader.h" />
     <ClInclude Include="Resource\Shader\StructuredBuffer.h" />
@@ -186,6 +190,7 @@
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\PrimitiveComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
+    <ClCompile Include="Component\SCUnitSpriteComponent.cpp" />
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\TargetArm.cpp" />
     <ClCompile Include="Component\Tile.cpp" />
@@ -250,6 +255,8 @@
     <ClCompile Include="Resource\Shader\ConstantBufferData.cpp" />
     <ClCompile Include="Resource\Shader\GraphicShader.cpp" />
     <ClCompile Include="Resource\Shader\MaterialConstantBuffer.cpp" />
+    <ClCompile Include="Resource\Shader\SCUnitConstantBuffer.cpp" />
+    <ClCompile Include="Resource\Shader\SCUnitShader.cpp" />
     <ClCompile Include="Resource\Shader\Shader.cpp" />
     <ClCompile Include="Resource\Shader\ShaderManager.cpp" />
     <ClCompile Include="Resource\Shader\SpriteColorShader.cpp" />
@@ -370,6 +377,17 @@
     <None Include="fmod_dsp.cs" />
     <None Include="fmod_errors.cs" />
     <None Include="Resource\Texture\DirectXTex.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\SCUnit.fx">
+      <FileType>Text</FileType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SCUnitVS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">SCUnitVS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

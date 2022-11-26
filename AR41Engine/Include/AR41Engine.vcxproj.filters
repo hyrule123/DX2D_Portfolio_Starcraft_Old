@@ -223,6 +223,9 @@
     <Filter Include="99. DebugUtil">
       <UniqueIdentifier>{4f930324-fc22-4241-b864-495fc330e1ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\07. SCUnit">
+      <UniqueIdentifier>{cb55d3fd-2397-4df8-a6f9-a3438b832c79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -284,9 +287,6 @@
     </ClInclude>
     <ClInclude Include="Resource\Shader\Shader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Shader\SpriteColorShader.h">
-      <Filter>02. Resource\02. Shader\02. ShaderClass\01. Sprite</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Shader\ShaderManager.h">
       <Filter>02. Resource\02. Shader</Filter>
@@ -668,6 +668,21 @@
     </ClInclude>
     <ClInclude Include="Animation\Animation2DDataRoot.h">
       <Filter>08. Animation\01. 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\SpriteColorShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\SCUnitShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\01. Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SCUnitSpriteComponent.h">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\SCUnitConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. SCUnit</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\SharedStructuredBuffer.h">
+      <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1055,6 +1070,15 @@
     <ClCompile Include="Animation\Animation2DDataRoot.cpp">
       <Filter>08. Animation\01. 2D</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Shader\SCUnitShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\01. Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SCUnitSpriteComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\SCUnitConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. SCUnit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shader\Share.fx">
@@ -1070,6 +1094,9 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\TileMap.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\SCUnit.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

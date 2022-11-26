@@ -10,6 +10,7 @@
 #include "Component/ColliderOBB2D.h"
 #include "Component/ColliderPixel.h"
 #include "Component/ColliderSphere2D.h"
+#include "Component/SCUnitSpriteComponent.h"
 
 #include "Component/TargetArm.h"
 #include "Component/Tile.h"
@@ -48,4 +49,5 @@ void CEngineSetting::Init()
 	CCDO::CreateCDO<CColliderPixel>();
 	CCDO::CreateCDO<CTargetArm>();
 	CCDO::CreateCDO<CTileMapComponent>();
+	CCDO::CreateCDO<CSCUnitSpriteComponent>();
 }
