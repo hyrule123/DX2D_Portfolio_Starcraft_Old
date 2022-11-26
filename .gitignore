@@ -411,6 +411,7 @@ AR41Editor/Bin/*
 !AR41Editor/Bin/Scene/
 !AR41Editor/Bin/Animation2D/
 !AR41Editor/Bin/CDO/
+!AR41Editor/Bin/Maps/
 
 # Except Engine Folder : Used to gather header files - automatically generated at build time
 Engine/
