@@ -69,7 +69,9 @@ enum class EImageType : unsigned char
 {
 	Atlas,
 	Frame,
-	Array
+	Array,
+	//동일한 사이즈의 텍스처를 동시에 들고 있음(동시 출력)
+	Simultaneous
 };
 
 enum class ESamplerType : unsigned char
@@ -94,6 +96,8 @@ enum class EAnimation2DType : int
 	Frame,
 	Array,
 	AtlasIndexed,
+
+	//다른 텍스처끼리 연결되는 애니메이션일 경우
 	MultiTexture
 };
 

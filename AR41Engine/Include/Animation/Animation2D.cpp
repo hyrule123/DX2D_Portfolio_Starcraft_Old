@@ -5,14 +5,14 @@
 #include "../Resource/Shader/Animation2DConstantBuffer.h"
 
 
-CAnimation2D::CAnimation2D()	:
+CAnimation2D::CAnimation2D() :
 	m_Owner(nullptr),
 	m_Play(true)
 {
 	m_ClassName = "Animation2D";
 }
 
-CAnimation2D::CAnimation2D(const CAnimation2D& Anim)	:
+CAnimation2D::CAnimation2D(const CAnimation2D& Anim) :
 	CRef(Anim)
 {
 	m_Play = Anim.m_Play;
@@ -63,12 +63,7 @@ void CAnimation2D::Start()
 {
 	if (m_Owner && m_CurAnimation)
 	{
-		size_t size = m_CurAnimation->m_vecSequence.size();
-
-		for (size_t i = 0; i < size; ++i)
-		{
-			m_Owner->SetTexture(m_CurAnimation->m_vecSequence[i]->GetTexture());
-		}
+		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 	}
 }
 
@@ -80,14 +75,14 @@ bool CAnimation2D::Init()
 void CAnimation2D::Update(float DeltaTime)
 {
 	if (!m_Play || !m_CurAnimation ||
-		m_CurAnimation->m_vecSequence[0]->GetFrameCount() == 0)
+		m_CurAnimation->m_Sequence->GetFrameCount() == 0)
 		return;
 
 	m_CurAnimation->Update(DeltaTime);
 }
 
-bool CAnimation2D::AddAnimation(const std::string& Name, 
-	const std::string& SequenceName, float PlayTime, float PlayScale, 
+bool CAnimation2D::AddAnimation(const std::string& Name,
+	const std::string& SequenceName, float PlayTime, float PlayScale,
 	bool Loop, bool Reverse)
 {
 	CAnimation2DData* Anim = FindAnimation(Name);
@@ -102,7 +97,8 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 	Anim = new CAnimation2DData;
 
-	Anim->m_vecSequence[0] = Sequence;
+	Anim->m_Sequence = Sequence;
+	Anim->m_SequenceName = SequenceName;
 	Anim->m_Name = Name;
 	Anim->m_PlayTime = PlayTime;
 	Anim->m_PlayScale = PlayScale;
@@ -117,7 +113,7 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 		if (m_Owner)
 		{
-			m_Owner->SetTexture(m_CurAnimation->m_vecSequence[0]->GetTexture());
+			m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 		}
 	}
 
@@ -126,7 +122,7 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 	return true;
 }
 
-bool CAnimation2D::AddAnimation(const std::string& Name, 
+bool CAnimation2D::AddAnimation(const std::string& Name,
 	CAnimationSequence2D* Sequence,
 	float PlayTime, float PlayScale, bool Loop, bool Reverse)
 {
@@ -137,7 +133,8 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 	Anim = new CAnimation2DData;
 
-	Anim->m_vecSequence[0] = Sequence;
+	Anim->m_Sequence = Sequence;
+	Anim->m_SequenceName = Sequence->GetName();
 	Anim->m_Name = Name;
 	Anim->m_PlayTime = PlayTime;
 	Anim->m_PlayScale = PlayScale;
@@ -152,7 +149,7 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 		if (m_Owner)
 		{
-			m_Owner->SetTexture(m_CurAnimation->m_vecSequence[0]->GetTexture());
+			m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 		}
 	}
 
@@ -222,7 +219,7 @@ void CAnimation2D::SetCurrentAnimation(const std::string& Name)
 
 	if (m_Owner)
 	{
-		m_Owner->SetTexture(m_CurAnimation->m_vecSequence[0]->GetTexture());
+		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 		m_Owner->SetTextureFrameIndex(0);
 	}
 }
@@ -249,7 +246,7 @@ void CAnimation2D::ChangeAnimation(const std::string& Name)
 
 	if (m_Owner)
 	{
-		m_Owner->SetTexture(m_CurAnimation->m_vecSequence[0]->GetTexture());
+		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 		m_Owner->SetTextureFrameIndex(0);
 	}
 }
@@ -323,26 +320,26 @@ CAnimation2D* CAnimation2D::Clone()
 
 void CAnimation2D::SetShader()
 {
-	if (!m_CurAnimation || !m_CurAnimation->m_vecSequence[0] ||
-		!m_CurAnimation->m_vecSequence[0]->GetTexture())
+	if (!m_CurAnimation || !m_CurAnimation->m_Sequence ||
+		!m_CurAnimation->m_Sequence->GetTexture())
 		return;
 
 	CAnimation2DConstantBuffer* Buffer = CResourceManager::GetInst()->GetAnim2DConstantBuffer();
-	
 
-	EAnimation2DType	Type = m_CurAnimation->m_vecSequence[0]->GetAnim2DType();
+
+	EAnimation2DType	Type = m_CurAnimation->m_Sequence->GetAnim2DType();
 
 	if (Type == EAnimation2DType::Atlas)
 	{
-		const Animation2DFrameData& FrameData = m_CurAnimation->m_vecSequence[0]->GetFrameData(m_CurAnimation->m_Frame);
+		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(m_CurAnimation->m_Frame);
 
-		Buffer->SetImageSize((float)m_CurAnimation->m_vecSequence[0]->GetTexture()->GetWidth(),
-			(float)m_CurAnimation->m_vecSequence[0]->GetTexture()->GetHeight());
+		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
+			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
 		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
 	}
 	else if (Type == EAnimation2DType::AtlasIndexed)
 	{
-		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->m_vecSequence[0]->GetRowNum());
+		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->m_Sequence->GetRowNum());
 
 		int Direction = (int)m_Owner->GetRowIndex();
 
@@ -356,12 +353,12 @@ void CAnimation2D::SetShader()
 			Buffer->SetXFlip(false);
 
 		CalcedFrame += Direction;
-		
-			
-		const Animation2DFrameData& FrameData = m_CurAnimation->m_vecSequence[0]->GetFrameData(CalcedFrame);
 
-		Buffer->SetImageSize((float)m_CurAnimation->m_vecSequence[0]->GetTexture()->GetWidth(),
-			(float)m_CurAnimation->m_vecSequence[0]->GetTexture()->GetHeight());
+
+		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(CalcedFrame);
+
+		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
+			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
 		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
 	}
 
@@ -369,13 +366,13 @@ void CAnimation2D::SetShader()
 	{
 		if (m_Owner)
 		{
-			m_Owner->SetTexture(m_CurAnimation->m_vecSequence[0]->GetTexture());
+			m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
 			m_Owner->SetTextureFrameIndex(m_CurAnimation->m_Frame);
 		}
 
 		else
 		{
-			m_CurAnimation->m_vecSequence[0]->GetTexture()->SetShader(0,
+			m_CurAnimation->m_Sequence->GetTexture()->SetShader(0,
 				(int)EShaderBufferType::Pixel, m_CurAnimation->m_Frame);
 		}
 	}
@@ -384,8 +381,8 @@ void CAnimation2D::SetShader()
 	{
 		Buffer->SetFrame(m_CurAnimation->m_Frame);
 	}
-	
-	Buffer->SetImageType(m_CurAnimation->m_vecSequence[0]->GetAnim2DType());
+
+	Buffer->SetImageType(m_CurAnimation->m_Sequence->GetAnim2DType());
 	Buffer->SetAnim2DEnable(true);
 
 	Buffer->UpdateBuffer();

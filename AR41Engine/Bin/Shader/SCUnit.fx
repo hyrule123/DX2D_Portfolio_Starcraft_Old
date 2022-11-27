@@ -15,12 +15,31 @@ struct VS_OUTPUT_UV
 {
 	float4 Pos : SV_POSITION;
 	float2 UV : TEXCOORD;
-	float2 OriginUV : TEXCOORD1;
 	float4 Color : COLOR;
-	float Opacity : TEXCOORD2;
-	int TextureType : TEXCOORD3;
-	int Frame : TEXCOORD4;
 };
+
+
+
+cbuffer SCUnitCBuffer : register(b12)
+{
+    unsigned int RenderFlags;
+};
+
+//플래그 값
+#define UnitMainShadow = 1 << 0
+#define UseShadowSprite = 1 << 1
+
+//(있을 시)유닛의 상단 부분
+#define UnitTop = 1 << 2
+
+//유닛의 이펙트 부분
+#define UnitEffect = 1 << 3
+//유닛의 부스터 부분
+#define UnitBooster = 1 << 4
+
+//유닛의 공격
+#define UnitAttack = 1 << 5
+
 
 
 
@@ -55,7 +74,6 @@ struct UnitInfo
     float2 TopEnd;
 
 
-
 	//이펙트 부분
     float EffectWidth;
     float EffectHeight;
@@ -64,18 +82,7 @@ struct UnitInfo
     float2 EffectStart;
     float2 EffectEnd;
 
-
-
-	//공격/부스터 부분
-    float AttackWidth;
-    float AttackHeight;
-    float2 AttackEmpty;
-
-    float2 AttackStart;
-    float2 AttackEnd;
-
-
-	//공격/부스터 부분
+    //부스터 부분
     float BoosterWidth;
     float BoosterHeight;
     float2 BoosterEmpty;
@@ -83,20 +90,41 @@ struct UnitInfo
     float2 BoosterStart;
     float2 BoosterEnd;
 
+	//공격 부분
+    float AttackWidth;
+    float AttackHeight;
+    float2 AttackEmpty;
+
+    float2 AttackStart;
+    float2 AttackEnd;
 };
+#define SCUnitShadowRender 1 << 0
 
-cbuffer SCUnitCBuffer : register(b12)
-{
-    unsigned int RenderFlags;
-};
+#define SCUnitMainRender 1 << 5
+#define SCUnitMainXFlip 1 << 6
+#define SCUnitCloaked 1 << 7
 
-texture2D g_UnitShadTexture : register(t2);
-texture2D g_UnitBackTexture : register(t3);
-texture2D g_UnitFrontTexture : register(t4);
-texture2D g_UnitBoosterAttackTexture : register(t5);
-texture2D g_UnitEffectTexture : register(t6);
+#define SCUnitTopRender 1 << 10
+#define SCUnitTopXFlip 1 << 11
 
-StructuredBuffer<UnitInfo> g_UnitInfoArray : register(t8);
+#define SCUnitEffectRender 1 << 15
+//#define SCUnitEffectXFlip 1 << 16
+
+#define SCUnitBoosterRender 1 << 20
+//#define SCUnitBoosterXFlip 1 << 21
+
+#define SCUnitAttackRender 1 << 25
+//#define SCUnitAttackXFlip 1 << 26
+
+
+
+Texture2DArray g_UnitMainTexture : register(t1);
+texture2D g_UnitTopTexture : register(t2);
+texture2D g_UnitEffectTexture : register(t3);
+texture2D g_UnitBoosterTexture : register(t4);
+texture2D g_UnitAttackTexture : register(t5);
+
+StructuredBuffer<UnitInfo> g_UnitInfoArray : register(t6);
 
 
 
@@ -105,15 +133,6 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
 	VS_OUTPUT_UV output = (VS_OUTPUT_UV) 0;
 	
     
-    // mul : 행렬 곱. g_matWVP 는 World * View * Proj 이므로 정점을 여기에 곱하게 되면
-    // 투영 공간으로 변환된 정점의 위치가 나온다.
-    // 투영의 w에는 뷰공간의 z값이 들어온다.
-    // 정점정보를 모두 계산해서 넘겨주고 픽셀출력을 하기 전에 먼저 투영공간의 x, y, z, w를
-    // 투영공간의 w로 모두 나누어준다.
-    // 이렇게 해주는 이유는 멀리 있는 물체는 작게, 가까이 있는 물체는 크게 표현이 되야 하는데
-    // 투영공간의 w에는 뷰공간의 z가 들어가므로 이 값은 물체가 카메라로부터 떨어져 있는 거리를
-    // 의미하므로 이 값으로 나누어주게 된다면 거리가 멀면 멀수록 큰 값으로 나누어주게 되기 때문에
-    // 결과적으로 작은 값이 나오게 되어 물체가 작게 출력이 되는 방식이다.
     output.Pos = mul(float4(input.Pos, 1.f), g_UnitInfoArray[input.InstanceID].matWVP);
     
     
@@ -121,37 +140,25 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
     float2 Result = (float2) 0;
     
     //무조건 AtlasIndexed임을 상정하고 계산한다.
-    if (g_UnitInfoArray[input.InstanceID] == 1)
+    if (g_UnitInfoArray[input.InstanceID].SCUnitSBufferFlag & SCUnitMainXFlip)
     {
-        if (UV.x == 0.f)
-            Result.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
+        if (output.UV.x == 0.f)
+            output.UV.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
         else
-            Result.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
-   
+            output.UV.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
     }
     else
     {
-        if (UV.x == 0.f)
-            Result.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
+        if (output.UV.x == 0.f)
+            output.UV.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
         else
-            Result.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
+            output.UV.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
     }
         
-    if (UV.y == 0.f)
-        Result.y = g_Anim2DFrameStart.y / g_Anim2DImageHeight;
+    if (output.UV.y == 0.f)
+        output.UV.y = g_Anim2DFrameStart.y / g_Anim2DImageHeight;
     else
-        Result.y = g_Anim2DFrameEnd.y / g_Anim2DImageHeight;
-
-
-	
-
-    
-	output.OriginUV = input.UV;
-    output.Color = g_UnitInfoArray[input.InstanceID].TypeColor;
-    output.Opacity = g_UnitInfoArray[input.InstanceID].Opacity;
-	output.TextureType = g_MtrlTextureType;
-    output.Frame = g_UnitInfoArray[input.InstanceID].Frame;
-    
+        output.UV.y = g_Anim2DFrameEnd.y / g_Anim2DImageHeight;
 	return output;
 }
 
@@ -161,13 +168,12 @@ PS_OUTPUT_SINGLE SCUnitPS(VS_OUTPUT_UV input)
 
 	float4 TextureColor = (float4) 0.f;
     
-	if (input.TextureType != 2)
-		TextureColor = g_BaseTexture.Sample(g_PointSmp, input.UV);
+	TextureColor = g_BaseTexture.Sample(g_PointSmp, input.UV);
     
     
 	output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb * input.Color.rgb;
 
-	output.Color.a = TextureColor.a * input.Opacity;
+    output.Color.a = TextureColor.a;
     
     
 	return output;

@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="Animation\Animation2D.h" />
     <ClInclude Include="Animation\Animation2DData.h" />
-    <ClInclude Include="Animation\Animation2DDataRoot.h" />
     <ClInclude Include="CDO.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Component\CameraComponent.h" />
@@ -122,6 +121,7 @@
     <ClInclude Include="Resource\Shader\SCUnitConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\SCUnitShader.h" />
     <ClInclude Include="Resource\Shader\Shader.h" />
+    <ClInclude Include="Resource\Shader\ShaderInfo.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h" />
     <ClInclude Include="Resource\Shader\SharedStructuredBuffer.h" />
     <ClInclude Include="Resource\Shader\SpriteColorShader.h" />
@@ -150,7 +150,6 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneResource.h" />
     <ClInclude Include="Scene\SceneViewport.h" />
-    <ClInclude Include="ShaderInfo.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Thread\DataStream.h" />
     <ClInclude Include="Thread\LoadingThread.h" />
@@ -175,7 +174,6 @@
   <ItemGroup>
     <ClCompile Include="Animation\Animation2D.cpp" />
     <ClCompile Include="Animation\Animation2DData.cpp" />
-    <ClCompile Include="Animation\Animation2DDataRoot.cpp" />
     <ClCompile Include="CDO.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Component\CameraComponent.cpp" />
@@ -373,7 +371,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="fmod.cs" />
     <None Include="fmod_dsp.cs" />
     <None Include="fmod_errors.cs" />

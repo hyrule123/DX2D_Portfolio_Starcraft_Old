@@ -4,9 +4,9 @@
 #include "PathManager.h"
 #include "CSVEditor.h"
 
-std::unordered_map<std::string, CSharedPtr<CCDO>>	CCDO::m_mapCDO;
+std::unordered_map<std::string, CCDO*>	CCDO::m_mapCDO;
 std::unordered_map<std::string, EResourceType> CCDO::m_mapResType;
-std::unordered_map<std::string, CSharedPtr<CCDO>> CCDO::m_mapPreLoadObject;
+std::unordered_map<std::string, CCDO*> CCDO::m_mapPreLoadObject;
 
 CCDO::CCDO():
 	m_vecRequiredResource()
@@ -122,7 +122,7 @@ bool CCDO::LoadMetaData()
 
 			//만들어진 리소스 정보를 벡터 컨테이너에 삽입
 			if(FoundVal)
-				m_vecRequiredResource.emplace_back(Res);
+				m_vecRequiredResource.push_back(Res);
 		}
 		
 

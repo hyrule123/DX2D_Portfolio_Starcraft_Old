@@ -81,6 +81,10 @@ void CSpriteComponent::Render()
 	CPrimitiveComponent::Render();
 }
 
+void CSpriteComponent::RenderInstanced()
+{
+}
+
 CSpriteComponent* CSpriteComponent::Clone() const
 {
 	return new CSpriteComponent(*this);

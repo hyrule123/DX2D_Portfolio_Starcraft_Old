@@ -400,6 +400,8 @@ bool CTexture::LoadTextureArrayFullPath(const std::string& Name, const std::vect
 	return true;
 }
 
+
+
 bool CTexture::LoadTextureArrayByvecTextureResourceInfo(const std::string& Name, std::vector<TextureResourceInfo*>& vecTexResInfo)
 {
 	m_vecTextureInfo.resize(vecTexResInfo.size());

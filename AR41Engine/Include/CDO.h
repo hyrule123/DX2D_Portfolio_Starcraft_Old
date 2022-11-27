@@ -35,7 +35,7 @@ protected:
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<std::string, CSharedPtr<CCDO>>	m_mapCDO;
+	static std::unordered_map<std::string, CCDO*>	m_mapCDO;
 
 	//문자열 별로 리소스의 열거체 번호를 저장. 로드할 때 사용됨.
 	//EngineSetting에서 초기화
@@ -67,7 +67,7 @@ public:
 //Preloaded Objects
 protected:
 	//사용준비가 완료된 오브젝트들 모음(Clone() -> Init() 해주면 사용 가능)
-	static std::unordered_map<std::string, CSharedPtr<class CCDO>> m_mapPreLoadObject;
+	static std::unordered_map<std::string, CCDO*> m_mapPreLoadObject;
 
 public:
 	static class CCDO* FindPLO(const std::string& ClassName);

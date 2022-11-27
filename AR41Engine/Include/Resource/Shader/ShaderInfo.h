@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineInfo.h"
+#include "../../EngineInfo.h"
 
 
 
@@ -18,11 +18,13 @@ enum class ERenderFlag : unsigned int
 	//유닛의 이펙트 부분
 	UnitEffect = 1 << 3,
 
-	//유닛의 공격
-	UnitAttackBooster = 1 << 4,
-
 	//유닛의 부스터 부분
-	UnitBooster = 1 << 5
+	UnitBooster = 1 << 4,
+
+	//유닛의 공격
+	UnitAttack = 1 << 5
+
+
 };
 
 
@@ -35,27 +37,23 @@ struct SCUnitCBuffer
 enum ESCUnitSBufferFlag : unsigned int
 {
 	SCUnitShadowRender = 1 << 0,
-	SCUnitShadowXFlip = 1 << 1,
-
+	//SCUnitShadowXFlip = 1 << 1,
 
 	SCUnitMainRender = 1 << 5,
-	SCUnitMainXFlip = 1 << 6,	
-
+	SCUnitMainXFlip = 1 << 6,
+	SCUnitCloaked = 1 << 7,
 
 	SCUnitTopRender = 1 << 10,
 	SCUnitTopXFlip = 1 << 11,	
 
-
 	SCUnitEffectRender = 1 << 15,
-	SCUnitEffectXFlip = 1 << 16,
+	//SCUnitEffectXFlip = 1 << 16,
 
+	SCUnitBoosterRender = 1 << 20,
+	//SCUnitBoosterXFlip = 1 << 21,
 
-	SCUnitAttackRender = 1 << 20,
-	SCUnitAttackXFlip = 1 << 21,
-
-
-	SCUnitBoosterRender = 1 << 25,
-	SCUnitBoosterXFlip = 1 << 26
+	SCUnitAttackRender = 1 << 25
+	//SCUnitAttackXFlip = 1 << 26
 };
 	
 
@@ -71,8 +69,8 @@ struct SCUnitSBuffer
 	unsigned int SCUnitSBufferFlag;
 
 
-	//애니메이션 정보를 저장. 그림자와가 있는 스프라이트는 메인 유닛 몸체와 정확히 일치함.
-	//그렇지 않을 경우 쉐이더를 통해서 해결을 봐야 할듯
+	//애니메이션 정보를 저장. 그림자가 있는 스프라이트는 메인 유닛 몸체와 정확히 일치함.
+	//그림자 스프라이트가 따로 없는데 그림자를 렌더링하는 유닛 스프라이트는 유닛 본체 스프라이트를 그대로 아래에 그려내는 식으로 렌더링함.
 	float MainShadowWidth;
 	float MainShadowHeight;
 	Vector2 MainShadowEmpty;
@@ -90,7 +88,6 @@ struct SCUnitSBuffer
 	Vector2 TopEnd;
 
 
-
 	//이펙트 부분
 	float EffectWidth;
 	float EffectHeight;
@@ -100,23 +97,22 @@ struct SCUnitSBuffer
 	Vector2 EffectEnd;
 
 
-
-	//공격/부스터 부분
-	float AttackWidth;
-	float AttackHeight;
-	Vector2 AttackEmpty;
-
-	Vector2 AttackStart;
-	Vector2 AttackEnd;
-
-
-	//공격/부스터 부분
+	//부스터 부분
 	float BoosterWidth;
 	float BoosterHeight;
 	Vector2 BoosterEmpty;
 
 	Vector2 BoosterStart;
 	Vector2 BoosterEnd;
+
+
+	//공격 부분
+	float AttackWidth;
+	float AttackHeight;
+	Vector2 AttackEmpty;
+
+	Vector2 AttackStart;
+	Vector2 AttackEnd;
 };
 
 

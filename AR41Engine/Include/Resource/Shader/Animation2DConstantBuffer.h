@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConstantBufferData.h"
+#include "ShaderInfo.h"
 
 class CAnimation2DConstantBuffer :
     public CConstantBufferData

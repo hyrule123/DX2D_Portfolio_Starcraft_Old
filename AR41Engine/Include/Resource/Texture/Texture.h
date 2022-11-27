@@ -58,6 +58,9 @@ protected:
 
 protected:
 	std::vector<TextureResourceInfo*>	m_vecTextureInfo;
+
+	//동시 재생 시 텍스처 레지스터 번호를 저장.
+	std::vector<int>	m_SimultaneousTextureBuffer;
 	EImageType	m_ImageType;
 	ID3D11ShaderResourceView* m_ArraySRV;
 
@@ -73,6 +76,9 @@ public:
 
 	inline int GetImageCount()	const;
 
+	inline int GetTextureBufferPreset() const;
+	inline void SetTextureBufferPreset(int TextureBufferPreset);
+
 
 
 public:
@@ -85,6 +91,7 @@ public:
 	bool LoadTextureArray(const std::string& Name, const std::vector<const TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureArrayFullPath(const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
+
 
 	//MapManager 용
 	//MapManager에서 직접 TextureResourceInfo를 생성하고 여기로 전달
@@ -99,7 +106,6 @@ private:
 public:
 	void SetShader(int Register, int ShaderBufferType, int Index);
 	void ResetShader(int Register, int ShaderBufferType);
-
 
 public:
 	void Save(FILE* File);
@@ -135,4 +141,14 @@ inline bool CTexture::GetvecTextureInfoEmpty() const
 inline int CTexture::GetImageCount()	const
 {
 	return (int)m_vecTextureInfo.size();
+}
+
+inline int CTexture::GetTextureBufferPreset() const
+{
+	return m_TextureBufferPreset;
+}
+
+inline void CTexture::SetTextureBufferPreset(int TextureBufferPreset)
+{
+	m_TextureBufferPreset = TextureBufferPreset;
 }

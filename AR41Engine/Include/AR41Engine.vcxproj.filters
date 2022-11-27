@@ -666,9 +666,6 @@
     <ClInclude Include="lodepng\lodepng.h">
       <Filter>99. DebugUtil</Filter>
     </ClInclude>
-    <ClInclude Include="Animation\Animation2DDataRoot.h">
-      <Filter>08. Animation\01. 2D</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\Shader\SpriteColorShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
     </ClInclude>
@@ -684,7 +681,7 @@
     <ClInclude Include="Resource\Shader\SharedStructuredBuffer.h">
       <Filter>02. Resource\02. Shader\04. StructuredBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderInfo.h">
+    <ClInclude Include="Resource\Shader\ShaderInfo.h">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1070,9 +1067,6 @@
     <ClCompile Include="lodepng\lodepng.cpp">
       <Filter>99. DebugUtil</Filter>
     </ClCompile>
-    <ClCompile Include="Animation\Animation2DDataRoot.cpp">
-      <Filter>08. Animation\01. 2D</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\Shader\SCUnitShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\01. Sprite</Filter>
     </ClCompile>
@@ -1116,6 +1110,5 @@
     <None Include="fmod.cs">
       <Filter>02. Resource\06. Sound\01. FMOD</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

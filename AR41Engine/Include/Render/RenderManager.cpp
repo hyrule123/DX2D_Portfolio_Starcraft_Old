@@ -8,6 +8,8 @@
 #include "BlendState.h"
 #include "DepthStencilState.h"
 
+#include "../CDO.h"
+
 DEFINITION_SINGLE(CRenderManager)
 
 CRenderManager::CRenderManager()	:
@@ -39,6 +41,89 @@ void CRenderManager::CreateLayer(const std::string& Name, int Priority)
 
 	std::sort(m_RenderLayerList.begin(), m_RenderLayerList.end(), CRenderManager::SortLayer);
 }
+
+bool CRenderManager::Init()
+{
+	m_RenderStateManager = new CRenderStateManager;
+
+	if (!m_RenderStateManager->Init())
+		return false;
+
+	CreateLayer("Default", 1);
+	CreateLayer("Back", 0);
+
+	SetLayerAlphaBlend("Default");
+
+	m_AlphaBlend = m_RenderStateManager->FindRenderState<CBlendState>("AlphaBlend");
+	m_DepthDisable = m_RenderStateManager->FindRenderState<CDepthStencilState>("DepthDisable");
+
+	return true;
+}
+
+void CRenderManager::Render(float DeltaTime)
+{
+	{
+		size_t NumLayer = m_RenderLayerList.size();
+
+
+		for (size_t i = 0; i < NumLayer; ++i)
+		{
+			auto	iterRenderList = m_RenderLayerList[i]->RenderList.begin();
+			auto	iterRenderListEnd = m_RenderLayerList[i]->RenderList.end();
+
+			if (m_RenderLayerList[i]->AlphaBlend)
+				m_RenderLayerList[i]->AlphaBlend->SetState();
+
+
+			//Render 호출
+			for (; iterRenderList != iterRenderListEnd;)
+			{
+				if (!(*iterRenderList)->GetActive())
+				{
+					iterRenderList = m_RenderLayerList[i]->RenderList.erase(iterRenderList);
+					iterRenderListEnd = m_RenderLayerList[i]->RenderList.end();
+					continue;
+				}
+
+				else if (!(*iterRenderList)->GetEnable())
+				{
+					++iterRenderList;
+					continue;
+				}
+
+				(*iterRenderList)->Render();
+				++iterRenderList;
+			}
+
+
+			auto iterInstancing = m_RenderLayerList[i]->RenderInstancingMap.begin();
+			auto iterInstancingEnd = m_RenderLayerList[i]->RenderInstancingMap.end();
+			while (iterInstancing != iterInstancingEnd)
+			{
+				iterInstancing->second->RenderInstanced();
+				++iterInstancing;
+			}
+
+
+			if (m_RenderLayerList[i]->AlphaBlend)
+				m_RenderLayerList[i]->AlphaBlend->ResetState();
+		}
+	}
+
+
+
+	// 2D, 3D 물체를 모두 출력했다면 UI를 출력해준다.
+	// 깊이버퍼를 안쓰고 알파블렌드를 적용한다.
+	m_AlphaBlend->SetState();
+	m_DepthDisable->SetState();
+
+	CSceneManager::GetInst()->GetScene()->GetViewport()->Render();
+
+	m_DepthDisable->ResetState();
+	m_AlphaBlend->ResetState();
+}
+
+
 
 void CRenderManager::SetLayerPriority(const std::string& Name, int Priority)
 {
@@ -88,93 +173,69 @@ void CRenderManager::DeleteLayer(const std::string& Name)
 	}
 }
 
-void CRenderManager::AddRenderList(CSceneComponent* Component)
+void CRenderManager::AddRenderList(CSceneComponent* Component, bool UseInstancing)
 {
-	auto	iter = m_RenderLayerList.begin();
-	auto	iterEnd = m_RenderLayerList.end();
+	size_t size = m_RenderLayerList.size();
 
-	for (; iter != iterEnd; ++iter)
+	const std::string& RenderLayerName = Component->GetRenderLayerName();
+
+	for (size_t i = 0; i < size; ++i)
 	{
-		if ((*iter)->Name == Component->GetRenderLayerName())
+		if (m_RenderLayerList[i]->Name == RenderLayerName)
 		{
-			(*iter)->RenderList.push_back(Component);
+			m_RenderLayerList[i]->RenderList.push_back(Component);
+
+			//인스턴싱을 사용하겠다고 전달받으면
+			if (UseInstancing)
+			{
+				//이름을 받아서
+				const std::string& TypeName = Component->GetTypeName();
+
+				//인스턴싱 맵에 이미 등록되어 있는지 확인. 이미 등록되어 있을 경우는 return
+				if (m_RenderLayerList[i]->RenderInstancingMap.find(TypeName) != m_RenderLayerList[i]->RenderInstancingMap.end())
+					return;
+
+				//추가되어있지 않으면 인스턴싱 맵에 추가한다.
+				//인스턴싱의 경우 딱 하나의 클래스 인스턴스 주소만 가지고있으면 됨.
+				//PLO 리스트에 저장된 주소를 사용하면 될듯.(PLO는 씬이 변경되기 전까지는 유지되므로)
+				CSceneComponent* PLO = static_cast<CSceneComponent*>(CCDO::FindPLO(TypeName));
+				m_RenderLayerList[i]->RenderInstancingMap.insert(std::make_pair(Component->GetTypeName(), PLO));
+			}
+			
+
 			break;
 		}
 	}
 }
 
-void CRenderManager::AddInstancedRenderQueue(CSceneComponent* Component)
+void CRenderManager::AddInstancingMap(CSceneComponent* Component)
 {
-}
+	size_t size = m_RenderLayerList.size();
 
-bool CRenderManager::Init()
-{
-	m_RenderStateManager = new CRenderStateManager;
+	const std::string& RenderLayerName = Component->GetRenderLayerName();
 
-	if (!m_RenderStateManager->Init())
-		return false;
-
-	CreateLayer("Default", 1);
-	CreateLayer("Back", 0);
-
-	SetLayerAlphaBlend("Default");
-
-	m_AlphaBlend = m_RenderStateManager->FindRenderState<CBlendState>("AlphaBlend");
-	m_DepthDisable = m_RenderStateManager->FindRenderState<CDepthStencilState>("DepthDisable");
-
-	return true;
-}
-
-void CRenderManager::Render(float DeltaTime)
-{
+	for (size_t i = 0; i < size; ++i)
 	{
-		auto	iter = m_RenderLayerList.begin();
-		auto	iterEnd = m_RenderLayerList.end();
-
-		for (; iter != iterEnd; ++iter)
+		if (m_RenderLayerList[i]->Name == RenderLayerName)
 		{
-			auto	iter1 = (*iter)->RenderList.begin();
-			auto	iter1End = (*iter)->RenderList.end();
+			//이름을 받아서
+			const std::string& TypeName = Component->GetTypeName();
 
-			if ((*iter)->AlphaBlend)
-				(*iter)->AlphaBlend->SetState();
+			//인스턴싱 맵에 이미 등록되어 있는지 확인. 이미 등록되어 있을 경우는 return
+			if (m_RenderLayerList[i]->RenderInstancingMap.find(TypeName) != m_RenderLayerList[i]->RenderInstancingMap.end())
+				return;
 
-			for (; iter1 != iter1End;)
-			{
-				if (!(*iter1)->GetActive())
-				{
-					iter1 = (*iter)->RenderList.erase(iter1);
-					iter1End = (*iter)->RenderList.end();
-					continue;
-				}
-
-				else if (!(*iter1)->GetEnable())
-				{
-					++iter1;
-					continue;
-				}
-
-				(*iter1)->Render();
-				++iter1;
-			}
-
-			if ((*iter)->AlphaBlend)
-				(*iter)->AlphaBlend->ResetState();
+			//추가되어있지 않으면 인스턴싱 맵에 추가한다.
+			//인스턴싱의 경우 딱 하나의 클래스 인스턴스 주소만 가지고있으면 됨.
+			//PLO 리스트에 저장된 주소를 사용하면 될듯.(PLO는 씬이 변경되기 전까지는 유지되므로)
+			CSceneComponent* PLO = static_cast<CSceneComponent*>(CCDO::FindPLO(TypeName));
+			m_RenderLayerList[i]->RenderInstancingMap.insert(std::make_pair(Component->GetTypeName(), PLO));
+			break;
 		}
 	}
-
-
-
-	// 2D, 3D 물체를 모두 출력했다면 UI를 출력해준다.
-	// 깊이버퍼를 안쓰고 알파블렌드를 적용한다.
-	m_AlphaBlend->SetState();
-	m_DepthDisable->SetState();
-
-	CSceneManager::GetInst()->GetScene()->GetViewport()->Render();
-
-	m_DepthDisable->ResetState();
-	m_AlphaBlend->ResetState();
 }
+
+
 
 void CRenderManager::SetBlendFactor(const std::string& Name, float r, float g, float b, float a)
 {

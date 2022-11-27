@@ -219,7 +219,7 @@ inline ID3D11Buffer* CSharedStructuredBuffer<T>::GetBuffer()	const
 template<typename T>
 inline void CSharedStructuredBuffer<T>::AddBuffer(const T& BufferData)
 {
-	m_InstancingBufferQueue.emplace_back(T);
+	m_InstancingBufferQueue.push_back(T);
 }
 
 

@@ -17,17 +17,6 @@ CAnimationSequence2D::CAnimationSequence2D()	:
 	SetTypeID<CAnimationSequence2D>();
 }
 
-CAnimationSequence2D::CAnimationSequence2D(const CAnimationSequence2D& Anim) :
-	CGameResource(Anim),
-	m_RowStart(Anim.m_RowStart),
-	m_ColStart(Anim.m_ColStart),
-	m_RowSize(Anim.m_RowSize),
-	m_ColSize(Anim.m_ColSize),
-	m_Texture(Anim.m_Texture),
-	m_vecFrameData(Anim.m_vecFrameData),
-	m_Anim2DType(Anim.m_Anim2DType)
-{
-}
 
 CAnimationSequence2D::~CAnimationSequence2D()
 {
@@ -36,7 +25,9 @@ CAnimationSequence2D::~CAnimationSequence2D()
 
 bool CAnimationSequence2D::Init(CTexture* Texture)
 {
-	m_Texture.emplace_back(Texture);
+	m_Texture.clear();
+
+	m_Texture.push_back(Texture);
 
 	if (!m_Texture.empty())
 		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
@@ -51,7 +42,7 @@ bool CAnimationSequence2D::Init(const std::string& Name, const TCHAR* FileName, 
 	if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
 		return false;
 
-	m_Texture.emplace_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
 
 
 	if (!m_Texture.empty())
@@ -69,7 +60,7 @@ bool CAnimationSequence2D::InitFullPath(const std::string& Name,
 	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
 		return false;
 
-	m_Texture.emplace_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
 
 
 	if (!m_Texture.empty())
@@ -87,7 +78,7 @@ bool CAnimationSequence2D::Init(const std::string& Name,
 	if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
 		return false;
 
-	m_Texture.emplace_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
 
 	if (!m_Texture.empty())
 		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
@@ -104,7 +95,7 @@ bool CAnimationSequence2D::InitFullPath(const std::string& Name,
 	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
 		return false;
 
-	m_Texture.emplace_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
 
 	if (!m_Texture.empty())
 		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
@@ -124,7 +115,7 @@ bool CAnimationSequence2D::AddTexture(const std::string& Name)
 	if (!Tex)
 		return false;
 
-	m_Texture.emplace_back(Tex);
+	m_Texture.push_back(Tex);
 	return true;
 }
 
@@ -136,7 +127,7 @@ void CAnimationSequence2D::AddFrame(const Vector2& Start, const Vector2& End, in
 	Data.End = End;
 	Data.TextureIndex = TexIndex;
 
-	m_vecFrameData.emplace_back(Data);
+	m_vecFrameData.push_back(Data);
 }
 
 void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, float EndY, int TexIndex)
@@ -147,20 +138,13 @@ void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, floa
 	Data.End = Vector2(EndX, EndY);
 	Data.TextureIndex = TexIndex;
 
-	m_vecFrameData.emplace_back(Data);
+	m_vecFrameData.push_back(Data);
 }
 
-void CAnimationSequence2D::AddFrameByNumAtlas(int NumAtlas, int TexIndex)
-{
-	if (m_Texture.size() <= TexIndex)
-		return;
 
-	unsigned int width = m_Texture[TexIndex]->GetWidth();
-}
 
 void CAnimationSequence2D::AddFrameByTileNumber
 (
-	EAnimation2DType Type,
 	int TileRowNum, int TileColNum,
 	int ColStart, int ColSize,
 	int RowStart, int RowSize,
@@ -171,11 +155,6 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	if (TexIndex >= m_Texture.size())
 		return;
 	else if (!m_Texture[TexIndex])
-	{
-		assert(0);
-		return;
-	}
-	else if (m_Anim2DType == EAnimation2DType::Frame)
 	{
 		assert(0);
 		return;
@@ -252,7 +231,7 @@ void CAnimationSequence2D::AddFrameByTileNumber
 			Data.End.x = Data.Start.x + (float)TileWidth;
 			Data.End.y = Data.Start.y + (float)TileHeight;
 
-			m_vecFrameData.emplace_back(Data);
+			m_vecFrameData.push_back(Data);
 		}
 	}
 
@@ -262,8 +241,11 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	m_RowSize = RSize;
 	m_ColSize = CSize;
 
-	m_Anim2DType = Type;
-	m_Anim2DType = Type;
+
+	if (m_Texture.size() > 1)
+		m_Anim2DType = EAnimation2DType::MultiTexture;
+	else
+		m_Anim2DType = EAnimation2DType::AtlasIndexed;
 }
 
 //void CAnimationSequence2D::SetFrameAllByTileNumber(int TileRowNum, int TileColNum)
@@ -357,10 +339,6 @@ void CAnimationSequence2D::ClearFrame()
 	m_vecFrameData.clear();
 }
 
-CAnimationSequence2D* CAnimationSequence2D::Clone()
-{
-	return new CAnimationSequence2D(*this);
-}
 
 bool CAnimationSequence2D::Save(const char* FullPath)
 {

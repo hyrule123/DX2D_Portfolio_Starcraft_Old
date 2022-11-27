@@ -51,6 +51,10 @@ void CPrimitiveComponent::Update(float DeltaTime)
 	CSceneComponent::Update(DeltaTime);
 }
 
+void CPrimitiveComponent::RenderInstanced()
+{
+}
+
 void CPrimitiveComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);

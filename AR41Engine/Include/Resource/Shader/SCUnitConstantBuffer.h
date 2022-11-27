@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConstantBufferData.h"
+#include "ShaderInfo.h"
 
 class CSCUnitConstantBuffer :
     public CConstantBufferData
@@ -20,10 +21,16 @@ public:
 
 
 public:
-	inline void SetRenderFlags(unsigned int RenderFlags);
+	inline void TurnOnRenderFlags(ERenderFlag RenderFlags);
+	inline void TurnOffRenderFlags(ERenderFlag RenderFlags);
 };
 
-inline void CSCUnitConstantBuffer::SetRenderFlags(unsigned int RenderFlags)
+inline void CSCUnitConstantBuffer::TurnOnRenderFlags(ERenderFlag RenderFlags)
 {
-	m_BufferData.RenderFlags = RenderFlags;
+	m_BufferData.RenderFlags |= static_cast<unsigned int>(RenderFlags);
+}
+
+inline void CSCUnitConstantBuffer::TurnOffRenderFlags(ERenderFlag RenderFlags)
+{
+	m_BufferData.RenderFlags &= ~(static_cast<unsigned int>(RenderFlags));
 }

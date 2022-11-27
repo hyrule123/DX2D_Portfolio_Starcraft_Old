@@ -464,7 +464,7 @@ bool CMap::LoadTileMap()
     //vecWPEFloat.reserve(256);
     //for (int i = 0; i < 256; ++i)
     //{
-    //    vecWPEFloat.emplace_back(WPEFloatData(wpe->data[i]));
+    //    vecWPEFloat.push_back(WPEFloatData(wpe->data[i]));
     //}
     for (int i = 0; i < 256; ++i)
     {
@@ -618,7 +618,7 @@ bool CMap::LoadTileMap()
                     assert(0);
                 }
 
-                vecInfo.emplace_back(TexInfo);
+                vecInfo.push_back(TexInfo);
 
 
 

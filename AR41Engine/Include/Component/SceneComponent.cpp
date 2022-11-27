@@ -307,6 +307,10 @@ void CSceneComponent::Render()
 	m_Transform->SetTransform();
 }
 
+void CSceneComponent::RenderInstanced()
+{
+}
+
 CSceneComponent* CSceneComponent::Clone() const
 {
 	return new CSceneComponent(*this);

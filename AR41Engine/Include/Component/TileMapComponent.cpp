@@ -896,7 +896,7 @@ void CTileMapComponent::AddvecTileFrame(const Vector2& Start, const Vector2& End
 	Data.Start = Start;
 	Data.End = End;
 
-	m_vecTileFrame.emplace_back(Data);
+	m_vecTileFrame.push_back(Data);
 }
 
 void CTileMapComponent::ChangeTileFrame(const Vector2& Pos, int Frame)

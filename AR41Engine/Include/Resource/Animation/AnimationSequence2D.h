@@ -11,10 +11,17 @@ class CAnimationSequence2D :
 
 protected:
     CAnimationSequence2D();
-    CAnimationSequence2D(const CAnimationSequence2D& Anim);
     ~CAnimationSequence2D();
 
+public:
+    bool Save(const char* FullPath);
+    bool Load(const char* FullPath);
+    bool Save(const char* FileName, const std::string& PathName);
+    bool Load(const char* FileName, const std::string& PathName);
+
 private:
+    //1. 텍스처형태가 다를 경우(Frame -> Atlas)에도 재생 가능.
+    //2. Main-Shadow의 경우 Array 형태로 등록해서 출력하면 될듯.
     std::vector<CSharedPtr<class CTexture>>  m_Texture;
     std::vector<Animation2DFrameData>   m_vecFrameData;
     EAnimation2DType    m_Anim2DType;
@@ -26,6 +33,7 @@ private:
     int m_ColStart;
     int m_RowSize;
     int m_ColSize;
+
 
 
 public:
@@ -65,13 +73,14 @@ public:
     //============= 프레임 추가 ==============
     void AddFrame(const Vector2& Start, const Vector2& End, int TexIndex = 0);
     void AddFrame(float StartX, float StartY, float EndX, float EndY, int TexIndex = 0);
-    void AddFrameByNumAtlas(int NumAtlas, int TexIndex = 0);
+
+    //나중에 필요할떄 등록
+    //void AddFrameByNumAtlas(int NumAtlas, int TexIndex = 0);
 
 
     //============== ArrayIndexed ================ 타입으로 추가
     void AddFrameByTileNumber
     (
-        EAnimation2DType Type,
         int TileRowNum, int TileColNum,
         int ColStart = -1, int ColSize = -1,
         int RowStart = -1, int RowSize = -1,
@@ -91,11 +100,7 @@ public:
 
 
 
-    CAnimationSequence2D* Clone();
-    bool Save(const char* FullPath);
-    bool Load(const char* FullPath);
-    bool Save(const char* FileName, const std::string& PathName);
-    bool Load(const char* FileName, const std::string& PathName);
+
 };
 
 inline int CAnimationSequence2D::GetRowNum() const

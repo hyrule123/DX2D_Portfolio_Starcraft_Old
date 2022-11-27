@@ -9,10 +9,17 @@ struct RenderLayer
 	int				LayerPriority;
 	CSharedPtr<class CRenderState> AlphaBlend;
 	std::list<CSharedPtr<class CSceneComponent>>	RenderList;
+
+	//RenderList를 순회 돌때 인스턴싱을 사용할 경우
+	std::unordered_map<std::string, CSharedPtr<class CSceneComponent>>	RenderInstancingMap;
 };
 
 class CRenderManager
 {
+public:
+	bool Init();
+	void Render(float DeltaTime);
+
 private:
 	std::vector<RenderLayer*>	m_RenderLayerList;
 	CRenderStateManager* m_RenderStateManager;
@@ -24,12 +31,12 @@ public:
 	void SetLayerPriority(const std::string& Name, int Priority);
 	void SetLayerAlphaBlend(const std::string& Name);
 	void DeleteLayer(const std::string& Name);
-	void AddRenderList(class CSceneComponent* Component);
-	void AddInstancedRenderQueue(class CSceneComponent* Component);
 
-public:
-	bool Init();
-	void Render(float DeltaTime);
+
+	void AddRenderList(class CSceneComponent* Component, bool UseInstancing = false);
+
+	//이미 RenderList에는 등록되어 있을 경우에 사용.
+	void AddInstancingMap(class CSceneComponent* Component);
 
 
 
