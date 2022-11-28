@@ -83,10 +83,6 @@ bool CSCUnitSpriteComponent::CDOPreload()
 	}
 
 
-
-
-	
-
 	//상수버퍼, 구조화버퍼 생성
 	m_CBuffer = new CSCUnitConstantBuffer;
 	m_CBuffer->Init();
@@ -99,6 +95,11 @@ bool CSCUnitSpriteComponent::CDOPreload()
 	m_SBufferInfo = new CSharedStructuredBuffer<SCUnitSBuffer>;
 	m_SBufferInfo->Init("SCUnitSBuffer", sizeof(SCUnitSBuffer), 400, true, (int)EShaderBufferType::Vertex);
 
+	//인스턴싱으로 유닛을 출력하려면 딱 한번만 구조화버퍼에 등록해놓으면 됨
+	CRenderManager::GetInst()->AddInstancingMap(this);
+
+	//액션에 대한 애니메이션 이름을 저장한다.
+	m_UnitActions = std::make_shared<std::unordered_map<EUnitActions, std::string>>();
 
 	return true;
 }
@@ -153,21 +154,41 @@ void CSCUnitSpriteComponent::PostUpdate(float DeltaTime)
 	m_PrivateSBuffer.Pivot = m_Transform->GetPivot();
 	m_PrivateSBuffer.MeshSize = m_Transform->GetMeshSize();
 
+
 	//렌더플래그 계산(임시)
-	
+	TurnOnSBufferFlag(ESCUnitFlagAll);
 
 }
 
 void CSCUnitSpriteComponent::Render()
 {
-		//CSceneComponent::Render();
-	
-		//if (m_CurAnimation.empty() || !m_CurAnimation->m_vecSequence[0] ||
-		//	!m_CurAnimation->m_vecSequence[0]->GetTexture())
-		//	return;
-	
-		//CAnimation2DConstantBuffer* Buffer = CResourceManager::GetInst()->GetAnim2DConstantBuffer();
-		
+	//CSceneComponent::Render();
+
+	//if (m_CurAnimation.empty() || !m_CurAnimation->m_vecSequence[0] ||
+	//	!m_CurAnimation->m_vecSequence[0]->GetTexture())
+	//	return;
+
+	//CAnimation2DConstantBuffer* Buffer = CResourceManager::GetInst()->GetAnim2DConstantBuffer();
+
+	for (int i = 0; i < Anim_Max; ++i)
+	{
+		switch (i)
+		{
+		case Anim_Shadow_Main:
+			break;
+		case Anim_Top:
+			break;
+		case Anim_Effect:
+			break;
+		case Anim_Attack_Boost:
+			break;
+		case Anim_Max:
+			break;
+		default:
+			break;
+		}
+	}
+
 		
 		EAnimation2DType	Type = m_CurAnimation->m_vecSequence[0]->GetAnim2DType();
 	
@@ -283,6 +304,28 @@ bool CSCUnitSpriteComponent::SetTexture(CTexture* Texture, int Index)
 	m_Material->SetTexture(Texture, Index);
 
 	return true;
+}
+
+void CSCUnitSpriteComponent::TurnOnSBufferFlag(ESCUnitSBufferFlag Flag)
+{
+	m_PrivateSBuffer.SCUnitSBufferFlag |= Flag;
+}
+
+void CSCUnitSpriteComponent::TurnOffSBufferFlag(ESCUnitSBufferFlag Flag)
+{
+	m_PrivateSBuffer.SCUnitSBufferFlag != ~Flag;
+}
+
+void CSCUnitSpriteComponent::MakePairActionAnimationName(EUnitActions ENumAction, const std::string& AnimationName)
+{
+	auto iter = m_UnitActions->find(ENumAction);
+
+	if (iter != m_UnitActions->end())
+	{
+		m_UnitActions->erase(iter);
+	}
+
+	m_UnitActions->insert(std::make_pair(ENumAction, AnimationName));
 }
 
 CAnimation2D* CSCUnitSpriteComponent::GetUnitAnimLayer(int Index)

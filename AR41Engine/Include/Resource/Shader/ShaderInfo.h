@@ -36,24 +36,26 @@ struct SCUnitCBuffer
 
 enum ESCUnitSBufferFlag : unsigned int
 {
-	SCUnitShadowRender = 1 << 0,
+	ESCUnitShadowRender = 1 << 0,
 	//SCUnitShadowXFlip = 1 << 1,
 
-	SCUnitMainRender = 1 << 5,
-	SCUnitMainXFlip = 1 << 6,
-	SCUnitCloaked = 1 << 7,
+	ESCUnitMainRender = 1 << 5,
+	ESCUnitMainXFlip = 1 << 6,
+	ESCUnitCloaked = 1 << 7,
 
-	SCUnitTopRender = 1 << 10,
-	SCUnitTopXFlip = 1 << 11,	
+	ESCUnitTopRender = 1 << 10,
+	ESCUnitTopXFlip = 1 << 11,
 
-	SCUnitEffectRender = 1 << 15,
+	ESCUnitEffectRender = 1 << 15,
 	//SCUnitEffectXFlip = 1 << 16,
 
-	SCUnitBoosterRender = 1 << 20,
+	ESCUnitBoosterRender = 1 << 20,
 	//SCUnitBoosterXFlip = 1 << 21,
 
-	SCUnitAttackRender = 1 << 25
+	ESCUnitAttackRender = 1 << 25,
 	//SCUnitAttackXFlip = 1 << 26
+
+	ESCUnitFlagAll = UINT_MAX
 };
 	
 

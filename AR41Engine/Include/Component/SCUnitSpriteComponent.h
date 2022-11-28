@@ -31,9 +31,16 @@ enum EAnimationLayer
 
 enum class EUnitActions
 {
+    Birth,
     Idle,
     Move,
-    Attack
+    SurfaceAttack,
+    AirAttack,
+    Death,
+    Debris,
+    Construction,
+    ConstructionComplete,
+    BuildUnit
 };
 
 
@@ -73,11 +80,19 @@ protected:
     SCUnitSBuffer m_PrivateSBuffer;
 
 
-    //딱 하나의 구조화버퍼 주소를 생성(CDOPreload)해놓고 모두가 공유해서 사용한다.
-    CSharedPtr<class CSCUnitConstantBuffer> m_CBuffer;
+    //딱 하나의 구조화버퍼 주소를 생성(CDOPreload 시점에서)해놓고 모두가 공유해서 사용한다.
+    CSharedPtr<class CSCUnitConstantBuffer > m_CBuffer;
     CSharedPtr<CSharedStructuredBuffer<SCUnitSBuffer>> m_SBufferInfo;
+    std::shared_ptr<std::unordered_map<EUnitActions, std::string>> m_UnitActions;
     //class CStructuredBuffer* m_SBuffer;
     //std::vector<SCUnitSBuffer> m_vecSBufferInfo;
+
+protected:
+    void TurnOnSBufferFlag(ESCUnitSBufferFlag Flag);
+    void TurnOffSBufferFlag(ESCUnitSBufferFlag Flag);
+
+    //유닛에 지정된 액션과 애니메이션을 연결
+    void MakePairActionAnimationName(EUnitActions ENumAction, const std::string& AnimationName);
 
 public:
     class CAnimation2D* GetUnitAnimLayer(int Index);
