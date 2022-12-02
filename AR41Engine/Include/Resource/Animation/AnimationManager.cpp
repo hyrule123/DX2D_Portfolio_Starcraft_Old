@@ -182,7 +182,7 @@ bool CAnimationManager::AddAnimationSequence2DFrameByTileNumber(const std::strin
 	if (!Anim)
 		return false;
 
-	Anim->AddFrameByTileNumber(Type, TileRowNum, TileColNum, ColStart, ColSize, RowStart, RowSize);
+	Anim->AddFrameByTileNumber(TileRowNum, TileColNum, ColStart, ColSize, RowStart, RowSize);
 
 	return true;
 }

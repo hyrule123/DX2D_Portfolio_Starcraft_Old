@@ -149,7 +149,7 @@ bool CSpriteComponent::SetTexture(CTexture* Texture, int Index)
 	if (m_vecMaterial.empty())
 		return false;
 
-	m_vecMaterial[0]->SetTexture(0, 0, (int)EShaderBufferType::Pixel,
+	m_vecMaterial[0]->SetTexture(Index, 0, (int)EShaderBufferType::Pixel,
 		Texture->GetName(), Texture);
 
 	return true;

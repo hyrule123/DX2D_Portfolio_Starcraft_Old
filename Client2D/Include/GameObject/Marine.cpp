@@ -16,7 +16,7 @@
 #include "Bullet.h"
 #include "Resource/Material/Material.h"
 #include "Animation/Animation2D.h"
-#include "../Component/UnitRootComponent.h"
+#include "Component/SCUnitRootComponent.h"
 #include "Component/SCUnitSpriteComponent.h"
 
 CMarine::CMarine()
@@ -37,7 +37,7 @@ bool CMarine::CDOPreload()
 {
 	CGameObject::CDOPreload();
 
-	m_UnitRoot = CreateComponent<CUnitRootComponent>("UnitRoot");
+	m_UnitRoot = CreateComponent<CSCUnitRootComponent>("UnitRoot");
 	SetRootComponent(m_UnitRoot);
 
 
@@ -104,15 +104,15 @@ bool CMarine::Init()
 	CAnimation2D* UnitBack = m_MainSprite->GetUnitAnimLayer(0);
 
 	UnitBack->AddAnimation("UltraIdle", "UltraIdle");
-	UnitBack->SetLoop("UltraIdle", true);
+	UnitBack->SetLoop("UltraIdle", EAnimLoopMethod::NormalLoop);
 	UnitBack->SetPlayTime("UltraIdle", 30.f);
 
 	UnitBack->AddAnimation("UltraMove", "UltraMove");
-	UnitBack->SetLoop("UltraMove", true);
+	UnitBack->SetLoop("UltraMove", EAnimLoopMethod::NormalLoop);
 	UnitBack->SetPlayTime("UltraMove", 1.f);
 
 	UnitBack->AddAnimation("UltraAttack", "UltraAttack");
-	UnitBack->SetLoop("UltraAttack", true);
+	UnitBack->SetLoop("UltraAttack", EAnimLoopMethod::NormalLoop);
 	UnitBack->SetPlayTime("UltraAttack", 0.5f);
 
 	UnitBack->SetCurrentAnimation("UltraAttack");

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineSetting.h"
+#include "../..EngineSetting.h"
 
 class CDefaultSetting :
     public CEngineSetting

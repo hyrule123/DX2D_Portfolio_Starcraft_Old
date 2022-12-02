@@ -95,10 +95,7 @@ enum class EAnimation2DType : int
 	Atlas,
 	Frame,
 	Array,
-	AtlasIndexed,
-
-	//다른 텍스처끼리 연결되는 애니메이션일 경우
-	MultiTexture
+	AtlasIndexed
 };
 
 enum class ECollision_Channel
@@ -228,6 +225,7 @@ enum class EResourceType
 	Font,
 	FontCollection,
 	Map,
+	SCUnitInfo,
 	End
 };
 

@@ -22,25 +22,7 @@
 
 
 
-//동적 2d array를 쉽게 다루기 위한 클래스.
-template <typename T>
-class array2d {
-public:
 
-    array2d(T* ptr, int pitch) :
-        _ptr(ptr),
-        _pitch(pitch)
-    {}
-
-    T* operator[](int idx)
-    {
-        return _ptr + (_pitch * idx);
-    }
-
-private:
-    T* const _ptr;
-    const int _pitch;
-};
 
 
 typedef unsigned int uint32;
@@ -486,7 +468,7 @@ bool CMap::LoadTileMap()
     uint16* mtxmdata = new uint16[w * h];
     memcpy(mtxmdata, m_MapDataChunk[TileMap].Data, w * h * 2);
 
-    array2d<uint16> mtxm(mtxmdata, w);
+    Array2D<uint16> mtxm(mtxmdata, w);
 
 
     //이미지 파일의 데이터를 준비.

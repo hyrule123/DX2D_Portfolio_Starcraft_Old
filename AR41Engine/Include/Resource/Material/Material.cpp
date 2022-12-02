@@ -367,7 +367,7 @@ void CMaterial::AddTextureEmpty(int Register, int ShaderBufferType)
 	m_vecTextureInfo.push_back(Info);
 }
 
-void CMaterial::SetTexture(int Index, const std::string& TexName)
+void CMaterial::SetTexture(const std::string& TexName, int Index)
 {
 	if (m_vecTextureInfo.size() <= Index)
 		return;

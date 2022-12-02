@@ -5,14 +5,14 @@
 #include "../../Scene/SceneResource.h"
 #include "../ResourceManager.h"
 
+
+
 CAnimationSequence2D::CAnimationSequence2D()	:
 	m_Anim2DType(EAnimation2DType::Atlas),
 	m_RowStart(-1),
 	m_ColStart(-1),
 	m_RowSize(-1),
-	m_ColSize(-1),
-	m_RowNum(-1),
-	m_ColNum(-1)
+	m_ColSize(-1)
 {
 	SetTypeID<CAnimationSequence2D>();
 }
@@ -25,46 +25,42 @@ CAnimationSequence2D::~CAnimationSequence2D()
 
 bool CAnimationSequence2D::Init(CTexture* Texture)
 {
-	m_Texture.clear();
+	m_Texture = Texture;
 
-	m_Texture.push_back(Texture);
+	if (!m_Texture)
+		return false;
 
-	if (!m_Texture.empty())
-		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
+	m_Anim2DType = (EAnimation2DType)m_Texture->GetImageType();
 
 	return true;
 }
 
 bool CAnimationSequence2D::Init(const std::string& Name, const TCHAR* FileName, const std::string& PathName)
 {
-	m_Texture.clear();
 
 	if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
 		return false;
 
-	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture = CResourceManager::GetInst()->FindTexture(Name);
+	if (!m_Texture)
+		return false;
 
-
-	if (!m_Texture.empty())
-		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
-
+	m_Anim2DType = (EAnimation2DType)m_Texture->GetImageType();
 	return true;
 }
 
 bool CAnimationSequence2D::InitFullPath(const std::string& Name, 
 	const TCHAR* FullPath)
 {
-	m_Texture.clear();
-
-
 	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
 		return false;
 
-	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture = CResourceManager::GetInst()->FindTexture(Name);
 
+	if (!m_Texture)
+		return false;
 
-	if (!m_Texture.empty())
-		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
+	m_Anim2DType = (EAnimation2DType)m_Texture->GetImageType();
 
 	return true;
 }
@@ -73,15 +69,15 @@ bool CAnimationSequence2D::Init(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFileName,
 	const std::string& PathName)
 {
-	m_Texture.clear();
-
 	if (!CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName))
 		return false;
 
-	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-	if (!m_Texture.empty())
-		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
+	if (!m_Texture)
+		return false;
+
+	m_Anim2DType = (EAnimation2DType)m_Texture->GetImageType();
 
 	return true;
 }
@@ -89,35 +85,19 @@ bool CAnimationSequence2D::Init(const std::string& Name,
 bool CAnimationSequence2D::InitFullPath(const std::string& Name, 
 	const std::vector<const TCHAR*>& vecFullPath)
 {
-
-	m_Texture.clear();
-
 	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, vecFullPath))
 		return false;
 
-	m_Texture.push_back(CResourceManager::GetInst()->FindTexture(Name));
+	m_Texture = CResourceManager::GetInst()->FindTexture(Name);
 
-	if (!m_Texture.empty())
-		m_Anim2DType = (EAnimation2DType)m_Texture[0]->GetImageType();
-
-	return true;
-}
-
-void CAnimationSequence2D::AddTexture(CTexture* Texture)
-{
-	m_Texture.push_back(Texture);
-}
-
-bool CAnimationSequence2D::AddTexture(const std::string& Name)
-{
-	CTexture* Tex = CResourceManager::GetInst()->FindTexture(Name);
-
-	if (!Tex)
+	if (!m_Texture)
 		return false;
 
-	m_Texture.push_back(Tex);
+	m_Anim2DType = (EAnimation2DType)m_Texture->GetImageType();
+
 	return true;
 }
+
 
 void CAnimationSequence2D::AddFrame(const Vector2& Start, const Vector2& End, int TexIndex)
 {
@@ -125,7 +105,6 @@ void CAnimationSequence2D::AddFrame(const Vector2& Start, const Vector2& End, in
 
 	Data.Start = Start;
 	Data.End = End;
-	Data.TextureIndex = TexIndex;
 
 	m_vecFrameData.push_back(Data);
 }
@@ -136,7 +115,6 @@ void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, floa
 
 	Data.Start = Vector2(StartX, StartY);
 	Data.End = Vector2(EndX, EndY);
-	Data.TextureIndex = TexIndex;
 
 	m_vecFrameData.push_back(Data);
 }
@@ -148,18 +126,17 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	int TileRowNum, int TileColNum,
 	int ColStart, int ColSize,
 	int RowStart, int RowSize,
-	int TexIndex
+	EAnimSeqArrayIndexMainAxis MainAxis
 )
 {
-	//예외처리
-	if (TexIndex >= m_Texture.size())
-		return;
-	else if (!m_Texture[TexIndex])
+
+	if (!m_Texture)
 	{
 		assert(0);
 		return;
 	}
 		
+	m_MainAxis = MainAxis;
 
 
 	//시작 행렬 번호를 지정했을 경우 여기서 설정
@@ -211,8 +188,8 @@ void CAnimationSequence2D::AddFrameByTileNumber
 
 	m_vecFrameData.clear();
 	
-	int TileWidth = m_Texture[TexIndex]->GetWidth() / TileColNum;
-	int TileHeight = m_Texture[TexIndex]->GetHeight() / TileRowNum;
+	int TileWidth = m_Texture->GetWidth() / TileColNum;
+	int TileHeight = m_Texture->GetHeight() / TileRowNum;
 
 	int REnd = RStart + RSize; 
 	int CEnd = CStart + CSize;
@@ -222,7 +199,6 @@ void CAnimationSequence2D::AddFrameByTileNumber
 		for (int j = CStart; j < CEnd; ++j)
 		{
 			Animation2DFrameData Data;
-			Data.TextureIndex = TexIndex;
 			
 			Data.Start.x = (float)(j * TileWidth);
 			Data.Start.y = (float)(i * TileHeight);
@@ -241,11 +217,27 @@ void CAnimationSequence2D::AddFrameByTileNumber
 	m_RowSize = RSize;
 	m_ColSize = CSize;
 
+	//기본 프레임 데이터를 초기화
+	{
+		m_vecCustomFrameIndexX.resize(m_ColSize);
+		size_t size = m_vecCustomFrameIndexX.size();
+		for (size_t i = 0; i < size; ++i)
+		{
+			m_vecCustomFrameIndexX[i] = (int)i;
+		}
+	}
 
-	if (m_Texture.size() > 1)
-		m_Anim2DType = EAnimation2DType::MultiTexture;
-	else
-		m_Anim2DType = EAnimation2DType::AtlasIndexed;
+	{
+		m_vecCustomFrameIndexY.resize(m_RowSize);
+		size_t size = m_vecCustomFrameIndexY.size();
+		for (size_t i = 0; i < size; ++i)
+		{
+			m_vecCustomFrameIndexY[i] = (int)i;
+		}
+	}
+
+
+	m_Anim2DType = EAnimation2DType::AtlasIndexed;
 }
 
 //void CAnimationSequence2D::SetFrameAllByTileNumber(int TileRowNum, int TileColNum)
@@ -337,6 +329,7 @@ void CAnimationSequence2D::DeleteFrame(int Index, int TexIndex)
 void CAnimationSequence2D::ClearFrame()
 {
 	m_vecFrameData.clear();
+
 }
 
 
@@ -554,4 +547,14 @@ bool CAnimationSequence2D::Load(const char* FileName, const std::string& PathNam
 	strcat_s(FullPath, FileName);
 
 	return Load(FullPath);
+}
+
+const Animation2DFrameData* CAnimationSequence2D::GetFrameDataArrayIndexed(int IndexX, int IndexY) const
+{
+	int Idx = m_vecCustomFrameIndexY[IndexY] * m_ColSize + m_vecCustomFrameIndexX[IndexX];
+
+	if (Idx < 0 || Idx > m_vecFrameData.size())
+		return nullptr;
+
+	return &m_vecFrameData[Idx];
 }

@@ -2,6 +2,12 @@
 
 #include "Ref.h"
 
+enum class EObjStatus
+{
+	CDO,
+	PLO,
+	RealObject
+};
 
 class CCDO : public CRef
 {
@@ -31,14 +37,15 @@ protected:
 	//하나만 생성해서 공유해서 사용하면 되므로 공유포인터로 선언
 	std::vector<RequiredResource> m_vecRequiredResource;
 	//std::vector<RequiredComponent>* m_vecRequiredComponent;
+	EObjStatus m_ObjStatus;
 
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<std::string, CCDO*>	m_mapCDO;
+	static std::unordered_map<std::string, CSharedPtr<CCDO>>	m_mapCDO;
 
 	//문자열 별로 리소스의 열거체 번호를 저장. 로드할 때 사용됨.
-	//EngineSetting에서 초기화
+	//EngineSetting에서 초기화 중. 새로운 리소스 타입을 등록할 시 반드시 여기에 바인딩해서 등록할것
 	static std::unordered_map<std::string, enum class EResourceType> m_mapResType;
 
 	template <typename T>
@@ -64,6 +71,8 @@ public:
 
 
 
+
+
 //Preloaded Objects
 protected:
 	//사용준비가 완료된 오브젝트들 모음(Clone() -> Init() 해주면 사용 가능)
@@ -82,6 +91,8 @@ public:
 	static class CCDO* CreatePLO(const std::string& ClassName);
 
 	static void DeleteUnusedPLO();
+
+
 
 };
 

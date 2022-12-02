@@ -1,5 +1,7 @@
 #pragma once
 #include "ConstantBufferData.h"
+
+
 class CUIConstantBuffer :
     public CConstantBufferData
 {

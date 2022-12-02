@@ -9,7 +9,7 @@ struct Animation2DNotify
 	int		Frame;
 	float	Time;
 	bool	Call;
-	std::function<void()>	Function;
+	std::vector<std::function<void()>>	vecFunction;
 
 	Animation2DNotify() :
 		Frame(0),
@@ -18,6 +18,8 @@ struct Animation2DNotify
 	{
 	}
 };
+
+
 
 class CAnimation2DData
 {
@@ -28,80 +30,163 @@ private:
 	CAnimation2DData(const CAnimation2DData& Anim);
 	~CAnimation2DData();
 
+public:
+	inline void Update(float DeltaTime);
+
+	void SetSequence(class CAnimationSequence2D* Seq, const std::string& Name,
+		const std::string& SequenceName, float PlayTime, float PlayScale,
+		EAnimLoopMethod LoopMethod, bool Reverse);
+
+	inline void Save(FILE* File);
+	inline void Load(FILE* File);
+	CAnimation2DData* Clone();
+
 private:
 	class CAnimation2D* m_Owner;
 	std::string	m_Name;
 	std::string	m_SequenceName;
 	CSharedPtr<CAnimationSequence2D>	m_Sequence;
 	int		m_Frame;
+	int		m_FrameCount;
 	float	m_Time;
 	float	m_FrameTime;
 	float	m_PlayTime;
 	float	m_PlayScale;
-	bool	m_Loop;
+	EAnimLoopMethod	m_LoopMethod;
 	bool	m_Reverse;
+	bool	m_EndFunctionCalled;
 	std::function<void()>	m_EndFunction;
-	std::vector<Animation2DNotify*>	m_vecNotify;
+	std::unordered_map<int, Animation2DNotify*>	m_mapNotify;
+
+	//이 애니메이션의 재생이 끝나면 이어서 재생될 애니메이션의 이름(등록되어있어야 함)
+	std::string m_SeriesAnimName;
+
+
 
 public:
-	void Update(float DeltaTime);
-	void SetSequence(CAnimationSequence2D* Sequence);
-	void Save(FILE* File);
-	void Load(FILE* File);
-	CAnimation2DData* Clone();
+	inline const std::string& GetName()	const;
+	inline int GetCurrentFrame()	const;
+	inline float GetAnimationTime()	const;
+	inline class CAnimationSequence2D* GetAnimationSequence()	const;
+	inline const Animation2DFrameData* GetCurrentAnimationFrameData() const;
+	inline void SetSeriesAnimation(const std::string& SeriesAnim);
+	inline int GetFrameCount()	const;
 
+
+	inline void SetLoopMethod(EAnimLoopMethod LoopMethod);
+	inline void SetPlayTime(float PlayTime);
+	inline void SetPlayScale(float PlayScale);
+	inline void SetReverse(bool Reverse);
+
+	inline const Animation2DFrameData* GetSCUnitFrameData(int Dir);
+	
 public:
-	const std::string& GetName()	const
-	{
-		return m_Name;
-	}
-
-	int GetCurrentFrame()	const
-	{
-		return m_Frame;
-	}
-
-	float GetAnimationTime()	const
-	{
-		return m_Time;
-	}
-
-	class CAnimationSequence2D* GetAnimationSequence()	const
-	{
-		return m_Sequence;
-	}
+	//기본값으로 되돌림
+	void SetInitialValue();
+	class CTexture* GetTexture() const;
 
 public:
 	template <typename T>
-	void SetEndFunction(T* Obj, void(T::* Func)())
-	{
-		m_EndFunction = std::bind(Func, Obj);
-	}
+	void SetEndFunction(T* Obj, void(T::* Func)());
 
 	template <typename T>
-	void AddNotify(const std::string& Name, int Frame, T* Obj, void(T::* Func)())
-	{
-		Animation2DNotify* Notify = new Animation2DNotify;
-
-		Notify->Name = Name;
-		Notify->Frame = Frame;
-		Notify->Time = Frame * m_FrameTime;
-		Notify->Function = std::bind(Func, Obj);
-
-		m_vecNotify.push_back(Notify);
-	}
+	void AddNotify(const std::string& Name, int Frame, T* Obj, void(T::* Func)());
 
 	template <typename T>
-	void AddNotify(const std::string& Name, float Time, T* Obj, void(T::* Func)())
-	{
-		Animation2DNotify* Notify = new Animation2DNotify;
-
-		Notify->Name = Name;
-		Notify->Frame = Time / m_FrameTime;
-		Notify->Time = Time;
-		Notify->Function = std::bind(Func, Obj);
-
-		m_vecNotify.push_back(Notify);
-	}
+	void AddNotify(const std::string& Name, float Time, T* Obj, void(T::* Func)());
 };
 
+inline const std::string& CAnimation2DData::GetName()	const
+{
+	return m_Name;
+}
+
+inline int CAnimation2DData::GetCurrentFrame()	const
+{
+	return m_Frame;
+}
+
+inline float CAnimation2DData::GetAnimationTime()	const
+{
+	return m_Time;
+}
+
+inline class CAnimationSequence2D* CAnimation2DData::GetAnimationSequence()	const
+{
+	return m_Sequence;
+}
+
+inline const Animation2DFrameData* CAnimation2DData::GetCurrentAnimationFrameData() const
+{
+	return m_Sequence->GetFrameData(m_Frame);
+}
+
+inline void CAnimation2DData::SetSeriesAnimation(const std::string& SeriesAnim)
+{
+	m_SeriesAnimName = SeriesAnim;
+}
+
+inline int CAnimation2DData::GetFrameCount() const
+{
+	return m_Sequence->GetFrameCount();
+}
+
+inline const Animation2DFrameData* CAnimation2DData::GetSCUnitFrameData(int Dir)
+{
+	return m_Sequence->GetFrameDataArrayIndexed(Dir, m_Frame);
+}
+
+inline void CAnimation2DData::SetLoopMethod(EAnimLoopMethod LoopMethod)
+{
+	m_LoopMethod = LoopMethod;
+}
+
+inline void CAnimation2DData::SetPlayTime(float PlayTime)
+{
+	m_PlayTime = PlayTime;
+}
+
+inline void CAnimation2DData::SetPlayScale(float PlayScale)
+{
+	m_PlayScale = PlayScale;
+}
+
+inline void CAnimation2DData::SetReverse(bool Reverse)
+{
+	m_Reverse = Reverse;
+}
+
+
+
+
+template <typename T>
+void CAnimation2DData::SetEndFunction(T* Obj, void(T::* Func)())
+{
+	m_EndFunction = std::bind(Func, Obj);
+}
+
+template <typename T>
+void CAnimation2DData::AddNotify(const std::string& Name, int Frame, T* Obj, void(T::* Func)())
+{
+	Animation2DNotify* Notify = new Animation2DNotify;
+
+	Notify->Name = Name;
+	Notify->Frame = Frame;
+	Notify->Time = Frame * m_FrameTime;
+	Notify->vecFunction.push_back(std::bind(Func, Obj));
+
+	m_mapNotify.insert(Frame, Notify);
+}
+
+template <typename T>
+void CAnimation2DData::AddNotify(const std::string& Name, float Time, T* Obj, void(T::* Func)())
+{
+	Animation2DNotify* Notify = new Animation2DNotify;
+
+	Notify->Name = Name;
+	Notify->Frame = Time / m_FrameTime;
+	Notify->Time = Time;
+	Notify->vecFunction.push_back(std::bind(Func, Obj));
+
+	m_mapNotify.insert(Notify->Frame, Notify);
+}

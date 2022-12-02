@@ -9,15 +9,28 @@ std::unordered_map<std::string, EResourceType> CCDO::m_mapResType;
 std::unordered_map<std::string, CCDO*> CCDO::m_mapPreLoadObject;
 
 CCDO::CCDO():
-	m_vecRequiredResource()
+	m_vecRequiredResource(),
+	m_ObjStatus(EObjStatus::CDO)
 {
 }
 
 CCDO::CCDO(const CCDO& CDO):
-	CRef(CDO),
-	m_vecRequiredResource(CDO.m_vecRequiredResource)
+	CRef(CDO)
 {
-	//m_vecRequiredResource는 복사 X
+	switch (CDO.m_ObjStatus)
+	{
+	case EObjStatus::CDO:
+		//CDO에서 복사해오는 경우(PLO 생성)에는 요구 리소스 목록을 복사해온다.
+		m_vecRequiredResource = std::vector<RequiredResource>(CDO.m_vecRequiredResource);
+		break;
+	case EObjStatus::PLO:
+		//PLO에서 복사해오는 경우 = 실제로 생성될 오브젝트
+		//이 때에는 요구 리소스 목록을 복사하지 않는다.
+		m_ObjStatus = EObjStatus::RealObject;
+		break;
+	default:
+		break;
+	}
 }
 
 CCDO::~CCDO()
@@ -168,6 +181,8 @@ bool CCDO::CDOPreload()
 				break;
 			case EResourceType::Map:
 				break;
+			case EResourceType::SCUnitInfo:
+				break;
 			case EResourceType::End:
 				break;
 			default:
@@ -175,6 +190,8 @@ bool CCDO::CDOPreload()
 		}
 	}
 }
+
+	m_ObjStatus = EObjStatus::PLO;
 
 	return true;
 }
@@ -198,7 +215,7 @@ CCDO* CCDO::FindCDO(const size_t& hash_code)
 	while (iter != iterEnd)
 	{
 		if (iter->second->GetTypeID() == hash_code)
-			return iter->second;
+			return iter->second.Get();
 
 		++iter;
 	}
@@ -213,7 +230,7 @@ CCDO* CCDO::FindCDO(const std::string& Name)
 	if (iter == m_mapCDO.end())
 		return nullptr;
 
-	return iter->second;
+	return iter->second.Get();
 }
 
 CCDO* CCDO::FindCDOByFileName(const std::string& FileName)

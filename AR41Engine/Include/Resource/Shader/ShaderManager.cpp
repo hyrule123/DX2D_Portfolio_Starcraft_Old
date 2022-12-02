@@ -65,7 +65,7 @@ bool CShaderManager::Init()
 	CreateConstantBuffer("UI", sizeof(UICBuffer), 10);
 	CreateConstantBuffer("UIProgressBar", sizeof(UIProgressBarCBuffer), 11);
 	CreateConstantBuffer("TileMap", sizeof(TileMapCBuffer), 10);
-	CreateConstantBuffer("SCUnit", sizeof(SCUnitCBuffer), 12);
+	CreateConstantBuffer("SCUnit", sizeof(SCUnit_CBuffer), 12);
 
 	m_ColliderCBuffer = new CColliderConstantBuffer;
 

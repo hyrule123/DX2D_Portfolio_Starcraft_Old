@@ -142,13 +142,3 @@ inline int CTexture::GetImageCount()	const
 {
 	return (int)m_vecTextureInfo.size();
 }
-
-inline int CTexture::GetTextureBufferPreset() const
-{
-	return m_TextureBufferPreset;
-}
-
-inline void CTexture::SetTextureBufferPreset(int TextureBufferPreset)
-{
-	m_TextureBufferPreset = TextureBufferPreset;
-}

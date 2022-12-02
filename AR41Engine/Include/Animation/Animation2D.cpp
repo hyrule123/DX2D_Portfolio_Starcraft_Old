@@ -7,16 +7,17 @@
 
 CAnimation2D::CAnimation2D() :
 	m_Owner(nullptr),
-	m_Play(true)
+	m_Play(true),
+	m_MaterialTextureInfoIndexPreset(0)
 {
 	m_ClassName = "Animation2D";
 }
 
 CAnimation2D::CAnimation2D(const CAnimation2D& Anim) :
-	CRef(Anim)
+	CRef(Anim),
+	m_Play(Anim.m_Play),
+	m_MaterialTextureInfoIndexPreset(Anim.m_MaterialTextureInfoIndexPreset)
 {
-	m_Play = Anim.m_Play;
-
 	m_mapAnimation.clear();
 
 	auto	iter = Anim.m_mapAnimation.begin();
@@ -63,7 +64,7 @@ void CAnimation2D::Start()
 {
 	if (m_Owner && m_CurAnimation)
 	{
-		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
+		m_Owner->SetTexture(m_CurAnimation->GetTexture());
 	}
 }
 
@@ -75,7 +76,7 @@ bool CAnimation2D::Init()
 void CAnimation2D::Update(float DeltaTime)
 {
 	if (!m_Play || !m_CurAnimation ||
-		m_CurAnimation->m_Sequence->GetFrameCount() == 0)
+		m_CurAnimation->GetFrameCount() == 0)
 		return;
 
 	m_CurAnimation->Update(DeltaTime);
@@ -83,29 +84,20 @@ void CAnimation2D::Update(float DeltaTime)
 
 bool CAnimation2D::AddAnimation(const std::string& Name,
 	const std::string& SequenceName, float PlayTime, float PlayScale,
-	bool Loop, bool Reverse)
+	EAnimLoopMethod LoopMethod, bool Reverse)
 {
 	CAnimation2DData* Anim = FindAnimation(Name);
 
 	if (Anim)
+		return true;
+
+	CAnimationSequence2D* Seq = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
+	if (!Seq)
 		return false;
 
-	CAnimationSequence2D* Sequence = nullptr;
-
-
-	Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
-
 	Anim = new CAnimation2DData;
+	Anim->SetSequence(Seq, Name, SequenceName, PlayTime, PlayScale, LoopMethod, Reverse);
 
-	Anim->m_Sequence = Sequence;
-	Anim->m_SequenceName = SequenceName;
-	Anim->m_Name = Name;
-	Anim->m_PlayTime = PlayTime;
-	Anim->m_PlayScale = PlayScale;
-	Anim->m_Loop = Loop;
-	Anim->m_Reverse = Reverse;
-	Anim->m_FrameTime = PlayTime / Sequence->GetFrameCount();
-	Anim->m_Owner = this;
 
 	if (m_mapAnimation.empty())
 	{
@@ -124,24 +116,18 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 bool CAnimation2D::AddAnimation(const std::string& Name,
 	CAnimationSequence2D* Sequence,
-	float PlayTime, float PlayScale, bool Loop, bool Reverse)
+	float PlayTime, float PlayScale, EAnimLoopMethod LoopMethod, bool Reverse)
 {
 	CAnimation2DData* Anim = FindAnimation(Name);
 
-	if (Anim)
-		return false;
+	if (Anim || !Sequence)
+		return true;
+
+	const std::string& SeqName = Sequence->GetName();
 
 	Anim = new CAnimation2DData;
+	Anim->SetSequence(Sequence, Name, SeqName, PlayTime, PlayScale, LoopMethod, Reverse);
 
-	Anim->m_Sequence = Sequence;
-	Anim->m_SequenceName = Sequence->GetName();
-	Anim->m_Name = Name;
-	Anim->m_PlayTime = PlayTime;
-	Anim->m_PlayScale = PlayScale;
-	Anim->m_Loop = Loop;
-	Anim->m_Reverse = Reverse;
-	Anim->m_FrameTime = PlayTime / Sequence->GetFrameCount();
-	Anim->m_Owner = this;
 
 	if (m_mapAnimation.empty())
 	{
@@ -157,6 +143,8 @@ bool CAnimation2D::AddAnimation(const std::string& Name,
 
 	return true;
 }
+
+
 
 void CAnimation2D::SetPlayTime(const std::string& Name, float PlayTime)
 {
@@ -178,14 +166,14 @@ void CAnimation2D::SetPlayScale(const std::string& Name, float PlayScale)
 	Anim->m_PlayScale = PlayScale;
 }
 
-void CAnimation2D::SetLoop(const std::string& Name, bool Loop)
+void CAnimation2D::SetLoop(const std::string& Name, EAnimLoopMethod LoopMethod)
 {
 	CAnimation2DData* Anim = FindAnimation(Name);
 
 	if (!Anim)
 		return;
 
-	Anim->m_Loop = Loop;
+	Anim->SetLoopMethod(LoopMethod);
 }
 
 void CAnimation2D::SetReverse(const std::string& Name, bool Reverse)
@@ -205,21 +193,13 @@ void CAnimation2D::SetCurrentAnimation(const std::string& Name)
 	if (!Anim)
 		return;
 
+	m_CurAnimation->SetInitialValue();
+
 	m_CurAnimation = Anim;
-
-	m_CurAnimation->m_Frame = 0;
-	m_CurAnimation->m_Time = 0.f;
-
-	size_t	Size = m_CurAnimation->m_vecNotify.size();
-
-	for (size_t i = 0; i < Size; ++i)
-	{
-		m_CurAnimation->m_vecNotify[i]->Call = false;
-	}
 
 	if (m_Owner)
 	{
-		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
+		m_Owner->SetTexture(m_CurAnimation->GetTexture());
 		m_Owner->SetTextureFrameIndex(0);
 	}
 }
@@ -229,15 +209,7 @@ void CAnimation2D::ChangeAnimation(const std::string& Name)
 	if (m_CurAnimation->GetName() == Name)
 		return;
 
-	m_CurAnimation->m_Frame = 0;
-	m_CurAnimation->m_Time = 0.f;
-
-	size_t	Size = m_CurAnimation->m_vecNotify.size();
-
-	for (size_t i = 0; i < Size; ++i)
-	{
-		m_CurAnimation->m_vecNotify[i]->Call = false;
-	}
+	m_CurAnimation->SetInitialValue();
 
 	m_CurAnimation = FindAnimation(Name);
 
@@ -246,9 +218,17 @@ void CAnimation2D::ChangeAnimation(const std::string& Name)
 
 	if (m_Owner)
 	{
-		m_Owner->SetTexture(m_CurAnimation->m_Sequence->GetTexture());
+		m_Owner->SetTexture(m_CurAnimation->GetTexture(), m_MaterialTextureInfoIndexPreset);
 		m_Owner->SetTextureFrameIndex(0);
 	}
+}
+
+inline void CAnimation2D::ChangeTexture(CTexture* Tex)
+{
+	if (!m_Owner)
+		return;
+
+	m_Owner->SetTexture(Tex, m_MaterialTextureInfoIndexPreset);
 }
 
 void CAnimation2D::Save(FILE* File)
@@ -331,15 +311,15 @@ void CAnimation2D::SetShader()
 
 	if (Type == EAnimation2DType::Atlas)
 	{
-		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(m_CurAnimation->m_Frame);
+		const Animation2DFrameData* FrameData = m_CurAnimation->m_Sequence->GetFrameData(m_CurAnimation->m_Frame);
 
 		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
 			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
-		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
+		Buffer->SetImageFrame(FrameData->Start, FrameData->End);
 	}
 	else if (Type == EAnimation2DType::AtlasIndexed)
 	{
-		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->m_Sequence->GetRowNum());
+		int CalcedFrame = (m_CurAnimation->m_Frame) * (m_CurAnimation->GetAnimationSequence()->GetRowSize());
 
 		int Direction = (int)m_Owner->GetRowIndex();
 
@@ -355,11 +335,11 @@ void CAnimation2D::SetShader()
 		CalcedFrame += Direction;
 
 
-		const Animation2DFrameData& FrameData = m_CurAnimation->m_Sequence->GetFrameData(CalcedFrame);
+		const Animation2DFrameData* FrameData = m_CurAnimation->m_Sequence->GetFrameData(CalcedFrame);
 
 		Buffer->SetImageSize((float)m_CurAnimation->m_Sequence->GetTexture()->GetWidth(),
 			(float)m_CurAnimation->m_Sequence->GetTexture()->GetHeight());
-		Buffer->SetImageFrame(FrameData.Start, FrameData.End);
+		Buffer->SetImageFrame(FrameData->Start, FrameData->End);
 	}
 
 	else if (Type == EAnimation2DType::Frame)
@@ -397,3 +377,58 @@ CAnimation2DData* CAnimation2D::FindAnimation(const std::string& Name)
 
 	return iter->second;
 }
+
+
+std::string CAnimation2D::GetCurrentAnimationName() const
+{
+	if (!m_CurAnimation)
+		return "";
+
+	return m_CurAnimation->GetName();
+}
+
+int CAnimation2D::GetCurrentFrame() const
+{
+	if (!m_CurAnimation)
+		return -1;
+
+	return m_CurAnimation->GetCurrentFrame();
+}
+
+float CAnimation2D::GetCurrentAnimationTime() const
+{
+	if (!m_CurAnimation)
+		return -1.f;
+
+	return m_CurAnimation->GetAnimationTime();
+}
+
+CAnimationSequence2D* CAnimation2D::GetCurrentAnimationSequence() const
+{
+	if (!m_CurAnimation)
+		return nullptr;
+
+	return m_CurAnimation->GetAnimationSequence();
+}
+
+const Animation2DFrameData* CAnimation2D::GetCurrentAnimationFrameData() const
+{
+	if(!m_CurAnimation)
+		return nullptr;
+
+	return m_CurAnimation->GetCurrentAnimationFrameData();
+}
+
+const Animation2DFrameData* CAnimation2D::GetCurrentAnimationFrameDataSCUnit(int Dir) const
+{
+	if (!m_CurAnimation)
+		return nullptr;
+
+	return m_CurAnimation->GetSCUnitFrameData(Dir);
+}
+
+CAnimation2DData* CAnimation2D::GetCurrentAnimation() const
+{
+	return m_CurAnimation;
+}
+

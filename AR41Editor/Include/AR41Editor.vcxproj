@@ -183,7 +183,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Component\UnitRootComponent.cpp" />
     <ClCompile Include="Component\UnitSpriteComponent.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="GameObject\Bullet.cpp" />
@@ -216,7 +215,6 @@
     <ClCompile Include="Window\TransformWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component\UnitRootComponent.h" />
     <ClInclude Include="Component\UnitSpriteComponent.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorManager.h" />

@@ -1,9 +1,10 @@
-#include "UnitRootComponent.h"
+#include "SCUnitRootComponent.h"
 
 
 CSCUnitRootComponent::CSCUnitRootComponent() :
 	m_DirAngleUnit(11.25f),
-	m_Direction()
+	m_Direction(),
+	m_SCUnitInfo()
 {
 
 	m_ComponentType = ComponentType::Scene;
@@ -15,7 +16,8 @@ CSCUnitRootComponent::CSCUnitRootComponent() :
 CSCUnitRootComponent::CSCUnitRootComponent(const CSCUnitRootComponent& component) :
 	CSceneComponent(component),
 	m_DirAngleUnit(component.m_DirAngleUnit),
-	m_Direction(component.m_Direction)
+	m_Direction(component.m_Direction),
+	m_SCUnitInfo(component.m_SCUnitInfo)
 {
 }
 
@@ -87,6 +89,15 @@ CSCUnitRootComponent* CSCUnitRootComponent::Clone() const
 void CSCUnitRootComponent::Save(FILE* File)
 {
 	CSceneComponent::Save(File);
+
+	//fwrite(&m_SCUnitInfo)
+
+	////같은 유닛은 모두 동일한 유닛정보를 공유한다.(얕은 복사
+	//SCUnitInfoDa* m_SCUnitInfo;
+	//float m_DirAngleUnit;	//유닛 스프라이트의 방향 1단위의 각도
+	//INT8 m_Direction;
+
+
 
 }
 

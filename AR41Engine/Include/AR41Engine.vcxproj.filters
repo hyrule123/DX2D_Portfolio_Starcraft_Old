@@ -226,6 +226,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\07. SCUnit">
       <UniqueIdentifier>{cb55d3fd-2397-4df8-a6f9-a3438b832c79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\09. Unit">
+      <UniqueIdentifier>{a0ebf8d8-c28a-4bd7-8ecc-e65b56668d6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -684,6 +687,18 @@
     <ClInclude Include="Resource\Shader\ShaderInfo.h">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\UnitInfo\SCUnitInfoManager.h">
+      <Filter>02. Resource\09. Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\UnitInfo\SCUnitInfoData.h">
+      <Filter>02. Resource\09. Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="SCUnitInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SCUnitRootComponent.h">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -1075,6 +1090,15 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\SCUnitConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. SCUnit</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\UnitInfo\SCUnitInfoManager.cpp">
+      <Filter>02. Resource\09. Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\UnitInfo\SCUnitInfoData.cpp">
+      <Filter>02. Resource\09. Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SCUnitRootComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. Primitive\01. 2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

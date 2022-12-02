@@ -11,6 +11,7 @@
 #include "Component/ColliderPixel.h"
 #include "Component/ColliderSphere2D.h"
 #include "Component/SCUnitSpriteComponent.h"
+#include "Component/SCUnitRootComponent.h"
 
 #include "Component/TargetArm.h"
 #include "Component/Tile.h"
@@ -37,6 +38,7 @@ void CEngineSetting::Init()
 	CCDO::AddResourceType(FONT, EResourceType::Font);
 	CCDO::AddResourceType(FONTCOLLECTION, EResourceType::FontCollection);
 	CCDO::AddResourceType(MAP, EResourceType::Map);
+	CCDO::AddResourceType(UNITINFO, EResourceType::SCUnitInfo);
 	CCDO::AddResourceType(RESOURCEEND, EResourceType::End);
 
 	CCDO::CreateCDO<CGameObject>();
@@ -49,5 +51,6 @@ void CEngineSetting::Init()
 	CCDO::CreateCDO<CColliderPixel>();
 	CCDO::CreateCDO<CTargetArm>();
 	CCDO::CreateCDO<CTileMapComponent>();
-	CCDO::CreateCDO<CSCUnitSpriteComponent>();
+	//CCDO::CreateCDO<CSCUnitSpriteComponent>();
+	CCDO::CreateCDO<CSCUnitRootComponent>();
 }

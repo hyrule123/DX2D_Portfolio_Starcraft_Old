@@ -36,6 +36,7 @@
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\PrimitiveComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
+    <ClInclude Include="Component\SCUnitRootComponent.h" />
     <ClInclude Include="Component\SCUnitSpriteComponent.h" />
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\TargetArm.h" />
@@ -140,6 +141,8 @@
     <ClInclude Include="Resource\Texture\DirectXTex.h" />
     <ClInclude Include="Resource\Texture\Texture.h" />
     <ClInclude Include="Resource\Texture\TextureManager.h" />
+    <ClInclude Include="Resource\UnitInfo\SCUnitInfoData.h" />
+    <ClInclude Include="Resource\UnitInfo\SCUnitInfoManager.h" />
     <ClInclude Include="Scene\CameraManager.h" />
     <ClInclude Include="Scene\CollisionSection2D.h" />
     <ClInclude Include="Scene\CollisionSection3D.h" />
@@ -150,6 +153,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneResource.h" />
     <ClInclude Include="Scene\SceneViewport.h" />
+    <ClInclude Include="SCUnitInfo.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Thread\DataStream.h" />
     <ClInclude Include="Thread\LoadingThread.h" />
@@ -189,6 +193,7 @@
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\PrimitiveComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
+    <ClCompile Include="Component\SCUnitRootComponent.cpp" />
     <ClCompile Include="Component\SCUnitSpriteComponent.cpp" />
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\TargetArm.cpp" />
@@ -273,6 +278,8 @@
     <ClCompile Include="Resource\Sound\SoundManager.cpp" />
     <ClCompile Include="Resource\Texture\Texture.cpp" />
     <ClCompile Include="Resource\Texture\TextureManager.cpp" />
+    <ClCompile Include="Resource\UnitInfo\SCUnitInfoData.cpp" />
+    <ClCompile Include="Resource\UnitInfo\SCUnitInfoManager.cpp" />
     <ClCompile Include="Scene\CameraManager.cpp" />
     <ClCompile Include="Scene\CollisionSection2D.cpp" />
     <ClCompile Include="Scene\CollisionSection3D.cpp" />

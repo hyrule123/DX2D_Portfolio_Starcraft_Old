@@ -68,7 +68,6 @@ typedef std::string tstring;
 
 
 //리소스 종류
-
 #define MESH "MESH"
 #define SHADER "SHADER"
 #define CBUFFER "CBUFFER"
@@ -77,8 +76,9 @@ typedef std::string tstring;
 #define ANIMATION "ANIMATION"
 #define SOUND "SOUND"
 #define FONT "FONT"
-#define FONTCOLLECTION "FONTCOLLECTION"
+#define FONTCOLLECTION "FONTCOLLECTON"
 #define MAP "MAP"
+#define UNITINFO "UNITINFO"
 #define RESOURCEEND "RESEND"
 
 
@@ -118,6 +118,26 @@ struct Resolution
 };
 
 
+//동적 2d array를 쉽게 다루기 위한 클래스.
+template <typename T>
+class Array2D {
+public:
+
+	Array2D(T* ptr, int pitch) :
+		_ptr(ptr),
+		_pitch(pitch)
+	{}
+
+	T* operator[](int idx)
+	{
+		return _ptr + (_pitch * idx);
+	}
+
+private:
+	T* const _ptr;
+	const int _pitch;
+};
+
 
 struct HierarchyName
 {
@@ -141,13 +161,8 @@ struct HierarchyObjectName
 
 struct Animation2DFrameData
 {
-	int TextureIndex;
 	Vector2	Start;
 	Vector2	End;
-
-	Animation2DFrameData() :
-		TextureIndex(0)
-	{}
 };
 
 
@@ -263,4 +278,9 @@ enum class ERequiredResource
 };
 
 
-
+enum class EAnimLoopMethod
+{
+	NoLoop,
+	NormalLoop,
+	LoopZigZag
+};

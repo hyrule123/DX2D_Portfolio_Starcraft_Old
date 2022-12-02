@@ -168,9 +168,10 @@ void CSpriteComponentWidgetList::AddAnimation2DData()
 	if (!Sequence)
 		return;
 
-	Animation->AddAnimation(m_Animation2DDataName->GetText(),
-		Sequence, m_PlayTime->GetFloat(), m_PlayScale->GetFloat(),
-		m_LoopCheck->GetCheck(), m_ReverseCheck->GetCheck());
+	//Animation->AddAnimation()
+	//Animation->AddAnimation(m_Animation2DDataName->GetText(),
+	//	Sequence, m_PlayTime->GetFloat(), m_PlayScale->GetFloat(),
+	//	m_LoopCheck->GetCheck(), m_ReverseCheck->GetCheck());
 
 	m_AnimationList->AddItem(m_Animation2DDataName->GetText());
 }

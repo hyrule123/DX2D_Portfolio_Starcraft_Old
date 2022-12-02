@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../EngineInfo.h"
 #include "ConstantBuffer.h"
+
+#include "ShaderInfo.h"
 
 class CConstantBufferData
 {

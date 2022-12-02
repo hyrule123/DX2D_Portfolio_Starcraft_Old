@@ -17,110 +17,84 @@ protected:
     CAnimation2D(const CAnimation2D& Anim);
     virtual ~CAnimation2D();
 
-protected:
-	std::string	m_ClassName;
-	class CSpriteComponent* m_Owner;
-    std::unordered_map<std::string, CAnimation2DData*>  m_mapAnimation;
-    CAnimation2DData* m_CurAnimation;
-	bool	m_Play;
-
-public:
-	void SetOwner(class CSpriteComponent* Owner);
-	inline class CScene* GetScene()	const;
-	inline const std::string& GetAnimationClassName()	const;
-	inline void GetAnimationNames(std::vector<std::string>& vecNames);
-
-public:
+public://Default
 	void Start();
-    virtual bool Init();
-	virtual void Update(float DeltaTime);
-	bool AddAnimation(const std::string& Name, const std::string& SequenceName,
-		float PlayTime = 1.f, float PlayScale = 1.f,
-		bool Loop = false, bool Reverse = false);
-	bool AddAnimation(const std::string& Name,  class CAnimationSequence2D* Sequence, float PlayTime = 1.f, float PlayScale = 1.f,
-		bool Loop = false, bool Reverse = false);
-	void SetPlayTime(const std::string& Name, float PlayTime);
-	void SetPlayScale(const std::string& Name, float PlayScale);
-	void SetLoop(const std::string& Name, bool Loop);
-	void SetReverse(const std::string& Name, bool Reverse);
-	void SetCurrentAnimation(const std::string& Name);
-	void ChangeAnimation(const std::string& Name);
+	virtual bool Init();
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
 	virtual CAnimation2D* Clone();
+
+	//애니메이션 변경 메소드
+	void SetCurrentAnimation(const std::string& Name);
+	void ChangeAnimation(const std::string& Name);
+
+protected:
+	std::string	m_ClassName;
+	class CSpriteComponent* m_Owner;
+    std::unordered_map<std::string, class CAnimation2DData*>  m_mapAnimation;
+    class CAnimation2DData* m_CurAnimation;
+	
+	bool	m_Play;
+
+	//재질에 원하는 텍스처 정보 배열 인덱스에 애니메이션에 사용하는 텍스처를 삽입함.
+	//Material에서 미리 해당 텍스처 번호까지 추가해놓지 않으면 등록 안되므로 주의할 것
+	int		m_MaterialTextureInfoIndexPreset;
+
+public:
+	
+	inline class CScene* GetScene()	const;
+	inline const std::string& GetAnimationClassName()	const;
+	inline void GetAnimationNames(std::vector<std::string>& vecNames);
+	class CAnimation2DData* GetCurrentAnimation() const;
+	inline bool IsPlaying() const;
+
+	inline void SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset);
+	void SetOwner(class CSpriteComponent* Owner);
+
+public:
+	virtual void Update(float DeltaTime);
+
+	bool AddAnimation(const std::string& Name, const std::string& SequenceName,
+		float PlayTime = 1.f, float PlayScale = 1.f,
+		EAnimLoopMethod LoopMethod = EAnimLoopMethod::NoLoop, bool Reverse = false);
+	bool AddAnimation(const std::string& Name,  class CAnimationSequence2D* Sequence, float PlayTime = 1.f, float PlayScale = 1.f,
+		EAnimLoopMethod LoopMethod = EAnimLoopMethod::NoLoop, bool Reverse = false);
+
+
+	void SetPlayTime(const std::string& Name, float PlayTime);
+	void SetPlayScale(const std::string& Name, float PlayScale);
+	void SetLoop(const std::string& Name, EAnimLoopMethod LoopMethod);
+	void SetReverse(const std::string& Name, bool Reverse);
+
+
+	//일반 상수버퍼 사용하여 렌더링
 	void SetShader();
 
 public:
 	CAnimation2DData* FindAnimation(const std::string& Name);
 
 public:
-	const std::string& GetCurrentAnimationName(const std::string& AnimationName)	const
-	{
-		if (!m_CurAnimation)
-			return "";
+	std::string GetCurrentAnimationName()	const;
+	int GetCurrentFrame()	const;
+	float GetCurrentAnimationTime()	const;
+	class CAnimationSequence2D* GetCurrentAnimationSequence()	const;
+	const Animation2DFrameData* GetCurrentAnimationFrameData()	const;
+	const Animation2DFrameData* GetCurrentAnimationFrameDataSCUnit(int Dir) const;
 
-		return m_CurAnimation->GetName();
-	}
+	void ChangeTexture(class CTexture* Tex);
 
-	int GetCurrentFrame(const std::string& AnimationName)	const
-	{
-		if (!m_CurAnimation)
-			return -1;
-
-		return m_CurAnimation->GetCurrentFrame();
-	}
-
-	float GetCurrentAnimationTime(const std::string& AnimationName)	const
-	{
-		if (!m_CurAnimation)
-			return -1.f;
-
-		return m_CurAnimation->GetAnimationTime();
-	}
-
-	class CAnimationSequence2D* GetCurrentAnimationSequence(const std::string& AnimationName)	const
-	{
-		if (!m_CurAnimation)
-			return nullptr;
-
-		return m_CurAnimation->GetAnimationSequence();
-	}
 
 public:
 	template <typename T>
-	void SetCurrentEndFunction(const std::string& AnimationName, T* Obj, void(T::* Func)())
-	{
-		CAnimation2DData* Animation = FindAnimation(AnimationName);
-
-		if (!Animation)
-			return;
-
-		Animation->SetEndFunction<T>(Obj, Func);
-	}
+	void SetCurrentEndFunction(const std::string& AnimationName, T* Obj, void(T::* Func)());
 
 	template <typename T>
-	void AddCurrentNotify(const std::string& AnimationName, 
-		const std::string& Name, int Frame, T* Obj, void(T::* Func)())
-	{
-		CAnimation2DData* Animation = FindAnimation(AnimationName);
-
-		if (!Animation)
-			return;
-
-		Animation->AddNotify<T>(Name, Frame, Obj, Func);
-	}
+	void AddCurrentNotify(const std::string& AnimationName,
+		const std::string& Name, int Frame, T* Obj, void(T::* Func)());
 
 	template <typename T>
-	void AddCurrentNotify(const std::string& AnimationName, 
-		const std::string& Name, float Time, T* Obj, void(T::* Func)())
-	{
-		CAnimation2DData* Animation = FindAnimation(AnimationName);
-
-		if (!Animation)
-			return;
-
-		Animation->AddNotify<T>(Name, Time, Obj, Func);
-	}
+	void AddCurrentNotify(const std::string& AnimationName,
+		const std::string& Name, float Time, T* Obj, void(T::* Func)());
 };
 
 inline const std::string& CAnimation2D::GetAnimationClassName()	const
@@ -137,4 +111,52 @@ inline void CAnimation2D::GetAnimationNames(std::vector<std::string>& vecNames)
 	{
 		vecNames.push_back(iter->first);
 	}
+}
+
+
+inline void CAnimation2D::SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset)
+{
+	m_MaterialTextureInfoIndexPreset = m_MaterialTextureInfoIndexPreset;
+}
+
+
+
+template <typename T>
+void CAnimation2D::SetCurrentEndFunction(const std::string& AnimationName, T* Obj, void(T::* Func)())
+{
+	CAnimation2DData* Animation = FindAnimation(AnimationName);
+
+	if (!Animation)
+		return;
+
+	Animation->SetEndFunction<T>(Obj, Func);
+}
+
+template <typename T>
+void CAnimation2D::AddCurrentNotify(const std::string& AnimationName,
+	const std::string& Name, int Frame, T* Obj, void(T::* Func)())
+{
+	CAnimation2DData* Animation = FindAnimation(AnimationName);
+
+	if (!Animation)
+		return;
+
+	Animation->AddNotify<T>(Name, Frame, Obj, Func);
+}
+
+template <typename T>
+void CAnimation2D::AddCurrentNotify(const std::string& AnimationName,
+	const std::string& Name, float Time, T* Obj, void(T::* Func)())
+{
+	CAnimation2DData* Animation = FindAnimation(AnimationName);
+
+	if (!Animation)
+		return;
+
+	Animation->AddNotify<T>(Name, Time, Obj, Func);
+}
+
+inline bool CAnimation2D::IsPlaying() const
+{
+	return m_Play;
 }

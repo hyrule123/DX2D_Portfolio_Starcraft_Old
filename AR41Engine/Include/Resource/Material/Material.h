@@ -93,7 +93,9 @@ public:
     void AddTextureArrayFullPath(int Register, int ShaderBufferType, const std::string& TexName);
 
     void AddTextureEmpty(int Register, int ShaderBufferType);
-    void SetTexture(int Index, const std::string& TexName);
+
+    //애니메이션용 텍스처 지정
+    void SetTexture(const std::string& TexName, int Index);
     void SetTexture(class CTexture* Tex, int Index);
 
 

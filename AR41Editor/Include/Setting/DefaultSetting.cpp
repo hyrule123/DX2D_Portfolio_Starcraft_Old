@@ -17,7 +17,6 @@
 #include "Input.h"
 #include "CollisionManager.h"
 #include "../GameObject/Marine.h"
-#include "../Component/UnitRootComponent.h"
 #include "../Component/UnitSpriteComponent.h"
 
 
@@ -49,8 +48,7 @@ void CDefaultSetting::CreateCDO()
     CCDO::CreateCDO<CMarine>();
     CCDO::CreateCDO<CTileMapHolder>();
 
-    CCDO::CreateCDO<CUnitRootComponent>();
-    CCDO::CreateCDO<CUnitSpriteComponent>();
+    //CCDO::CreateCDO<CUnitSpriteComponent>();
     CCDO::CreateCDO<CStartSceneUI>();
 
     //CScene::CreateObjectCDO<CPlayer2D>("Player2D");
@@ -58,7 +56,7 @@ void CDefaultSetting::CreateCDO()
     //CScene::CreateObjectCDO<CBullet>("Bullet");
     //CScene::CreateObjectCDO<CMarine>("Marine");
 
-    //CScene::CreateComponentCDO<CUnitRootComponent>("UnitRootComponent");
+    //CScene::CreateComponentCDO<CSCUnitRootComponent>("UnitRootComponent");
     //CScene::CreateComponentCDO<CUnitSpriteComponent>("UnitSpriteComponent");
 
     //CScene::CreateUIWindowCDO<CStartSceneUI>("StartSceneUI");
