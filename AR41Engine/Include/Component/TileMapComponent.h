@@ -3,6 +3,7 @@
 #include "PrimitiveComponent.h"
 #include "Tile.h"
 
+#include "../Resource/Shader/ShaderInfo.h"
 
 /*
 //

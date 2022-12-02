@@ -27,7 +27,7 @@ bool CEditorDefaultScene::Init()
 	//m_Owner->GetViewport()->CreateUIWindow<CStartSceneUI>("StartUI");
 
 	m_Owner->CreateObject<CTileMapHolder>("TileMapHolder");
-	m_Owner->CreateObject<CMarine>("Marine");
+	//m_Owner->CreateObject<CMarine>("Marine");
 
 	return true;
 }

@@ -1,5 +1,5 @@
 #include "SCUnitInfoManager.h"
-
+#include "SCUnitInfoData.h"
 
 CSCUnitInfoManager::CSCUnitInfoManager()
 {

@@ -11,6 +11,7 @@
 #include "../GameObject/Monster.h"
 #include "../GameObject/Bullet.h"
 #include "../GameObject/TileMapHolder.h"
+#include "../Component/SCUltraliskComponent.h"
 
 #include "../UI/StartSceneUI.h"
 #include "Scene/Scene.h"
@@ -18,6 +19,7 @@
 #include "CollisionManager.h"
 #include "../GameObject/Marine.h"
 #include "../Component/UnitSpriteComponent.h"
+
 
 
 
@@ -45,8 +47,11 @@ void CDefaultSetting::CreateCDO()
     CCDO::CreateCDO<CPlayer2D>();
     CCDO::CreateCDO<CMonster>();
     CCDO::CreateCDO<CBullet>();
-    CCDO::CreateCDO<CMarine>();
+    //CCDO::CreateCDO<CMarine>();
     CCDO::CreateCDO<CTileMapHolder>();
+
+    CCDO::CreateCDO<CSCUltraliskComponent>();
+
 
     //CCDO::CreateCDO<CUnitSpriteComponent>();
     CCDO::CreateCDO<CStartSceneUI>();
@@ -64,32 +69,32 @@ void CDefaultSetting::CreateCDO()
 
 void CDefaultSetting::LoadResource()
 {
-    std::vector<const TCHAR*>   vecFileName;
+    //std::vector<const TCHAR*>   vecFileName;
 
-    for (int i = 1; i <= 89; ++i)
-    {
-        TCHAR* FileName = new TCHAR[MAX_PATH];
+    //for (int i = 1; i <= 89; ++i)
+    //{
+    //    TCHAR* FileName = new TCHAR[MAX_PATH];
 
-        memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+    //    memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
 
-        wsprintf(FileName, TEXT("Explosion/Explosion%d.png"), i);
+    //    wsprintf(FileName, TEXT("Explosion/Explosion%d.png"), i);
 
-        vecFileName.push_back(FileName);
-    }
+    //    vecFileName.push_back(FileName);
+    //}
 
 
-    CResourceManager::GetInst()->CreateAnimationSequence2D(
-        "PlayerIdle", "Explosion", vecFileName);
+    //CResourceManager::GetInst()->CreateAnimationSequence2D(
+    //    "PlayerIdle", "Explosion", vecFileName);
 
-    CResourceManager::GetInst()->AddAnimationSequence2DFrameAll("PlayerIdle",
-        89, Vector2(0.f, 0.f), Vector2(320.f, 240.f));
+    //CResourceManager::GetInst()->AddAnimationSequence2DFrameAll("PlayerIdle",
+    //    89, Vector2(0.f, 0.f), Vector2(320.f, 240.f));
 
-    for (int i = 0; i <= 88; ++i)
-    {
-        SAFE_DELETE_ARRAY(vecFileName[i]);
-    }
+    //for (int i = 0; i <= 88; ++i)
+    //{
+    //    SAFE_DELETE_ARRAY(vecFileName[i]);
+    //}
 
-    vecFileName.clear();
+    //vecFileName.clear();
 }
 
 void CDefaultSetting::SetInput()

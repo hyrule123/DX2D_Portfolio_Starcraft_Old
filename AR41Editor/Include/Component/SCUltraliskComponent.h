@@ -1,33 +1,29 @@
 #pragma once
-
-#include "Component\SpriteComponent.h"
-
-class CUnitSpriteComponent :
-    public CSpriteComponent
+#include "Component\SCUnitSpriteComponent.h"
+class CSCUltraliskComponent :
+    public CSCUnitSpriteComponent
 {
     friend class CGameObject;
     friend class CScene;
     friend class CCDO;
 
 protected:
-    CUnitSpriteComponent();
-    CUnitSpriteComponent(const CUnitSpriteComponent& component);
-    virtual ~CUnitSpriteComponent();
+    CSCUltraliskComponent();
+    CSCUltraliskComponent(const CSCUltraliskComponent& component);
+    virtual ~CSCUltraliskComponent();
 
 public:
     virtual void Start();
+    virtual bool CDOPreload();
     virtual bool Init();
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual void Render();
-    virtual CUnitSpriteComponent* Clone()    const;
+    virtual CSCUltraliskComponent* Clone()    const;
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
 
     virtual int GetRowIndex() const;
 
-protected:
-    class CSCUnitRootComponent* m_UnitRoot;
 };
-
 

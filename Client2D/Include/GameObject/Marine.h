@@ -19,7 +19,6 @@ private:
 	CSharedPtr<class CColliderOBB2D>	m_Coll;
 	CSharedPtr<class CAnimation2D> m_Anim;
 
-
 public:
 	virtual void Start();
 	virtual bool Init();
@@ -29,7 +28,6 @@ public:
 	virtual CMarine* Clone()    const;
 	virtual void Save(FILE* File);
 	virtual void Load(FILE* File);
-
 public:
 	void MoveUp();
 	void MoveDown();

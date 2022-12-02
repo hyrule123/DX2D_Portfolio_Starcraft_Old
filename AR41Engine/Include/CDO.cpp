@@ -6,7 +6,7 @@
 
 std::unordered_map<std::string, CCDO*>	CCDO::m_mapCDO;
 std::unordered_map<std::string, EResourceType> CCDO::m_mapResType;
-std::unordered_map<std::string, CCDO*> CCDO::m_mapPreLoadObject;
+std::unordered_map<std::string, CSharedPtr<CCDO>> CCDO::m_mapPreLoadObject;
 
 CCDO::CCDO():
 	m_vecRequiredResource(),
@@ -215,7 +215,7 @@ CCDO* CCDO::FindCDO(const size_t& hash_code)
 	while (iter != iterEnd)
 	{
 		if (iter->second->GetTypeID() == hash_code)
-			return iter->second.Get();
+			return iter->second;
 
 		++iter;
 	}
@@ -230,7 +230,7 @@ CCDO* CCDO::FindCDO(const std::string& Name)
 	if (iter == m_mapCDO.end())
 		return nullptr;
 
-	return iter->second.Get();
+	return iter->second;
 }
 
 CCDO* CCDO::FindCDOByFileName(const std::string& FileName)
@@ -308,7 +308,10 @@ CCDO* CCDO::CloneCDO(const size_t& hash_code)
 
 void CCDO::ClearAll()
 {
-	m_mapCDO.clear();
+	for (auto& iter : m_mapCDO)
+	{
+		SAFE_DELETE(iter.second);
+	}
 	m_mapResType.clear();
 	m_mapPreLoadObject.clear();
 }
@@ -318,7 +321,7 @@ CCDO* CCDO::FindPLO(const std::string& ClassName)
 {
 	auto iter = m_mapPreLoadObject.find(ClassName);
 	if (iter != m_mapPreLoadObject.end())
-		return iter->second;
+		return iter->second.Get();
 
 	return nullptr;
 }
@@ -337,7 +340,7 @@ CCDO* CCDO::ClonePLO(const std::string& ClassName)
 
 CCDO* CCDO::CreatePLO(const std::string& ClassName)
 {
-	CCDO* PLO = CCDO::CloneCDO(ClassName);
+	CSharedPtr<CCDO> PLO = CCDO::CloneCDO(ClassName);
 
 	if (!PLO)
 	{

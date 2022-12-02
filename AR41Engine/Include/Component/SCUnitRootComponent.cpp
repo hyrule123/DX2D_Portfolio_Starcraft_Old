@@ -96,7 +96,7 @@ void CSCUnitRootComponent::Save(FILE* File)
 	//SCUnitInfoDa* m_SCUnitInfo;
 	//float m_DirAngleUnit;	//유닛 스프라이트의 방향 1단위의 각도
 	//INT8 m_Direction;
-
+	
 
 
 }

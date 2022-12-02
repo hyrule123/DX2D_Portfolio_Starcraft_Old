@@ -183,12 +183,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component\SCUltraliskComponent.cpp" />
     <ClCompile Include="Component\UnitSpriteComponent.cpp" />
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="GameObject\Bullet.cpp" />
     <ClCompile Include="GameObject\Marine.cpp" />
     <ClCompile Include="GameObject\Monster.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
+    <ClCompile Include="GameObject\SCUnitInstance.cpp" />
     <ClCompile Include="GameObject\TileMapHolder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\EditorDefaultScene.cpp" />
@@ -215,6 +217,7 @@
     <ClCompile Include="Window\TransformWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component\SCUltraliskComponent.h" />
     <ClInclude Include="Component\UnitSpriteComponent.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="EditorManager.h" />
@@ -222,6 +225,7 @@
     <ClInclude Include="GameObject\Marine.h" />
     <ClInclude Include="GameObject\Monster.h" />
     <ClInclude Include="GameObject\Player2D.h" />
+    <ClInclude Include="GameObject\SCUnitInstance.h" />
     <ClInclude Include="GameObject\TileMapHolder.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\EditorDefaultScene.h" />

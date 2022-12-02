@@ -42,7 +42,8 @@ protected:
 
 //내부 변수 저장 및 탐색 용도
 private:
-	static std::unordered_map<std::string, CSharedPtr<CCDO>>	m_mapCDO;
+	//CDO는 게임 시작 때 생성되어 종료 때 일괄 제거되는 형태이므로 SharedPtr을 사용하지 않음
+	static std::unordered_map<std::string, CCDO*>	m_mapCDO;
 
 	//문자열 별로 리소스의 열거체 번호를 저장. 로드할 때 사용됨.
 	//EngineSetting에서 초기화 중. 새로운 리소스 타입을 등록할 시 반드시 여기에 바인딩해서 등록할것
@@ -76,7 +77,7 @@ public:
 //Preloaded Objects
 protected:
 	//사용준비가 완료된 오브젝트들 모음(Clone() -> Init() 해주면 사용 가능)
-	static std::unordered_map<std::string, CCDO*> m_mapPreLoadObject;
+	static std::unordered_map<std::string, CSharedPtr<CCDO>> m_mapPreLoadObject;
 
 public:
 	static class CCDO* FindPLO(const std::string& ClassName);
@@ -127,7 +128,7 @@ inline bool CCDO::CreateCDO()
 	if (m_mapCDO.find(N) != m_mapCDO.end())
 		return true;
 
-	CSharedPtr<T> CDO = new T;
+	CCDO* CDO = new T;
 
 	CDO->SetTypeID<T>();
 
@@ -135,7 +136,7 @@ inline bool CCDO::CreateCDO()
 
 	CCDO* Cast = static_cast<CCDO*>(CDO);
 
-	m_mapCDO.insert(std::make_pair(N, static_cast<CCDO*>(Cast)));
+	m_mapCDO.insert(std::make_pair(N, Cast));
 
 	return true;
 }
@@ -151,7 +152,7 @@ inline T* CCDO::FindCDO()
 	if (iter == m_mapCDO.end())
 		return nullptr;
 
-	return static_cast<T*>(iter->second.Get());
+	return static_cast<T*>(iter->second);
 }
 
 

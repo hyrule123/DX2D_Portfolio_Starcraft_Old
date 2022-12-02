@@ -135,6 +135,12 @@
     <ClCompile Include="GameObject\TileMapHolder.cpp">
       <Filter>04. GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Component\SCUltraliskComponent.cpp">
+      <Filter>04. GameObject\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\SCUnitInstance.cpp">
+      <Filter>04. GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -228,6 +234,12 @@
       <Filter>04. GameObject\01.Component</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\TileMapHolder.h">
+      <Filter>04. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SCUltraliskComponent.h">
+      <Filter>04. GameObject\01.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\SCUnitInstance.h">
       <Filter>04. GameObject</Filter>
     </ClInclude>
   </ItemGroup>

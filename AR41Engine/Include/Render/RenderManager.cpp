@@ -96,13 +96,11 @@ void CRenderManager::Render(float DeltaTime)
 			}
 
 
-			auto iterInstancing = m_RenderLayerList[i]->RenderInstancingMap.begin();
-			auto iterInstancingEnd = m_RenderLayerList[i]->RenderInstancingMap.end();
-			while (iterInstancing != iterInstancingEnd)
+			for (auto& iter : m_RenderLayerList[i]->RenderInstancingMap)
 			{
-				iterInstancing->second->RenderInstanced();
-				++iterInstancing;
+				iter.second->RenderInstanced();
 			}
+
 
 
 			if (m_RenderLayerList[i]->AlphaBlend)

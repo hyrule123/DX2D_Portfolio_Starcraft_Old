@@ -1,18 +1,16 @@
 #pragma once
-
-#include "Component\SpriteComponent.h"
-
-class CUnitSpriteComponent :
-    public CSpriteComponent
+#include "Component\SCUnitSpriteComponent.h"
+class CUltraliskComponent :
+    public CSCUnitSpriteComponent
 {
     friend class CGameObject;
     friend class CScene;
     friend class CCDO;
 
 protected:
-    CUnitSpriteComponent();
-    CUnitSpriteComponent(const CUnitSpriteComponent& component);
-    virtual ~CUnitSpriteComponent();
+    CUltraliskComponent();
+    CUltraliskComponent(const CUltraliskComponent& component);
+    virtual ~CUltraliskComponent();
 
 public:
     virtual void Start();
@@ -20,7 +18,7 @@ public:
     virtual void Update(float DeltaTime);
     virtual void PostUpdate(float DeltaTime);
     virtual void Render();
-    virtual CUnitSpriteComponent* Clone()    const;
+    virtual CUltraliskComponent* Clone()    const;
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);
 
@@ -28,6 +26,6 @@ public:
 
 protected:
     class CSCUnitRootComponent* m_UnitRoot;
-};
 
+};
 

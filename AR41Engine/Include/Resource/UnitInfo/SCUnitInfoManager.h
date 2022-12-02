@@ -9,7 +9,7 @@ public:
 	~CSCUnitInfoManager();
 
 private:
-	std::unordered_map<std::string, class SCUnitInfoData*> m_mapSCUnitInfo;
+	std::unordered_map<std::string, class CSCUnitInfoData*> m_mapSCUnitInfo;
 
 public:
 };
