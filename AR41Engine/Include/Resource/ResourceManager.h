@@ -2,13 +2,14 @@
 
 #include "../Scene/SceneManager.h"
 
-#include "../EngineInfo.h"
+#include "../SCUnitInfo.h"
 #include "Shader/ShaderManager.h"
 #include "Material/MaterialManager.h"
 #include "Animation/AnimationManager.h"
 #include "Sound/SoundManager.h"
 #include "Font/FontManager.h"
 #include "Map/MapManager.h"
+
 
 
 //새로운 리소스 타입을 추가할 경우 EResourceType에 값을 추가하고 리소스를 생성 시 이 값을 변경해줄것.
@@ -26,6 +27,7 @@ private:
 	CAnimationManager* m_AnimationManager;
 	CSoundManager* m_SoundManager;
 	CFontManager* m_FontManager;
+	class CSCUnitInfoManager* m_SCUnitInfoManager;
 
 	void AddSceneResource(class CGameResource* ResPtr);
 
@@ -189,6 +191,16 @@ public:	// ============================ Font ================================
 	CFontCollection* FindFontCollection(const std::string& Name);
 	void ReleaseFont(const std::string& Name);
 	void ReleaseFontCollection(const std::string& Name);
+
+
+
+public://========================UnitInfo=====================================
+	//유닛정보 등록
+	void AddUnitInfo(const std::string& Name, const SCUnitInfo& UnitInfo);
+
+	//유닛정보의 '복사본'을 리턴(직접 할당 해제 필요)
+	SCUnitInfo* GetCloneSCUnitInfo(const std::string& Name);
+
 
 
 public:

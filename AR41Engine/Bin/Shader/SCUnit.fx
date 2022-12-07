@@ -51,12 +51,18 @@ struct UnitInfo
     float TransformEmpty1;
 
     float3 MeshSize;
-	//플래그 - 한 유닛이 '개별적으로' 특정 텍스처를 출력해야 할지 여부를 저장
-    unsigned int SCUnitSBufferFlag;
 
+	//ESCUnit_SBufferFlag 플래그 - 한 유닛이 '개별적으로' 특정 텍스처를 출력해야 할지 여부를 저장
+    unsigned int SCUnit_SBufferFlag;
 
-	//애니메이션 정보를 저장. 그림자와가 있는 스프라이트는 메인 유닛 몸체와 정확히 일치함.
-	//그렇지 않을 경우 쉐이더를 통해서 해결을 봐야 할듯
+    float SelectedWidth;
+    float SelectedHeight;
+    float2 SelectedEmpty;
+    float2 SelectedStart;
+    float2 SelectedEnd;
+
+	//애니메이션 정보를 저장. 그림자가 있는 스프라이트는 메인 유닛 몸체와 정확히 일치함.
+	//그림자 스프라이트가 따로 없는데 그림자를 렌더링하는 유닛 스프라이트는 유닛 본체 스프라이트를 그대로 아래에 그려내는 식으로 렌더링함.
     float MainShadowWidth;
     float MainShadowHeight;
     float2 MainShadowEmpty;
@@ -82,21 +88,14 @@ struct UnitInfo
     float2 EffectStart;
     float2 EffectEnd;
 
-    //부스터 부분
-    float BoosterWidth;
-    float BoosterHeight;
-    float2 BoosterEmpty;
 
-    float2 BoosterStart;
-    float2 BoosterEnd;
+	//부스터/공격 부분
+    float AttackBoosterWidth;
+    float AttackBoosterHeight;
+    float2 AttackBoosterEmpty;
 
-	//공격 부분
-    float AttackWidth;
-    float AttackHeight;
-    float2 AttackEmpty;
-
-    float2 AttackStart;
-    float2 AttackEnd;
+    float2 AttackBoosterStart;
+    float2 AttackBoosterEnd;
 };
 #define SCUnitShadowRender 1 << 0
 
@@ -140,7 +139,7 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
     float2 Result = (float2) 0;
     
     //무조건 AtlasIndexed임을 상정하고 계산한다.
-    if (g_UnitInfoArray[input.InstanceID].SCUnitSBufferFlag & SCUnitMainXFlip)
+    if (g_UnitInfoArray[input.InstanceID].SCUnit_SBufferFlag & SCUnitMainXFlip)
     {
         if (output.UV.x == 0.f)
             output.UV.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;

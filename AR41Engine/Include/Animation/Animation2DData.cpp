@@ -13,7 +13,8 @@ CAnimation2DData::CAnimation2DData() :
 	m_PlayScale(0.f),
 	m_LoopMethod(EAnimLoopMethod::NoLoop),
 	m_Reverse(false),
-	m_EndFunctionCalled(false)
+	m_EndFunctionCalled(false),
+	m_MaterialTextureInfoIndexPreset(0)
 {
 }
 
@@ -29,7 +30,8 @@ CAnimation2DData::CAnimation2DData(const CAnimation2DData& Anim):
 	m_LoopMethod(Anim.m_LoopMethod),
 	m_Reverse(Anim.m_Reverse),
 	m_EndFunctionCalled(Anim.m_EndFunctionCalled),
-	m_SeriesAnimName(Anim.m_SeriesAnimName)
+	m_SeriesAnimName(Anim.m_SeriesAnimName),
+	m_MaterialTextureInfoIndexPreset(Anim.m_MaterialTextureInfoIndexPreset)
 {
 }
 
@@ -133,8 +135,8 @@ void CAnimation2DData::Update(float DeltaTime)
 
 		if (!m_SeriesAnimName.empty())
 			m_Owner->ChangeAnimation(m_SeriesAnimName);
-
 	}
+
 }
 
 void CAnimation2DData::SetSequence(CAnimationSequence2D* Seq, const std::string& Name,

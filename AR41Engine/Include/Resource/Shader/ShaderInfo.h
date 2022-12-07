@@ -1,41 +1,40 @@
 #pragma once
 
-#include "../../EngineInfo.h"
+#include "../../SCUnitInfo.h"
 
 
 
 //============ 스타크래프트 유닛 관련 열거체 및 구조체 ==============
 //공통적으로 한 유닛이 특정 레이어의 텍스처 정보를 '사용하고 있는지' 여부를 저장
-enum ESCUnit_CBufferRenderFlag : unsigned int
+
+
+struct SCUnit_CBufferStruct
 {
-	//그림자와 유닛 메인 몸체는 정확히 동일한 스프라이트를 사용하므로 그대로 출력
-	MainShadow = 1 << 0,
-	UseShadowSprite = 1 << 1,
-
-	//(있을 시)유닛의 상단 부분
-	Top = 1 << 2,
-
-	//유닛의 이펙트 부분
-	Effect = 1 << 3,
-
-	//유닛의 부스터 부분
-	Attack = 1 << 4,
-	Booster = 1 << 5
+	float Width;
+	float Height;
+	Vector2 Empty;
 };
 
 struct SCUnit_CBuffer
 {
 	//한 유닛이 '공통적으로' 어떤 텍스처 파트를 사용하고 있는지 등에 대한 정보를 저장
+	//ESCUnit_TextureLayerFlags를 사용
 	unsigned int RenderFlags;
+
+	//유닛별로 사용하는 텍스처의 전체 사이즈는 상수버퍼에 저장
+	//텍스처의 '출력 부분'은 구조화 버퍼에 저장
+	SCUnit_CBufferStruct SCUnit_CBufferTexSizeInfo[(int)ESCUnit_TextureLayer::End];
 };
+
+
 
 enum ESCUnit_SBufferFlag : unsigned int
 {
 	//SCUnitShadowXFlip = 1 << 1,
+	ESCUnitSelectedCircleRender = 1u << 0u,
 
 	ESCUnitMainRender = 1u << 5u,
 	ESCUnitMainXFlip = 1u << 6u,
-	ESCUnitCloaked = 1u << 7u,
 
 	ESCUnitTopRender = 1u << 10u,
 	ESCUnitTopXFlip = 1u << 11u,
@@ -46,12 +45,15 @@ enum ESCUnit_SBufferFlag : unsigned int
 	ESCUnitBoosterRender = 1u << 20u,
 	//SCUnitBoosterXFlip = 1 << 21,
 
-	ESCUnitAttackRender = 1u << 25u,
-	//SCUnitAttackXFlip = 1 << 26
-
 	ESCUnitFlagAll = UINT_MAX
 };
 	
+//텍스처의 '출력 부분'을 저장한다.
+struct SCUnit_SBufferStruct
+{
+	Vector2 Start;
+	Vector2 End;
+};
 
 struct SCUnit_SBuffer
 {
@@ -65,51 +67,8 @@ struct SCUnit_SBuffer
 	//ESCUnit_SBufferFlag 플래그 - 한 유닛이 '개별적으로' 특정 텍스처를 출력해야 할지 여부를 저장
 	unsigned int SCUnit_SBufferFlag;
 
-
-	//애니메이션 정보를 저장. 그림자가 있는 스프라이트는 메인 유닛 몸체와 정확히 일치함.
-	//그림자 스프라이트가 따로 없는데 그림자를 렌더링하는 유닛 스프라이트는 유닛 본체 스프라이트를 그대로 아래에 그려내는 식으로 렌더링함.
-	float MainShadowWidth;
-	float MainShadowHeight;
-	Vector2 MainShadowEmpty;
-
-	Vector2 MainShadowStart;
-	Vector2 MainShadowEnd;
-
-
-	//상단 부분
-	float TopWidth;
-	float TopHeight;
-	Vector2 TopEmpty;
-
-	Vector2 TopStart;
-	Vector2 TopEnd;
-
-
-	//이펙트 부분
-	float EffectWidth;
-	float EffectHeight;
-	Vector2 EffectEmpty;
-
-	Vector2 EffectStart;
-	Vector2 EffectEnd;
-
-
-	//부스터/공격 부분
-	float AttackBoosterWidth;
-	float AttackBoosterHeight;
-	Vector2 AttackBoosterEmpty;
-
-	Vector2 AttackBoosterStart;
-	Vector2 AttackBoosterEnd;
-
-
-	////공격 부분
-	//float AttackWidth;
-	//float AttackHeight;
-	//Vector2 AttackEmpty;
-
-	//Vector2 AttackStart;
-	//Vector2 AttackEnd;
+	//텍스처의 출력 부분은 구조화 버퍼에 저장
+	Animation2DFrameData SCUnit_SBufferTexFrameInfo[(int)ESCUnit_TextureLayer::End];
 };
 
 

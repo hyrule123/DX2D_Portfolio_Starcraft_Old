@@ -1,6 +1,8 @@
 
 #include "Transform.h"
 #include "../Resource/Shader/TransformConstantBuffer.h"
+
+#include "../Scene/SceneManager.h"
 #include "../Scene/Scene.h"
 #include "../Scene/CameraManager.h"
 #include "CameraComponent.h"

@@ -44,13 +44,14 @@ public:
 	ID3D11Buffer* GetBuffer()	const;
 	void AddBuffer(const T& BufferData);
 
-	void UpdateBuffer(void* Data, int Count);
+	void UpdateBuffer();
 	void SetShader();
 	void ResetShader();
 	void SetShader(int Register, int StructuredBufferShaderType);
 	void ResetShader(int Register, int StructuredBufferShaderType);
 	void CopyData(void* Data);
 	void CopyResource(CSharedStructuredBuffer* Buffer);
+	inline int GetInstancingBufferCount() const;
 };
 
 
@@ -219,12 +220,13 @@ inline ID3D11Buffer* CSharedStructuredBuffer<T>::GetBuffer()	const
 template<typename T>
 inline void CSharedStructuredBuffer<T>::AddBuffer(const T& BufferData)
 {
-	m_InstancingBufferQueue.push_back(T);
+	m_InstancingBufferQueue[m_InstancingBufferCount] = BufferData;
+	++m_InstancingBufferCount;
 }
 
 
 template <typename T>
-void CSharedStructuredBuffer<T>::UpdateBuffer(void* Data, int Count)
+void CSharedStructuredBuffer<T>::UpdateBuffer()
 {
 	if (!m_Dynamic)
 		return;
@@ -234,7 +236,7 @@ void CSharedStructuredBuffer<T>::UpdateBuffer(void* Data, int Count)
 	CDevice::GetInst()->GetContext()->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD,
 		0, &Map);
 
-	memcpy(Map.pData, Data, m_Size * Count);
+	memcpy(Map.pData, m_InstancingBufferQueue.data(), m_Size * m_Count);
 
 	CDevice::GetInst()->GetContext()->Unmap(m_Buffer, 0);
 }
@@ -370,6 +372,8 @@ void CSharedStructuredBuffer<T>::ResetShader(int Register, int StructuredBufferS
 		ID3D11UnorderedAccessView* UAV = nullptr;
 		CDevice::GetInst()->GetContext()->CSSetUnorderedAccessViews(Register, 1, &UAV, &Count);
 	}
+
+	m_InstancingBufferCount = 0;
 }
 
 template <typename T>
@@ -389,4 +393,10 @@ template <typename T>
 void CSharedStructuredBuffer<T>::CopyResource(CSharedStructuredBuffer* Buffer)
 {
 	CDevice::GetInst()->GetContext()->CopyResource(Buffer->m_Buffer, m_Buffer);
+}
+
+template<typename T>
+inline int CSharedStructuredBuffer<T>::GetInstancingBufferCount() const
+{
+	return m_InstancingBufferCount;
 }

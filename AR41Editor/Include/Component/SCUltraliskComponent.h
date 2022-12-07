@@ -1,5 +1,7 @@
 #pragma once
 #include "Component\SCUnitSpriteComponent.h"
+
+
 class CSCUltraliskComponent :
     public CSCUnitSpriteComponent
 {

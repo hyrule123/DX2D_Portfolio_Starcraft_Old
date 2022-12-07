@@ -55,8 +55,13 @@ private:
 	EAnimLoopMethod	m_LoopMethod;
 	bool	m_Reverse;
 	bool	m_EndFunctionCalled;
+
 	std::function<void()>	m_EndFunction;
 	std::unordered_map<int, Animation2DNotify*>	m_mapNotify;
+
+	//재질의 원하는 텍스처 정보 배열 인덱스에 애니메이션에 사용하는 텍스처를 삽입함.
+	//Material에서 미리 해당 텍스처 번호까지 추가해놓지 않으면 등록 안되므로 주의할 것
+	int		m_MaterialTextureInfoIndexPreset;
 
 	//이 애니메이션의 재생이 끝나면 이어서 재생될 애니메이션의 이름(등록되어있어야 함)
 	std::string m_SeriesAnimName;
@@ -77,6 +82,10 @@ public:
 	inline void SetPlayTime(float PlayTime);
 	inline void SetPlayScale(float PlayScale);
 	inline void SetReverse(bool Reverse);
+
+	inline void SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset);
+	inline int GetMaterialTextureInfoPreset() const;
+
 
 	inline const Animation2DFrameData* GetSCUnitFrameData(int Dir);
 	
@@ -189,4 +198,14 @@ void CAnimation2DData::AddNotify(const std::string& Name, float Time, T* Obj, vo
 	Notify->vecFunction.push_back(std::bind(Func, Obj));
 
 	m_mapNotify.insert(Notify->Frame, Notify);
+}
+
+inline void CAnimation2DData::SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset)
+{
+	m_MaterialTextureInfoIndexPreset = MaterialTextureInfoIndexPreset;
+}
+
+inline int CAnimation2DData::GetMaterialTextureInfoPreset() const
+{
+	return m_MaterialTextureInfoIndexPreset;
 }

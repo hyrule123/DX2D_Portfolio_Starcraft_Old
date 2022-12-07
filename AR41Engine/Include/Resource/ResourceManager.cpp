@@ -16,6 +16,8 @@
 #include "Texture/Texture.h"
 #include "Animation/AnimationSequence2D.h"
 
+#include "SCUnitInfo/SCUnitInfoManager.h"
+
 
 DEFINITION_SINGLE(CResourceManager)
 
@@ -25,6 +27,7 @@ CResourceManager::CResourceManager()
 
 CResourceManager::~CResourceManager()
 {
+	SAFE_DELETE(m_SCUnitInfoManager);
 	SAFE_DELETE(CUIProgressBar::m_ProgressBarCBuffer);
 	SAFE_DELETE(CUIWidget::m_CBuffer);
 	SAFE_DELETE(CUIWidget::m_AnimCBuffer);
@@ -89,6 +92,8 @@ bool CResourceManager::Init()
 	m_FontManager = new CFontManager;
 
 	m_FontManager->Init();
+
+	m_SCUnitInfoManager = new CSCUnitInfoManager();
 
 	return true;
 }
@@ -644,6 +649,16 @@ void CResourceManager::ReleaseFont(const std::string& Name)
 void CResourceManager::ReleaseFontCollection(const std::string& Name)
 {
 	m_FontManager->ReleaseFontCollection(Name);
+}
+
+void CResourceManager::AddUnitInfo(const std::string& Name, const SCUnitInfo& UnitInfo)
+{
+	m_SCUnitInfoManager->AddUnitInfo(Name, UnitInfo);
+}
+
+SCUnitInfo* CResourceManager::GetCloneSCUnitInfo(const std::string& Name)
+{
+	return m_SCUnitInfoManager->GetCloneSCUnitInfo(Name);
 }
 
 bool CResourceManager::LoadMapDataFromFile(const TCHAR* FileName, const char* PathName)

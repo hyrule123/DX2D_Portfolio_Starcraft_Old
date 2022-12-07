@@ -2,6 +2,9 @@
 
 #include "EngineInfo.h"
 
+
+#define SCUnitNameLenMax 64
+
 //================== 유닛 관련 정보를 저장하는 구조체들 ======================
 
 
@@ -12,30 +15,29 @@ enum class ESCUnit_Races
 	Protoss
 };
 
-//실제 레이어는 이렇게 구성되고,
-enum class ESCUnit_TextureLayer : UINT8
+
+//실제 레이어는 이렇게 구성,
+enum class ESCUnit_TextureLayerFlag : UINT8
 {
 	Selected = 1 << 0,
-	MainWithShadow = 1 << 1,
-	MainOnly = 1 << 2,
-	Top = 1 << 3,
-	Effect = 1 << 4,
-	Attack = 1 << 5,
-	Boost = 1 << 6,
-	Count = (UINT8)7,
-	All = 0b11111111,
-
+	Main = 1 << 1,
+	Top = 1 << 2,
+	Effect = 1 << 3,
+	Booster = 1 << 4,
+	UseShadowSprite = 1 << 5,
+	FlagCount = 6,
+	All = 0b11111111
 };
 
-//애니메이션에는 이렇게 겹쳐서 들어감.
-enum ESCUnit_AnimLayer
+//이건 배열에 사용할 용도
+enum class ESCUnit_TextureLayer : UINT8
 {
-	AnimLayer_Selected,
-	AnimLayer_Shadow_Main,
-	AnimLayer_Top,
-	AnimLayer_Effect,
-	AnimLayer_Attack_Boost,
-	AnimLayer_Max
+	Selected,
+	MainShadow,
+	Top,
+	Effect,
+	Booster,
+	End
 };
 
 enum class ESCUnit_Actions
@@ -113,36 +115,30 @@ enum class ESCUnit_UnitSpecFlags : UINT32
 	Addon = 1 << 19,
 	LiftAble = 1 << 20,
 	CreateUnitAble = 1 << 21
-
 };
 
-struct SCUnit_Anim_LayerNameBind
-{
-	ESCUnit_AnimLayer AnimLayer;
-	std::string AnimName;
-};
-
+//Only POD
 struct SCUnitInfo
 {
-	std::string UnitName;
+	char UnitName[SCUnitNameLenMax];
 	int MaxHP;
 	int Shield;
 	UINT16 DefaultArmor;
-	std::string ArmorName;
+	char ArmorName[SCUnitNameLenMax];
 	UINT8 ArmorPerUpgrade;
 
 	UINT16 CostMineral;
 	UINT16 CostGas;
 	UINT16 BuildTime;
 
-	
+
 	ESCUnit_AttackType AttackType;
 
-	std::string WeaponSurfaceName;
+	char WeaponSurfaceName[SCUnitNameLenMax];
 	UINT16 WeaponSurfaceDmg;
 	UINT8 WeaponSurfacePerUpgrade;
 
-	std::string WeaponAirName;
+	char WeaponAirName[SCUnitNameLenMax];
 	UINT16 WeaponAirDamage;
 	UINT8 WeaponAirPerUpgrade;
 
@@ -154,23 +150,24 @@ struct SCUnitInfo
 	UINT8 Sight;
 
 	ESCUnit_UnitSpecFlags UnitSpecFlags;
-	
+
 	ESCUnit_Surface isSurface;
-	
+
 	SCUnit_ColliderSize UnitCollSize;
 	float MoveSpeed;
-	
+
 
 	//사용하는 텍스처 레이어 지정. 
-	//ESCUnit_TextureLayer 참고할것
+	//ESCUnit_TextureLayerFlag 참고할것
 	UINT8 UsingTextureLayerFlags;
-	std::string AnimationNames[(int)ESCUnit_Actions::End];
+	char AnimationNames[(int)ESCUnit_Actions::End][SCUnitNameLenMax];
 
-	//사운드도 추가해야함
+	//나중에 사운드도 추가할것
 
 
-	SCUnitInfo():
-		Shield(INT_MIN)
-	{}
+	SCUnitInfo()
+	{
+		memset(this, 0, sizeof(*this));
+	}
 };
 //============================================================

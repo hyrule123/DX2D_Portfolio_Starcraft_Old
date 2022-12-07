@@ -12,6 +12,7 @@
 #include "../GameObject/Bullet.h"
 #include "../GameObject/TileMapHolder.h"
 #include "../Component/SCUltraliskComponent.h"
+#include "../GameObject/SCUnitInstance.h"
 
 #include "../UI/StartSceneUI.h"
 #include "Scene/Scene.h"
@@ -49,6 +50,7 @@ void CDefaultSetting::CreateCDO()
     CCDO::CreateCDO<CBullet>();
     //CCDO::CreateCDO<CMarine>();
     CCDO::CreateCDO<CTileMapHolder>();
+    CCDO::CreateCDO<CSCUnitInstance>();
 
     CCDO::CreateCDO<CSCUltraliskComponent>();
 

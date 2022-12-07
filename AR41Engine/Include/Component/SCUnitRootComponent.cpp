@@ -71,8 +71,6 @@ void CSCUnitRootComponent::Update(float DeltaTime)
 void CSCUnitRootComponent::PostUpdate(float DeltaTime)
 {
 	CSceneComponent::PostUpdate(DeltaTime);
-
-
 }
 
 void CSCUnitRootComponent::Render()

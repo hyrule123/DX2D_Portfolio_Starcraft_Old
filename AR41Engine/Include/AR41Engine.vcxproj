@@ -110,6 +110,8 @@
     <ClInclude Include="Resource\Mesh\SpriteMesh.h" />
     <ClInclude Include="Resource\GameResource.h" />
     <ClInclude Include="Resource\ResourceManager.h" />
+    <ClInclude Include="Resource\SCUnitInfo\SCUnitInfoData.h" />
+    <ClInclude Include="Resource\SCUnitInfo\SCUnitInfoManager.h" />
     <ClInclude Include="Resource\Shader\Animation2DConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ColliderConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ColliderImageShader.h" />
@@ -141,8 +143,6 @@
     <ClInclude Include="Resource\Texture\DirectXTex.h" />
     <ClInclude Include="Resource\Texture\Texture.h" />
     <ClInclude Include="Resource\Texture\TextureManager.h" />
-    <ClInclude Include="Resource\UnitInfo\SCUnitInfoData.h" />
-    <ClInclude Include="Resource\UnitInfo\SCUnitInfoManager.h" />
     <ClInclude Include="Scene\CameraManager.h" />
     <ClInclude Include="Scene\CollisionSection2D.h" />
     <ClInclude Include="Scene\CollisionSection3D.h" />
@@ -250,6 +250,8 @@
     <ClCompile Include="Resource\Mesh\SpriteMesh.cpp" />
     <ClCompile Include="Resource\GameResource.cpp" />
     <ClCompile Include="Resource\ResourceManager.cpp" />
+    <ClCompile Include="Resource\SCUnitInfo\SCUnitInfoData.cpp" />
+    <ClCompile Include="Resource\SCUnitInfo\SCUnitInfoManager.cpp" />
     <ClCompile Include="Resource\Shader\Animation2DConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ColliderConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ColliderImageShader.cpp" />
@@ -278,8 +280,6 @@
     <ClCompile Include="Resource\Sound\SoundManager.cpp" />
     <ClCompile Include="Resource\Texture\Texture.cpp" />
     <ClCompile Include="Resource\Texture\TextureManager.cpp" />
-    <ClCompile Include="Resource\UnitInfo\SCUnitInfoData.cpp" />
-    <ClCompile Include="Resource\UnitInfo\SCUnitInfoManager.cpp" />
     <ClCompile Include="Scene\CameraManager.cpp" />
     <ClCompile Include="Scene\CollisionSection2D.cpp" />
     <ClCompile Include="Scene\CollisionSection3D.cpp" />

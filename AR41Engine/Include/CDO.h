@@ -39,6 +39,9 @@ protected:
 	//std::vector<RequiredComponent>* m_vecRequiredComponent;
 	EObjStatus m_ObjStatus;
 
+public:
+	inline EObjStatus GetObjStatus() const;
+
 
 //내부 변수 저장 및 탐색 용도
 private:
@@ -166,4 +169,9 @@ template<typename T>
 inline T* CCDO::CreatePLO()
 {
 	return static_cast<T*>(CreatePLO(typeid(T).name()));
+}
+
+inline EObjStatus CCDO::GetObjStatus() const
+{
+	return m_ObjStatus;
 }

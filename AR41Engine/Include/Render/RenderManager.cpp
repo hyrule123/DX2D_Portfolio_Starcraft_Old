@@ -208,6 +208,9 @@ void CRenderManager::AddRenderList(CSceneComponent* Component, bool UseInstancin
 
 void CRenderManager::AddInstancingMap(CSceneComponent* Component)
 {
+	if (Component->GetObjStatus() != EObjStatus::PLO)
+		return;
+
 	size_t size = m_RenderLayerList.size();
 
 	const std::string& RenderLayerName = Component->GetRenderLayerName();
@@ -226,7 +229,10 @@ void CRenderManager::AddInstancingMap(CSceneComponent* Component)
 			//추가되어있지 않으면 인스턴싱 맵에 추가한다.
 			//인스턴싱의 경우 딱 하나의 클래스 인스턴스 주소만 가지고있으면 됨.
 			//PLO 리스트에 저장된 주소를 사용하면 될듯.(PLO는 씬이 변경되기 전까지는 유지되므로)
-			CSceneComponent* PLO = static_cast<CSceneComponent*>(CCDO::FindPLO(TypeName));
+			//CSceneComponent* PLO = static_cast<CSceneComponent*>(CCDO::FindPLO(TypeName));
+
+			//여기서 등록과정을 거치는 컴포넌트는 PLO 상태의 컴포넌트이다.
+			CSceneComponent* PLO = Component;
 			m_RenderLayerList[i]->RenderInstancingMap.insert(std::make_pair(Component->GetTypeName(), PLO));
 			break;
 		}

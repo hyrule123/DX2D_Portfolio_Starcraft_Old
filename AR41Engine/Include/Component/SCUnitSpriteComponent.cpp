@@ -10,6 +10,7 @@
 #include "../Resource/Mesh/Mesh.h"
 #include "../Animation/Animation2D.h"
 
+
 //상수버퍼, 구조화버퍼
 #include "../Resource/Shader/SCUnitConstantBuffer.h"
 #include "../Resource/Shader/StructuredBuffer.h"
@@ -20,50 +21,77 @@
 //상위 컴포넌트
 #include "SCUnitRootComponent.h"
 
+
+
+
 CSCUnitSpriteComponent::CSCUnitSpriteComponent():
+	m_CBuffer(),
 	m_PrivateSBuffer{},
 	m_PrevAction(ESCUnit_Actions::None),
 	m_CurrentAction(ESCUnit_Actions::Birth),
-	m_AnimationUnitLayer{},
+	m_vecAnimLayer{},
 	m_SCUnitRoot(),
-	m_Selected()
+	m_Selected(),
+	m_SCUnitInfo(),
+	m_vecTexLayer{},
+	m_vecActionAnimBind{}
+	//m_TexLayerIdxFlagBinding{}
 {
 	m_ComponentTypeName = "SCUnitSpriteComponent";
 }
 
 CSCUnitSpriteComponent::CSCUnitSpriteComponent(const CSCUnitSpriteComponent& component) :
 	CSpriteComponent(component),
+	m_CBuffer(component.m_CBuffer),
 	m_SBufferInfo(component.m_SBufferInfo),
 	m_PrivateSBuffer(component.m_PrivateSBuffer),
-	m_mapUnitActions(component.m_mapUnitActions),
 	m_PrevAction(component.m_PrevAction),
-	m_CurrentAction(component.m_CurrentAction)
+	m_CurrentAction(component.m_CurrentAction),
+	m_SCUnitInfo(component.m_SCUnitInfo)
 {
-	m_Material = component.m_Material->Clone();
+	if(component.m_MaterialSCUnit)
+		m_MaterialSCUnit = component.m_MaterialSCUnit->Clone();
 
-	for (int i = 0; i < AnimLayer_Max; ++i)
+	for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
 	{
-		if(m_AnimationUnitLayer[i])
-			m_AnimationUnitLayer[i] = component.m_AnimationUnitLayer[i]->Clone();
+		if(component.m_vecAnimLayer[i])
+			m_vecAnimLayer[i] = component.m_vecAnimLayer[i]->Clone();
 	}
+
+	for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
+	{
+		m_vecTexLayer[i] = component.m_vecTexLayer[i];
+	}
+
+	size_t ArrSize = sizeof(SCUnit_ActionAnimBind) * (size_t)ESCUnit_Actions::End;
+	memcpy_s(m_vecActionAnimBind, ArrSize, component.m_vecActionAnimBind, ArrSize);
+
+	/*size_t size = sizeof(ESCUnit_TextureLayerFlag) * (size_t)(int)ESCUnit_TextureLayer::End;
+	memcpy_s(m_TexLayerIdxFlagBinding, size, component.m_TexLayerIdxFlagBinding, size);*/
 }
 
 CSCUnitSpriteComponent::~CSCUnitSpriteComponent()
 {
-	for (int i = 0; i < AnimLayer_Max; ++i)
+	for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
 	{
-		SAFE_DELETE(m_AnimationUnitLayer[i]);
+		SAFE_DELETE(m_vecAnimLayer[i]);
 	}
 
+	if (m_ObjStatus == EObjStatus::PLO)
+		SAFE_DELETE(m_SCUnitInfo);
 }
 
 bool CSCUnitSpriteComponent::CDOPreload()
 {
+	//만약 자식 클래스에서 유닛정보를 등록해놓지 않았다면 바로 return false
+	if (!m_SCUnitInfo)
+		return false;
+
 	if (!CSceneComponent::CDOPreload())
 		return false;
 
-	if (!m_SCUnitRoot)
-		assert(0);
+	//파일 이름 = 유닛 정보로 일단 설정 -> 일단 시스템 구축 전까지는 주석 처리
+	//SetSCUnitInfo(m_FileName);
 
 	//메쉬 등록
 	m_Mesh = CResourceManager::GetInst()->FindMesh("CenterUVRect");
@@ -71,59 +99,61 @@ bool CSCUnitSpriteComponent::CDOPreload()
 	m_Transform->Set2D(true);
 
 	//Material 생성 및 등록
-	m_Material = CResourceManager::GetInst()->CreateMaterial<CMaterial>("SCUnitMaterial");
+	m_MaterialSCUnit = CResourceManager::GetInst()->CreateMaterial<CMaterial>("SCUnitMaterial");
 
 	//일단 단일 재질을 사용할 예정. PrimitiveComponent의 vecMaterial은 사용 안할 것임
 	m_vecMaterial.clear();
 
 	//재질에 쉐이더 지정
-	m_Material->SetShader("SCUnitShader");
+	m_MaterialSCUnit->SetShader("SCUnitShader");
 
 	//상수버퍼, 구조화버퍼 생성
 	m_CBuffer = std::make_shared<CSCUnitConstantBuffer>();
 	m_CBuffer->Init();
 
 
+
 	//플래그 순회하면서 참인것끼리 비교하고 유닛의 레이어 정보를 상수버퍼에 등록.
-	//사용하는 레이어의 애니메이션 레이어를 동적할당하고 초기화
-	//상속받는 클래스에서 반드시 주인 컴포넌트를 등록해놔야 함
-	if (!m_SCUnitRoot)
-		assert(0);
-
-	SCUnitInfo* UnitInfo = m_SCUnitRoot->GetSCUnitInfo();
-
-	for (UINT8 i = 0; i < (UINT8)ESCUnit_TextureLayer::Count; ++i)
+	for (UINT8 i = 0; i < (UINT8)ESCUnit_TextureLayerFlag::FlagCount; ++i)
 	{
 		UINT8 Flag = (UINT8)1 << i;
-		if (UnitInfo->UsingTextureLayerFlags & Flag)
+		if (m_SCUnitInfo->UsingTextureLayerFlags & Flag)
 		{
-			ESCUnit_TextureLayer TexLayer = (ESCUnit_TextureLayer)(Flag);
+			ESCUnit_TextureLayerFlag TexLayer = (ESCUnit_TextureLayerFlag)(Flag);
 
 			switch (TexLayer)
 			{
-			case ESCUnit_TextureLayer::MainWithShadow:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::UseShadowSprite);
-			case ESCUnit_TextureLayer::MainOnly:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-				CreateNewAnimLayer(ESCUnit_AnimLayer::AnimLayer_Shadow_Main);
+			case ESCUnit_TextureLayerFlag::Selected:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Selected);
+				CreateNewAnimLayer(ESCUnit_TextureLayer::Selected);
+				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Selected, (int)EShaderBufferType::Pixel);
+				break;
+			case ESCUnit_TextureLayerFlag::Main:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Main);
+				CreateNewAnimLayer(ESCUnit_TextureLayer::MainShadow);
+				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::MainShadow, (int)EShaderBufferType::Pixel);
 				break;
 
 
-			case ESCUnit_TextureLayer::Top:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::Top);
-				CreateNewAnimLayer(ESCUnit_AnimLayer::AnimLayer_Top);
+			case ESCUnit_TextureLayerFlag::Top:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Top);
+				CreateNewAnimLayer(ESCUnit_TextureLayer::Top);
+				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Top, (int)EShaderBufferType::Pixel);
 				break;
-			case ESCUnit_TextureLayer::Effect:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::Effect);
-				CreateNewAnimLayer(ESCUnit_AnimLayer::AnimLayer_Effect);
+			case ESCUnit_TextureLayerFlag::Effect:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Effect);
+				CreateNewAnimLayer(ESCUnit_TextureLayer::Effect);
+				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Effect, (int)EShaderBufferType::Pixel);
 				break;
 
+			case ESCUnit_TextureLayerFlag::Booster:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Booster);
+				CreateNewAnimLayer(ESCUnit_TextureLayer::Booster);
+				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Booster, (int)EShaderBufferType::Pixel);
+				break;
 
-			case ESCUnit_TextureLayer::Attack:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::Attack);
-			case ESCUnit_TextureLayer::Boost:
-				m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::Booster);
-				CreateNewAnimLayer(ESCUnit_AnimLayer::AnimLayer_Attack_Boost);
+			case ESCUnit_TextureLayerFlag::UseShadowSprite:
+				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::UseShadowSprite);
 				break;
 			default:
 				break;
@@ -131,8 +161,16 @@ bool CSCUnitSpriteComponent::CDOPreload()
 		}
 	}
 
-	
 
+	for (int i = 0; i < (int)ESCUnit_Actions::End; ++i)
+	{
+		//비어있지 않을 경우 해당 애니메이션을 등록
+		if (0 != strlen((m_SCUnitInfo->AnimationNames[i])))
+		{
+			AddActionAnimation((ESCUnit_Actions)i, m_SCUnitInfo->AnimationNames[i]);
+		}
+	}
+	
 
 	/*	
 	m_SBuffer = new CStructuredBuffer;
@@ -140,13 +178,11 @@ bool CSCUnitSpriteComponent::CDOPreload()
 	*/
 
 	m_SBufferInfo = new CSharedStructuredBuffer<SCUnit_SBuffer>;
-	m_SBufferInfo->Init("SCUnit_SBuffer", sizeof(SCUnit_SBuffer), 400, true, (int)EShaderBufferType::Vertex);
+
+	m_SBufferInfo->Init("SCUnit_SBuffer", 400, 6, (int)EShaderBufferType::Vertex);
 
 	//인스턴싱으로 유닛을 출력하려면 딱 한번만 구조화버퍼에 등록해놓으면 됨
 	CRenderManager::GetInst()->AddInstancingMap(this);
-
-	//액션에 대한 애니메이션 이름을 저장한다.
-	m_mapUnitActions = std::make_shared<std::unordered_map<ESCUnit_Actions, SCUnit_Anim_LayerNameBind>>();
 
 
 	return true;
@@ -156,10 +192,14 @@ void CSCUnitSpriteComponent::Start()
 {
 	CSceneComponent::Start();
 
-	for (int i = 0; i < AnimLayer_Max; ++i)
-	{
-		m_AnimationUnitLayer[i]->Start();
-	}
+#ifdef _DEBUG
+	if (!m_Parent)
+		assert(0);
+
+	m_SCUnitRoot = static_cast<CSCUnitRootComponent*>(m_Parent);
+#endif
+
+	m_vecAnimLayer[(int)ESCUnit_TextureLayer::MainShadow]->Start();
 
 	CRenderManager::GetInst()->AddRenderList(this);
 }
@@ -169,9 +209,10 @@ bool CSCUnitSpriteComponent::Init()
 	if (!CSceneComponent::Init())
 		return false;
 
-	for (int i = 0; i < AnimLayer_Max; ++i)
+	for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
 	{
-		m_AnimationUnitLayer[i]->SetOwner(this);
+		if(m_vecAnimLayer[i])
+			m_vecAnimLayer[i]->SetOwner(this);
 	}
 
 	return true;
@@ -179,6 +220,9 @@ bool CSCUnitSpriteComponent::Init()
 
 void CSCUnitSpriteComponent::Update(float DeltaTime)
 {
+	//매 사이클 마다 개인 구조화 버퍼를 초기화
+	m_PrivateSBuffer.SCUnit_SBufferFlag = (unsigned int)0;
+
 	CSceneComponent::Update(DeltaTime);
 
 	m_PrevAction = m_CurrentAction;
@@ -186,11 +230,26 @@ void CSCUnitSpriteComponent::Update(float DeltaTime)
 	//애니메이션 업데이트 전 현재 액션을 계산
 	ComputeCurrentAction();
 
+	for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
+	{
+		if (m_vecAnimLayer[i])
+		{
+			m_vecAnimLayer[i]->Update(DeltaTime);
 
+			const Animation2DFrameData* Data =
+				m_vecAnimLayer[i]->GetCurrentAnimationFrameDataSCUnit(m_SCUnitRoot->GetDirection());
 
-
-	//if (m_Animation)
-	//	m_Animation->Update(DeltaTime);
+			//출력할 애니메이션이 있는지 확인하고 있을 경우 그려내야할 텍스처 번호를 등록
+			//없으면 그냥 지나가면됨
+			if (Data)
+			{
+				//저장된 텍스처 프리셋만큼 비트를 왼쪽으로 이동시킨 값으로 비트플래그를 켜주면 된다.
+				m_PrivateSBuffer.SCUnit_SBufferFlag |= 1 << i;
+				m_PrivateSBuffer.SCUnit_SBufferTexFrameInfo[i].Start = Data->Start;
+				m_PrivateSBuffer.SCUnit_SBufferTexFrameInfo[i].End = Data->End;
+			}
+		}
+	}
 }
 
 void CSCUnitSpriteComponent::PostUpdate(float DeltaTime)
@@ -211,17 +270,7 @@ void CSCUnitSpriteComponent::PostUpdate(float DeltaTime)
 	m_PrivateSBuffer.MeshSize = m_Transform->GetMeshSize();
 
 
-	//현재 액션에 따라서 렌더플래그 계산(임시)
-	TurnOnSBufferFlag(ESCUnitFlagAll);
-}
-
-void CSCUnitSpriteComponent::Render()
-{
-	CComponent::Render();
-
-	//매번 렌더플래그를 초기화
-	m_PrivateSBuffer.SCUnit_SBufferFlag = 0u;
-
+	//방향에 따라서 회전 처리
 	unsigned int RenderFlag = m_CBuffer->GetRenderFlags();
 	int Dir = (int)m_SCUnitRoot->GetDirection();
 	if (Dir > 16)
@@ -230,118 +279,45 @@ void CSCUnitSpriteComponent::Render()
 		m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitMainXFlip;
 	}
 
+	//현재 액션에 따라서 렌더플래그 계산(임시)
+	//TurnOnSBufferFlag(ESCUnitFlagAll);
+}
 
-	//구조화 버퍼 채우기 과정
-	for (int i = 0; i < AnimLayer_Max; ++i)
-	{
-		switch (i)
-		{
-		case AnimLayer_Shadow_Main:
-			if (RenderFlag & ESCUnit_CBufferRenderFlag::MainShadow)
-			{
-				CAnimation2D* AnimLayer = m_AnimationUnitLayer[AnimLayer_Shadow_Main];
+void CSCUnitSpriteComponent::Render()
+{
+	CComponent::Render();
 
-				if (AnimLayer->IsPlaying())
-				{
-					m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitMainRender;
+	
+	//개인 구조화 버퍼 데이터를 등록
+	m_SBufferInfo->AddBuffer(m_PrivateSBuffer);
 
-					const Animation2DFrameData* Data = AnimLayer->GetCurrentAnimationFrameDataSCUnit(Dir);
-					if (!Data)
-						break;
+	//매번 렌더플래그를 초기화(Update()로 옮김)
+	//m_PrivateSBuffer.SCUnit_SBufferFlag = 0u;
 
 
+	////구조화 버퍼 채우기 과정(현재 Update로 옮김)
+	//for (int i = 0; i < (int)ESCUnit_TextureLayer::End; ++i)
+	//{
+	//	CAnimation2D* AnimLayer = m_vecAnimLayer[i];
 
-					m_PrivateSBuffer.MainShadowStart = Data->Start;
-					m_PrivateSBuffer.MainShadowEnd = Data->End;
+	//	if (AnimLayer->IsPlaying())
+	//	{
+	//		m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitMainRender;
 
-					CTexture* Tex = AnimLayer->GetCurrentAnimation()->GetTexture();
-					m_PrivateSBuffer.MainShadowWidth = (float)Tex->GetWidth();
-					m_PrivateSBuffer.MainShadowHeight = (float)Tex->GetHeight();
-				}
-			}
-			break;
-		case AnimLayer_Top:
-			if (RenderFlag & ESCUnit_CBufferRenderFlag::Top)
-			{
-				CAnimation2D* AnimLayer = m_AnimationUnitLayer[AnimLayer_Top];
+	//		const Animation2DFrameData* Data = AnimLayer->GetCurrentAnimationFrameDataSCUnit(Dir);
+	//		if (!Data)
+	//			break;
 
-				if (AnimLayer->IsPlaying())
-				{
-					m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitTopRender;
-
-					const Animation2DFrameData* Data = AnimLayer->GetCurrentAnimationFrameDataSCUnit(Dir);
-					if (!Data)
-						break;
-
-					m_PrivateSBuffer.TopStart = Data->Start;
-					m_PrivateSBuffer.TopEnd = Data->End;
-
-					CTexture* Tex = AnimLayer->GetCurrentAnimation()->GetTexture();
-					m_PrivateSBuffer.TopWidth = (float)Tex->GetWidth();
-					m_PrivateSBuffer.TopHeight = (float)Tex->GetHeight();
-				}
-			}
-			break;
-		case AnimLayer_Effect:
-			if (RenderFlag & ESCUnit_CBufferRenderFlag::Effect)
-			{
-				CAnimation2D* AnimLayer = m_AnimationUnitLayer[Effect];
-
-				if (AnimLayer->IsPlaying())
-				{
-					m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitEffectRender;
-
-					const Animation2DFrameData* Data = AnimLayer->GetCurrentAnimationFrameDataSCUnit(Dir);
-					if (!Data)
-						break;
-
-					m_PrivateSBuffer.EffectStart = Data->Start;
-					m_PrivateSBuffer.EffectEnd = Data->End;
-
-					CTexture* Tex = AnimLayer->GetCurrentAnimation()->GetTexture();
-					m_PrivateSBuffer.EffectWidth = (float)Tex->GetWidth();
-					m_PrivateSBuffer.EffectHeight = (float)Tex->GetHeight();
-				}
-			}
-			break;
-		case AnimLayer_Attack_Boost:
-			if (RenderFlag & (ESCUnit_CBufferRenderFlag::Attack | ESCUnit_CBufferRenderFlag::Booster))
-			{
-
-				CAnimation2D* AnimLayer = m_AnimationUnitLayer[AnimLayer_Attack_Boost];
-
-				if (AnimLayer->IsPlaying())
-				{
-					if (RenderFlag & (ESCUnit_CBufferRenderFlag::Attack))
-						m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitAttackRender;
-					if (RenderFlag & (ESCUnit_CBufferRenderFlag::Booster))
-						m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitBoosterRender;
-
-					const Animation2DFrameData* Data = AnimLayer->GetCurrentAnimationFrameDataSCUnit(Dir);
-					if (!Data)
-						break;
-
-					m_PrivateSBuffer.AttackBoosterStart = Data->Start;
-					m_PrivateSBuffer.AttackBoosterEnd = Data->End;
-
-					CTexture* Tex = AnimLayer->GetCurrentAnimation()->GetTexture();
-					m_PrivateSBuffer.AttackBoosterWidth = (float)Tex->GetWidth();
-					m_PrivateSBuffer.AttackBoosterHeight = (float)Tex->GetHeight();
-				}
-			}
-			break;
-		case AnimLayer_Max:
-
-			break;
-		default:
-			break;
-		}
-	}
-
+	//		m_PrivateSBuffer.SCUnit_SBufferTexFrameInfo[i].Start = Data->Start;
+	//		m_PrivateSBuffer.SCUnit_SBufferTexFrameInfo[i].End = Data->End;
+	//	}
+	//}
 }
 
 void CSCUnitSpriteComponent::RenderInstanced()
 {
+	int BufferCount = m_SBufferInfo->GetInstancingBufferCount();
+
 	if (m_Animation)
 		m_Animation->SetShader();
 
@@ -354,18 +330,16 @@ void CSCUnitSpriteComponent::RenderInstanced()
 		Buffer->UpdateBuffer();
 	}
 
-	CSceneComponent::Render();
+	CComponent::Render();
 
-	int	Size = (int)m_vecMaterial.size();
+	m_MaterialSCUnit->SetMaterial();
+	m_SBufferInfo->UpdateBuffer();
+	m_SBufferInfo->SetShader();
 
-	for (int i = 0; i < Size; ++i)
-	{
-		m_vecMaterial[i]->SetMaterial();
+	m_Mesh->RenderInstancing(m_SBufferInfo->GetInstancingBufferCount());
 
-		m_Mesh->Render(i);
-
-		m_vecMaterial[i]->ResetMaterial();
-	}
+	m_SBufferInfo->ResetShader();
+	m_MaterialSCUnit->ResetMaterial();
 }
 
 CSCUnitSpriteComponent* CSCUnitSpriteComponent::Clone() const
@@ -385,9 +359,14 @@ void CSCUnitSpriteComponent::Load(FILE* File)
 
 bool CSCUnitSpriteComponent::SetTexture(CTexture* Texture, int Index)
 {
-	m_Material->SetTexture(Texture, Index);
+	m_MaterialSCUnit->SetTexture(Texture, Index);
 
 	return true;
+}
+
+void CSCUnitSpriteComponent::SetSCUnitInfo(const std::string& UnitName)
+{
+	m_SCUnitInfo = CResourceManager::GetInst()->GetCloneSCUnitInfo(UnitName);
 }
 
 void CSCUnitSpriteComponent::ComputeCurrentAction()
@@ -397,67 +376,7 @@ void CSCUnitSpriteComponent::ComputeCurrentAction()
 	//이전 프레임과 액션이 달라졌을 경우 해야 할 작업을 지정
 	if (m_PrevAction != m_CurrentAction)
 	{
-		auto iter = m_mapUnitActions->find(m_CurrentAction);
-
-
-		switch (m_CurrentAction)
-		{
-		case ESCUnit_Actions::Birth:
-		{
-
-			break;
-		}
-
-		case ESCUnit_Actions::Idle:
-			break;
-		case ESCUnit_Actions::Move:
-			break;
-		case ESCUnit_Actions::SurfaceAttack:
-			break;
-		case ESCUnit_Actions::AirAttack:
-			break;
-		case ESCUnit_Actions::Death:
-			break;
-		case ESCUnit_Actions::Debris:
-			break;
-		case ESCUnit_Actions::Construction:
-			break;
-		case ESCUnit_Actions::ConstructionComplete:
-			break;
-		case ESCUnit_Actions::BuildUnit:
-			break;
-		default:
-			break;
-		}
-	}
-	//계속 같은 액션일 경우 할 작업을 여기에 작성
-	else
-	{
-		switch (m_CurrentAction)
-		{
-		case ESCUnit_Actions::Birth:
-			break;
-		case ESCUnit_Actions::Idle:
-			break;
-		case ESCUnit_Actions::Move:
-			break;
-		case ESCUnit_Actions::SurfaceAttack:
-			break;
-		case ESCUnit_Actions::AirAttack:
-			break;
-		case ESCUnit_Actions::Death:
-			break;
-		case ESCUnit_Actions::Debris:
-			break;
-		case ESCUnit_Actions::Construction:
-			break;
-		case ESCUnit_Actions::ConstructionComplete:
-			break;
-		case ESCUnit_Actions::BuildUnit:
-			break;
-		default:
-			break;
-		}
+		//여기에 로직을 작성
 	}
 }
 
@@ -471,83 +390,68 @@ void CSCUnitSpriteComponent::TurnOffSBufferFlag(ESCUnit_SBufferFlag Flag)
 	m_PrivateSBuffer.SCUnit_SBufferFlag &= ~Flag;
 }
 
-void CSCUnitSpriteComponent::MakePairAction_AnimationName(ESCUnit_Actions ENumAction, const std::string& AnimationName)
+void CSCUnitSpriteComponent::AddActionAnimation(ESCUnit_Actions ENumAction, const std::string& AnimationName)
 {
-	auto iter = m_mapUnitActions->find(ENumAction);
-
-	if (iter != m_mapUnitActions->end())
-	{
-		m_mapUnitActions->erase(iter);
-	}
-
-	SCUnit_Anim_LayerNameBind Bind{};
+	SCUnit_ActionAnimBind Bind = {};
+	Bind.ActionNum = (int)ENumAction;
 	Bind.AnimName = AnimationName;
+
 
 	switch (ENumAction)
 	{
 	case ESCUnit_Actions::Birth:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::Death:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::Idle:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::Move:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::SurfaceAttack:
-		if (m_CBuffer->GetRenderFlags() & ESCUnit_CBufferRenderFlag::Attack)
-			Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Attack_Boost;
-		else
-			Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::AirAttack:
-		if (m_CBuffer->GetRenderFlags() & ESCUnit_CBufferRenderFlag::Attack)
-			Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Attack_Boost;
-		else
-			Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::Debris:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::Construction:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
-		break;
 	case ESCUnit_Actions::ConstructionComplete:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Shadow_Main;
+		Bind.TexLayer = (int)ESCUnit_TextureLayer::MainShadow;
 		break;
 	case ESCUnit_Actions::BuildUnit:
-		Bind.AnimLayer = ESCUnit_AnimLayer::AnimLayer_Top;
-		break;
-	case ESCUnit_Actions::End:
+		Bind.TexLayer = (int)ESCUnit_TextureLayer::Top;
 		break;
 	default:
 		break;
 	}
 
-	m_mapUnitActions->insert(std::make_pair(ENumAction, Bind));
+	CAnimationSequence2D* Seq = CResourceManager::GetInst()->FindAnimationSequence2D(Bind.AnimName);
+
+	//여기에 나중에 애니메이션 등록 과정도 추가해야 함
+	if (nullptr == Seq)
+		return;
+
+	m_vecAnimLayer[Bind.TexLayer]->AddAnimation(Bind.AnimName, Seq);
+
+	//텍스처를 재질에 등록
+	CTexture* Tex = Seq->GetTexture();
+	m_MaterialSCUnit->AddTexture(Bind.TexLayer, (int)EShaderBufferType::Pixel, Bind.AnimName, Tex);
+
+	//바인딩을 등록
+	m_vecActionAnimBind[Bind.ActionNum] = Bind;
 }
 
 void CSCUnitSpriteComponent::ChangeAnimationByAction(ESCUnit_Actions ENumAction)
 {
-	auto iter = m_mapUnitActions->find(ENumAction);
-	if (iter == m_mapUnitActions->end())
+	const SCUnit_ActionAnimBind& Bind = m_vecActionAnimBind[(int)ENumAction];
+
+	if (-1 == Bind.TexLayer)
 		return;
 
-	m_AnimationUnitLayer[iter->second.AnimLayer]->ChangeAnimation(iter->second.AnimName);
+	m_vecAnimLayer[Bind.TexLayer]->ChangeAnimation(Bind.AnimName);
 
 	//switch (ENumAction)
 	//{
 	//case ESCUnit_Actions::Birth:
-	//	m_AnimationUnitLayer[iter->second.AnimLayer]->ChangeAnimation(iter->second.AnimName);
+	//	m_vecAnimLayer[iter->second.AnimLayer]->ChangeAnimation(iter->second.AnimName);
 	//	break;
 	//case ESCUnit_Actions::Idle:
-	//	m_AnimationUnitLayer[AnimLayer_Shadow_Main]->ChangeAnimation(iter->second);
+	//	m_vecAnimLayer[AnimLayer_Shadow_Main]->ChangeAnimation(iter->second);
 	//	break;
 	//case ESCUnit_Actions::Move:
-	//	m_AnimationUnitLayer[AnimLayer_Shadow_Main]->ChangeAnimation(iter->second);
+	//	m_vecAnimLayer[AnimLayer_Shadow_Main]->ChangeAnimation(iter->second);
 	//	break;
 	//case ESCUnit_Actions::SurfaceAttack:
 	//	break;
@@ -570,37 +474,37 @@ void CSCUnitSpriteComponent::ChangeAnimationByAction(ESCUnit_Actions ENumAction)
 
 }
 
-void CSCUnitSpriteComponent::CreateNewAnimLayer(ESCUnit_AnimLayer Layer)
+void CSCUnitSpriteComponent::CreateNewAnimLayer(ESCUnit_TextureLayer Layer)
 {
-	if (m_AnimationUnitLayer[Layer] || !m_Material)
+	int L = (int)Layer;
+
+	//이미 생성되어 있을 경우 return
+	if (m_vecAnimLayer[L] || !m_MaterialSCUnit)
 		return;
 
-	m_AnimationUnitLayer[Layer] = new CAnimation2D;
-	m_AnimationUnitLayer[Layer]->Init();
-	m_AnimationUnitLayer[Layer]->SetMaterialTextureInfoPreset((int)Layer + 1);   //텍스처는 t1부터 사용함. -> +1
-
-	//유닛당 2번 ~ 6번 텍스처까지 사용하도록 미리 등록.
-	//나중에 상속받아서 텍스처를 지정해주면 됨.
-	m_Material->AddTextureEmpty((int)Layer + 1, (int)EShaderBufferType::Pixel);
+	m_vecAnimLayer[L] = new CAnimation2D;
+	m_vecAnimLayer[L]->Init();
 }
 
 void CSCUnitSpriteComponent::RegisterSequence()
 {
-	for (auto& iter : *m_mapUnitActions)
-	{
-		m_AnimationUnitLayer[iter.second.AnimLayer]->AddAnimation(iter.second.AnimName, iter.second.AnimName);
-	}
+	//for (auto& iter : *m_vecActionAnim)
+	//{
+	//	m_vecAnimLayer[iter.second.AnimLayer]->AddAnimation(iter.second.AnimName, iter.second.AnimName);
+	//}
 }
 
 CAnimation2D* CSCUnitSpriteComponent::GetUnitAnimLayer(int Index)
 {
-	if (AnimLayer_Max <= Index)
-		return nullptr;
+	//if (AnimLayer_Max <= Index)
+	//	return nullptr;
 
-	return m_AnimationUnitLayer[Index];
+	//return m_vecAnimLayer[Index];
+
+	return nullptr;
 }
 
-//bool CSCUnitSpriteComponent::AddUnitAnimation(ESCUnit_TextureLayer Layer, const std::string& Name, const std::string& SequenceName, float PlayTime, float PlayScale, bool Loop, bool Reverse)
+//bool CSCUnitSpriteComponent::AddUnitAnimation(ESCUnit_TextureLayerFlag Layer, const std::string& Name, const std::string& SequenceName, float PlayTime, float PlayScale, bool Loop, bool Reverse)
 //{
 //	if (SequenceName.empty())
 //		return false;
@@ -610,41 +514,41 @@ CAnimation2D* CSCUnitSpriteComponent::GetUnitAnimLayer(int Index)
 //	return AddUnitAnimation(Layer, Name, Seq, PlayTime, PlayScale, Loop, Reverse);
 //}
 
-//bool CSCUnitSpriteComponent::AddUnitAnimation(ESCUnit_TextureLayer Layer, const std::string& Name, CAnimationSequence2D* Sequence, float PlayTime, float PlayScale, bool Loop, bool Reverse)
+//bool CSCUnitSpriteComponent::AddUnitAnimation(ESCUnit_TextureLayerFlag Layer, const std::string& Name, CAnimationSequence2D* Sequence, float PlayTime, float PlayScale, bool Loop, bool Reverse)
 //{
 //	if (!Sequence)
 //		return false;
 //
 //	switch (Layer)
 //	{
-//	case ESCUnit_TextureLayer::UnitMainWithShadow:
+//	case ESCUnit_TextureLayerFlag::UnitMainWithShadow:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::UseShadowSprite);
-//	case ESCUnit_TextureLayer::UnitMainOnly:
+//	case ESCUnit_TextureLayerFlag::UnitMainOnly:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-//		m_AnimationUnitLayer[AnimLayer_Shadow_Main]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//		m_vecAnimLayer[AnimLayer_Shadow_Main]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //		break;
-//	case ESCUnit_TextureLayer::Top:
+//	case ESCUnit_TextureLayerFlag::Top:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-//		m_AnimationUnitLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//		m_vecAnimLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //		break;
-//	case ESCUnit_TextureLayer::Effect:
+//	case ESCUnit_TextureLayerFlag::Effect:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-//		m_AnimationUnitLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//		m_vecAnimLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //		break;
-//	case ESCUnit_TextureLayer::Attack:
+//	case ESCUnit_TextureLayerFlag::Attack:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-//		m_AnimationUnitLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//		m_vecAnimLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //		break;
-//	case ESCUnit_TextureLayer::UnitBoost:
+//	case ESCUnit_TextureLayerFlag::UnitBoost:
 //		m_CBuffer->TurnOnRenderFlags(ESCUnit_CBufferRenderFlag::MainShadow);
-//		m_AnimationUnitLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//		m_vecAnimLayer[AnimLayer_Top]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //		break;
 //	default:
 //		break;
 //	}
 //
 //
-//	return m_AnimationUnitLayer[(int)Layer]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
+//	return m_vecAnimLayer[(int)Layer]->AddAnimation(Name, Sequence, PlayTime, PlayScale, Loop, Reverse);
 //}
 
 

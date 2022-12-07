@@ -5,15 +5,18 @@
 class CSCUnitInfoData :
     public CGameResource
 {
-public:
+private:
     CSCUnitInfoData();
+
+public:
+    CSCUnitInfoData(const SCUnitInfo& UnitInfo);
     virtual ~CSCUnitInfoData();
 
 private:
-    SCUnitInfo m_SCUnitInfo;
+    SCUnitInfo m_SCUnitInfoOriginal;
 
 public:
-    void RegisterSCUnitInfo(SCUnitInfo&& UnitInfo);
+    void RegisterSCUnitInfo(const SCUnitInfo& UnitInfo);
     SCUnitInfo* CloneData() const;
 };
 

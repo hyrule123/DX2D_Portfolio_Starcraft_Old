@@ -80,6 +80,7 @@ public:
     void AddTexture(int Register, int ShaderBufferType, const std::string& Name,
         const std::vector<const TCHAR*>& vecFileName,
         const std::string& PathName = TEXTURE_PATH);
+
     void AddTextureFullPath(int Register, int ShaderBufferType,
         const std::string& Name, const std::vector<const TCHAR*>& vecFullPath);
 
@@ -97,6 +98,7 @@ public:
     //애니메이션용 텍스처 지정
     void SetTexture(const std::string& TexName, int Index);
     void SetTexture(class CTexture* Tex, int Index);
+
 
 
     // === 추가되어 있는 Texture 변경 ===

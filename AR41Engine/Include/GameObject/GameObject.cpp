@@ -146,7 +146,11 @@ void CGameObject::Start()
 bool CGameObject::Init()
 {
 	if (m_RootComponent)
+	{
 		m_RootComponent->Init();
+		m_RootComponent->SetScene(m_Scene);
+	}
+		
 
 	return true;
 }

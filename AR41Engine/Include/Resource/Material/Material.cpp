@@ -202,6 +202,14 @@ void CMaterial::SetColorKeyUnsignedChar(unsigned char r, unsigned char g, unsign
 void CMaterial::AddTexture(int Register, int ShaderBufferType, 
 	const std::string& Name, CTexture* Texture)
 {
+	size_t size = m_vecTextureInfo.size();
+	for (size_t i = 0; i < size; ++i)
+	{
+		if (Texture == m_vecTextureInfo[i]->Texture)
+			return;
+	}
+
+
 	MaterialTextureInfo* Info = new MaterialTextureInfo;
 
 	Info->Register = Register;
@@ -382,6 +390,7 @@ void CMaterial::SetTexture(CTexture* Tex, int Index)
 
 	m_vecTextureInfo[Index]->Texture = Tex;
 }
+
 
 void CMaterial::SetTexture(int Index, int Register, int ShaderBufferType,
 	const std::string& Name, CTexture* Texture)

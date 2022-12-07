@@ -9,6 +9,19 @@
 
 
 //이 클래스는 상속받아서 사용하기 위한 용도임. 따라서 CDO를 따로 생성하지 않음.
+struct SCUnit_ActionAnimBind
+{
+    int ActionNum;
+    int TexLayer;
+    std::string AnimName;
+
+    SCUnit_ActionAnimBind():
+        ActionNum(-1),
+        TexLayer(-1)
+    {
+
+    }
+};
 
 class CSCUnitSpriteComponent :
     public CSpriteComponent
@@ -16,7 +29,7 @@ class CSCUnitSpriteComponent :
     friend class CCDO;
     friend class CGameObject;
     friend class CScene;
-
+    
 protected:
     CSCUnitSpriteComponent();
     CSCUnitSpriteComponent(const CSCUnitSpriteComponent& component);
@@ -38,15 +51,24 @@ public:
     //스타크래프트 애니메이션용 SetTexture
     virtual bool SetTexture(class CTexture* Texture, int Index = 0);
 
+    //상속받는 자식 컴포넌트에서 유닛 정보를 설정할 때 사용(재정의)
+    void SetSCUnitInfo(const std::string& UnitName);
+    //virtual void RegisterTextures();
+
 
 protected:
+    SCUnitInfo* m_SCUnitInfo;
 
     class CSCUnitRootComponent* m_SCUnitRoot;
 
     bool m_Selected;
+
+    //ESCUnit_TextureLayerFlag m_TexLayerIdxFlagBinding[(int)ESCUnit_TextureLayer::End];
     
-    CSharedPtr<class CMaterial> m_Material;
-    class CAnimation2D* m_AnimationUnitLayer[AnimLayer_Max];
+    CSharedPtr<class CMaterial> m_MaterialSCUnit;
+    class CAnimation2D* m_vecAnimLayer[(int)ESCUnit_TextureLayer::End];
+    SCUnit_ActionAnimBind m_vecActionAnimBind[(int)ESCUnit_Actions::End];
+
 
     //각자 개별 클래스별 상태를 저장할 구조화 버퍼의 구조체.(매 로직마다 m_SBufferInfo에 푸시백)
     SCUnit_SBuffer m_PrivateSBuffer;
@@ -58,7 +80,9 @@ protected:
     //딱 하나의 구조화버퍼 주소를 생성(CDOPreload 시점에서)해놓고 모두가 공유해서 사용한다.
     std::shared_ptr<class CSCUnitConstantBuffer> m_CBuffer;
     CSharedPtr<CSharedStructuredBuffer<SCUnit_SBuffer>> m_SBufferInfo;
-    std::shared_ptr<std::unordered_map<ESCUnit_Actions, SCUnit_Anim_LayerNameBind>> m_mapUnitActions;
+
+
+    CSharedPtr<class CTexture> m_vecTexLayer[(int)ESCUnit_TextureLayer::End];
     //class CStructuredBuffer* m_SBuffer;
     //std::vector<SCUnit_SBuffer> m_vecSBufferInfo;
 
@@ -70,20 +94,20 @@ protected:
     void TurnOffSBufferFlag(ESCUnit_SBufferFlag Flag);
 
     //유닛에 지정된 액션과 애니메이션을 연결
-    void MakePairAction_AnimationName(ESCUnit_Actions ENumAction, const std::string& AnimationName);
+    void AddActionAnimation(ESCUnit_Actions ENumAction, const std::string& AnimationName);
     void ChangeAnimationByAction(ESCUnit_Actions ENumAction);
-    void CreateNewAnimLayer(ESCUnit_AnimLayer Layer);
+    void CreateNewAnimLayer(ESCUnit_TextureLayer Layer);
 
     //유닛 정보 구조체를 통해서 애니메이션의 재생시간 계산 및 들어가야 할 레이어를 분류하여 삽입한다.
     void RegisterSequence();
 
 public:
     class CAnimation2D* GetUnitAnimLayer(int Index);
-    //bool AddUnitAnimation(ESCUnit_TextureLayer Layer, const std::string& Name, const std::string& SequenceName,
+    //bool AddUnitAnimation(ESCUnit_TextureLayerFlag Layer, const std::string& Name, const std::string& SequenceName,
     //    float PlayTime = 1.f, float PlayScale = 1.f,
     //    bool Loop = false, bool Reverse = false);
 
-    //bool AddUnitAnimation(ESCUnit_TextureLayer Layer, const std::string& Name, class CAnimationSequence2D* Sequence, float PlayTime = 1.f, float PlayScale = 1.f,
+    //bool AddUnitAnimation(ESCUnit_TextureLayerFlag Layer, const std::string& Name, class CAnimationSequence2D* Sequence, float PlayTime = 1.f, float PlayScale = 1.f,
     //    bool Loop = false, bool Reverse = false);
 };
 

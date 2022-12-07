@@ -36,9 +36,7 @@ protected:
 	
 	bool	m_Play;
 
-	//재질에 원하는 텍스처 정보 배열 인덱스에 애니메이션에 사용하는 텍스처를 삽입함.
-	//Material에서 미리 해당 텍스처 번호까지 추가해놓지 않으면 등록 안되므로 주의할 것
-	int		m_MaterialTextureInfoIndexPreset;
+
 
 public:
 	
@@ -46,9 +44,10 @@ public:
 	inline const std::string& GetAnimationClassName()	const;
 	inline void GetAnimationNames(std::vector<std::string>& vecNames);
 	class CAnimation2DData* GetCurrentAnimation() const;
+	int GetCurAnimMaterialTextureInfoPreset() const;
 	inline bool IsPlaying() const;
 
-	inline void SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset);
+
 	void SetOwner(class CSpriteComponent* Owner);
 
 public:
@@ -80,6 +79,7 @@ public:
 	class CAnimationSequence2D* GetCurrentAnimationSequence()	const;
 	const Animation2DFrameData* GetCurrentAnimationFrameData()	const;
 	const Animation2DFrameData* GetCurrentAnimationFrameDataSCUnit(int Dir) const;
+
 
 	void ChangeTexture(class CTexture* Tex);
 
@@ -114,10 +114,7 @@ inline void CAnimation2D::GetAnimationNames(std::vector<std::string>& vecNames)
 }
 
 
-inline void CAnimation2D::SetMaterialTextureInfoPreset(int MaterialTextureInfoIndexPreset)
-{
-	m_MaterialTextureInfoIndexPreset = m_MaterialTextureInfoIndexPreset;
-}
+
 
 
 

@@ -207,6 +207,7 @@ void CCDO::Load(FILE* File)
 }
 
 
+
 CCDO* CCDO::FindCDO(const size_t& hash_code)
 {
 	auto iter = m_mapCDO.begin();

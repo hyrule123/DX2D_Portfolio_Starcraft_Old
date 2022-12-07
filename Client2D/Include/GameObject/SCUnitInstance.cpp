@@ -41,6 +41,7 @@ bool CSCUnitInstance::CDOPreload()
 	m_UnitRoot = CreateComponent<CSCUnitRootComponent>("UnitRoot");
 	SetRootComponent(m_UnitRoot);
 
+	//일단 테스트를 위해서 UltraliskComponent를 바로 생성함
 	m_MainSprite = CreateComponent<CSCUltraliskComponent>("MainSprite");
 	m_UnitRoot->AddChild((CSceneComponent*)(*m_MainSprite));
 
@@ -61,29 +62,29 @@ bool CSCUnitInstance::CDOPreload()
 	m_Arm->AddChild(m_Camera);
 
 
-	CMaterial* Material = m_MainSprite->GetMaterial(0);
+	//CMaterial* Material = m_MainSprite->GetMaterial(0);
 
-	m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
+	//m_Anim = m_MainSprite->SetAnimation<CAnimation2D>("PlayerAnim");
 
-	CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
+	//CTexture* UltraTex = CResourceManager::GetInst()->FindTexture("UltraLisk");
 
-	if (!UltraTex)
-		assert(0);
+	//if (!UltraTex)
+	//	assert(0);
 
-	CResourceManager::GetInst()->CreateAnimationSequence2D(
-		"UltraIdle", UltraTex);
+	//CResourceManager::GetInst()->CreateAnimationSequence2D(
+	//	"UltraIdle", UltraTex);
 
-	//CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
+	////CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
 
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
+	//CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
 
-	CResourceManager::GetInst()->CreateAnimationSequence2D(
-		"UltraMove", UltraTex);
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
+	//CResourceManager::GetInst()->CreateAnimationSequence2D(
+	//	"UltraMove", UltraTex);
+	//CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
 
-	CResourceManager::GetInst()->CreateAnimationSequence2D(
-		"UltraAttack", UltraTex);
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
+	//CResourceManager::GetInst()->CreateAnimationSequence2D(
+	//	"UltraAttack", UltraTex);
+	//CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
 
 	return true;
 }
@@ -94,6 +95,7 @@ bool CSCUnitInstance::Init()
 
 	m_UnitRoot = (CSCUnitRootComponent*)FindComponent("UnitRoot");
 	m_MainSprite = (CSCUltraliskComponent*)FindComponent("MainSprite");
+	m_UnitRoot->AddChild(m_MainSprite);
 
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
@@ -101,21 +103,21 @@ bool CSCUnitInstance::Init()
 	m_UnitRoot->SetWorldPosition(500.f, 500.f);
 
 
-	CAnimation2D* UnitBack = m_MainSprite->GetUnitAnimLayer(0);
+	//CAnimation2D* UnitBack = m_MainSprite->GetUnitAnimLayer(0);
 
-	UnitBack->AddAnimation("UltraIdle", "UltraIdle");
-	UnitBack->SetLoop("UltraIdle", EAnimLoopMethod::NormalLoop);
-	UnitBack->SetPlayTime("UltraIdle", 30.f);
+	//UnitBack->AddAnimation("UltraIdle", "UltraIdle");
+	//UnitBack->SetLoop("UltraIdle", EAnimLoopMethod::NormalLoop);
+	//UnitBack->SetPlayTime("UltraIdle", 30.f);
 
-	UnitBack->AddAnimation("UltraMove", "UltraMove");
-	UnitBack->SetLoop("UltraMove", EAnimLoopMethod::NormalLoop);
-	UnitBack->SetPlayTime("UltraMove", 1.f);
+	//UnitBack->AddAnimation("UltraMove", "UltraMove");
+	//UnitBack->SetLoop("UltraMove", EAnimLoopMethod::NormalLoop);
+	//UnitBack->SetPlayTime("UltraMove", 1.f);
 
-	UnitBack->AddAnimation("UltraAttack", "UltraAttack");
-	UnitBack->SetLoop("UltraAttack", EAnimLoopMethod::NormalLoop);
-	UnitBack->SetPlayTime("UltraAttack", 0.5f);
+	//UnitBack->AddAnimation("UltraAttack", "UltraAttack");
+	//UnitBack->SetLoop("UltraAttack", EAnimLoopMethod::NormalLoop);
+	//UnitBack->SetPlayTime("UltraAttack", 0.5f);
 
-	UnitBack->SetCurrentAnimation("UltraAttack");
+	//UnitBack->SetCurrentAnimation("UltraAttack");
 
 	return true;
 }

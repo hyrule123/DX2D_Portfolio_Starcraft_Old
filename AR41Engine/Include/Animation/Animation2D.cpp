@@ -7,16 +7,14 @@
 
 CAnimation2D::CAnimation2D() :
 	m_Owner(nullptr),
-	m_Play(true),
-	m_MaterialTextureInfoIndexPreset(0)
+	m_Play(true)
 {
 	m_ClassName = "Animation2D";
 }
 
 CAnimation2D::CAnimation2D(const CAnimation2D& Anim) :
 	CRef(Anim),
-	m_Play(Anim.m_Play),
-	m_MaterialTextureInfoIndexPreset(Anim.m_MaterialTextureInfoIndexPreset)
+	m_Play(Anim.m_Play)
 {
 	m_mapAnimation.clear();
 
@@ -218,7 +216,7 @@ void CAnimation2D::ChangeAnimation(const std::string& Name)
 
 	if (m_Owner)
 	{
-		m_Owner->SetTexture(m_CurAnimation->GetTexture(), m_MaterialTextureInfoIndexPreset);
+		m_Owner->SetTexture(m_CurAnimation->GetTexture(), m_CurAnimation->GetMaterialTextureInfoPreset());
 		m_Owner->SetTextureFrameIndex(0);
 	}
 }
@@ -228,7 +226,7 @@ inline void CAnimation2D::ChangeTexture(CTexture* Tex)
 	if (!m_Owner)
 		return;
 
-	m_Owner->SetTexture(Tex, m_MaterialTextureInfoIndexPreset);
+	m_Owner->SetTexture(Tex, 0);
 }
 
 void CAnimation2D::Save(FILE* File)
@@ -430,5 +428,13 @@ const Animation2DFrameData* CAnimation2D::GetCurrentAnimationFrameDataSCUnit(int
 CAnimation2DData* CAnimation2D::GetCurrentAnimation() const
 {
 	return m_CurAnimation;
+}
+
+int CAnimation2D::GetCurAnimMaterialTextureInfoPreset() const
+{
+	if (!m_CurAnimation)
+		return -1;
+
+	return m_CurAnimation->GetMaterialTextureInfoPreset();
 }
 
