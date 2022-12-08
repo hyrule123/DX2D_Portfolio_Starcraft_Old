@@ -45,8 +45,8 @@ void CDefaultSetting::Init()
 
 void CDefaultSetting::CreateCDO()
 {
-    CCDO::CreateCDO<CPlayer2D>();
-    CCDO::CreateCDO<CMonster>();
+    //CCDO::CreateCDO<CPlayer2D>();
+    //CCDO::CreateCDO<CMonster>();
     CCDO::CreateCDO<CBullet>();
     //CCDO::CreateCDO<CMarine>();
     CCDO::CreateCDO<CTileMapHolder>();

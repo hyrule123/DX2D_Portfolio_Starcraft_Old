@@ -76,8 +76,8 @@ public:
 
 	inline int GetImageCount()	const;
 
-	inline int GetTextureBufferPreset() const;
-	inline void SetTextureBufferPreset(int TextureBufferPreset);
+
+
 
 
 

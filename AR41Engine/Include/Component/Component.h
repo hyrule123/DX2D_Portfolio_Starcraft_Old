@@ -39,6 +39,7 @@ protected:
     class CGameObject* m_Owner;
     std::string     m_ComponentTypeName;
     int             m_SerialNumber; // 게임오브젝트에 포함될때 사용할 식별번호.
+    bool m_Start;
 
 public:
     void SetSerialNumber(int Number)

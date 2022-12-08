@@ -72,6 +72,7 @@ typedef std::string tstring;
 #define SHADER "SHADER"
 #define CBUFFER "CBUFFER"
 #define TEXTURE "TEXTURE"
+#define TEXTUREARRAY "TEXTUREARRAY"
 #define MATERIAL "MATERIAL"
 #define ANIMATION "ANIMATION"
 #define SOUND "SOUND"

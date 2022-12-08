@@ -6,7 +6,8 @@ std::unordered_map<std::string, CComponent*> CComponent::m_mapComponent;
 CComponent::CComponent()	:
 	m_Scene(nullptr),
 	m_Owner(nullptr),
-	m_SerialNumber(0)
+	m_SerialNumber(0),
+	m_Start(false)
 {
 	m_ComponentTypeName = "Component";
 }

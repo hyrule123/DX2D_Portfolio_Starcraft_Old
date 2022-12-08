@@ -95,7 +95,6 @@ bool CSCUnitInstance::Init()
 
 	m_UnitRoot = (CSCUnitRootComponent*)FindComponent("UnitRoot");
 	m_MainSprite = (CSCUltraliskComponent*)FindComponent("MainSprite");
-	m_UnitRoot->AddChild(m_MainSprite);
 
 	m_Camera = (CCameraComponent*)FindComponent("Camera");
 	m_Arm = (CTargetArm*)FindComponent("Arm");
@@ -180,14 +179,14 @@ void CSCUnitInstance::MoveUp()
 {
 	m_UnitRoot->AddWorldPosition(m_UnitRoot->GetWorldAxis(AXIS_Y) * 300.f * g_DeltaTime);
 
-	m_Anim->ChangeAnimation("UltraMove");
+	m_MainSprite->ChangeAnimationByAction(ESCUnit_Actions::Move);
 }
 
 void CSCUnitInstance::MoveDown()
 {
 	m_UnitRoot->AddWorldPosition(m_UnitRoot->GetWorldAxis(AXIS_Y) * -300.f * g_DeltaTime);
 
-	m_Anim->ChangeAnimation("UltraMove");
+	m_MainSprite->ChangeAnimationByAction(ESCUnit_Actions::Move);
 }
 
 void CSCUnitInstance::Rotation()
@@ -202,7 +201,7 @@ void CSCUnitInstance::RotationInv()
 
 void CSCUnitInstance::Fire()
 {
-	m_Anim->ChangeAnimation("UltraAttack");
+	m_MainSprite->ChangeAnimationByAction(ESCUnit_Actions::SurfaceAttack);
 
 	CBullet* Bullet = m_Scene->CreateObject<CBullet>("Bullet");
 

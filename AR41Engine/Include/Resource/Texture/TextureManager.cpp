@@ -154,7 +154,7 @@ CTexture* CTextureManager::LoadTextureArray(const std::string& Name,
 		return Texture;
 
 	Texture = new CTexture;
-	Texture->SetResourceType(EResourceType::Texture);
+	Texture->SetResourceType(EResourceType::TextureArray);
 
 	if (!Texture->LoadTextureArray(Name, vecFileName, PathName))
 	{
@@ -175,7 +175,7 @@ CTexture* CTextureManager::LoadTextureArrayFullPath(const std::string& Name, con
 		return Texture;
 
 	Texture = new CTexture;
-	Texture->SetResourceType(EResourceType::Texture);
+	Texture->SetResourceType(EResourceType::TextureArray);
 
 	if (!Texture->LoadTextureArrayFullPath(Name, vecFullPath))
 	{
@@ -199,7 +199,7 @@ CTexture* CTextureManager::LoadTextureArrayByvecTextureResourceInfo(
 		return Texture;
 
 	Texture = new CTexture;
-	Texture->SetResourceType(EResourceType::Texture);
+	Texture->SetResourceType(EResourceType::TextureArray);
 
 	if (!Texture->LoadTextureArrayByvecTextureResourceInfo(Name, vecTexResInfo))
 	{

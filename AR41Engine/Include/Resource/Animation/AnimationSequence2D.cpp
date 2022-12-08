@@ -124,8 +124,8 @@ void CAnimationSequence2D::AddFrame(float StartX, float StartY, float EndX, floa
 void CAnimationSequence2D::AddFrameByTileNumber
 (
 	int TileRowNum, int TileColNum,
-	int ColStart, int ColSize,
 	int RowStart, int RowSize,
+	int ColStart, int ColSize,
 	EAnimSeqArrayIndexMainAxis MainAxis
 )
 {

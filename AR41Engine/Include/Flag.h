@@ -219,6 +219,7 @@ enum class EResourceType
 	Shader,
 	CBuffer,
 	Texture,
+	TextureArray,
 	Material,
 	Animation,
 	Sound,

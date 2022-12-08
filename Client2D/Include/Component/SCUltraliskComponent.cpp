@@ -41,7 +41,7 @@ bool CSCUltraliskComponent::CDOPreload()
 	m_SCUnitInfo = new SCUnitInfo;
 	//memset(m_SCUnitInfo, 0, sizeof(SCUnitInfo));
 	strcpy_s(m_SCUnitInfo->UnitName, SCUnitNameLenMax, "Ultralisk");
-	m_SCUnitInfo->UsingTextureLayerFlags = (UINT8)ESCUnit_TextureLayerFlag::Main;
+	
 
 	//울트라리스크 스프라이트 로딩
 	//텍스처 로딩은 csv를 로드해서 완료되었을 것이므로 단순히 로드된 텍스처를 찾기만 하면 됨
@@ -56,17 +56,18 @@ bool CSCUltraliskComponent::CDOPreload()
 
 	//CResourceManager::GetInst()->SetAnimationSequence2DFrameAllByTileNumber("UltraIdle", 17, 16);
 
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 17, 16, 0, 1);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraIdle", EAnimation2DType::AtlasIndexed, 16, 17, 0, 1);
 	strcpy_s(m_SCUnitInfo->AnimationNames[(int)ESCUnit_Actions::Idle], SCUnitNameLenMax, "UltraIdle");
+	m_SCUnitInfo->UsingTextureLayerFlags = (UINT8)ESCUnit_TextureLayerFlag::Main;
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraMove", UltraTex);
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 17, 16, 1, 9);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraMove", EAnimation2DType::AtlasIndexed, 16, 17, 1, 9);
 	strcpy_s(m_SCUnitInfo->AnimationNames[(int)ESCUnit_Actions::Move], SCUnitNameLenMax, "UltraMove");
 
 	CResourceManager::GetInst()->CreateAnimationSequence2D(
 		"UltraAttack", UltraTex);
-	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 17, 16, 10, 5);
+	CResourceManager::GetInst()->AddAnimationSequence2DFrameByTileNumber("UltraAttack", EAnimation2DType::AtlasIndexed, 16, 17, 10, 15);
 	strcpy_s(m_SCUnitInfo->AnimationNames[(int)ESCUnit_Actions::SurfaceAttack], SCUnitNameLenMax, "UltraAttack");
 
 	CSCUnitSpriteComponent::CDOPreload();

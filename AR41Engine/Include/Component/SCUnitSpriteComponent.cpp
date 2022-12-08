@@ -63,8 +63,10 @@ CSCUnitSpriteComponent::CSCUnitSpriteComponent(const CSCUnitSpriteComponent& com
 		m_vecTexLayer[i] = component.m_vecTexLayer[i];
 	}
 
-	size_t ArrSize = sizeof(SCUnit_ActionAnimBind) * (size_t)ESCUnit_Actions::End;
-	memcpy_s(m_vecActionAnimBind, ArrSize, component.m_vecActionAnimBind, ArrSize);
+	for (int i = 0; i < (int)ESCUnit_Actions::End; ++i)
+	{
+		m_vecActionAnimBind[i] = component.m_vecActionAnimBind[i];
+	}
 
 	/*size_t size = sizeof(ESCUnit_TextureLayerFlag) * (size_t)(int)ESCUnit_TextureLayer::End;
 	memcpy_s(m_TexLayerIdxFlagBinding, size, component.m_TexLayerIdxFlagBinding, size);*/
@@ -99,20 +101,30 @@ bool CSCUnitSpriteComponent::CDOPreload()
 	m_Transform->Set2D(true);
 
 	//Material 생성 및 등록
-	m_MaterialSCUnit = CResourceManager::GetInst()->CreateMaterial<CMaterial>("SCUnitMaterial");
+	m_MaterialSCUnit = CResourceManager::GetInst()->FindMaterial("SCUnitMaterial");
+
+	if (nullptr == m_MaterialSCUnit)
+	{
+		m_MaterialSCUnit = CResourceManager::GetInst()->CreateMaterial<CMaterial>("SCUnitMaterial");
+		m_MaterialSCUnit->SetRenderState("AlphaBlend");
+
+		//재질에 쉐이더 지정
+		m_MaterialSCUnit->SetShader("SCUnitShader");
+	}
+
+	
 
 	//일단 단일 재질을 사용할 예정. PrimitiveComponent의 vecMaterial은 사용 안할 것임
 	m_vecMaterial.clear();
 
-	//재질에 쉐이더 지정
-	m_MaterialSCUnit->SetShader("SCUnitShader");
+	
 
 	//상수버퍼, 구조화버퍼 생성
 	m_CBuffer = std::make_shared<CSCUnitConstantBuffer>();
 	m_CBuffer->Init();
 
-
-
+	//미리 공간 확보
+	m_MaterialSCUnit->ReservevecTexInfo((int)ESCUnit_TextureLayer::End);
 	//플래그 순회하면서 참인것끼리 비교하고 유닛의 레이어 정보를 상수버퍼에 등록.
 	for (UINT8 i = 0; i < (UINT8)ESCUnit_TextureLayerFlag::FlagCount; ++i)
 	{
@@ -126,30 +138,30 @@ bool CSCUnitSpriteComponent::CDOPreload()
 			case ESCUnit_TextureLayerFlag::Selected:
 				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Selected);
 				CreateNewAnimLayer(ESCUnit_TextureLayer::Selected);
-				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Selected, (int)EShaderBufferType::Pixel);
+				//m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Selected, (int)EShaderBufferType::Pixel);
 				break;
 			case ESCUnit_TextureLayerFlag::Main:
 				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Main);
 				CreateNewAnimLayer(ESCUnit_TextureLayer::MainShadow);
-				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::MainShadow, (int)EShaderBufferType::Pixel);
+				//m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::MainShadow, (int)EShaderBufferType::Pixel);
 				break;
 
 
 			case ESCUnit_TextureLayerFlag::Top:
 				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Top);
 				CreateNewAnimLayer(ESCUnit_TextureLayer::Top);
-				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Top, (int)EShaderBufferType::Pixel);
+				//m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Top, (int)EShaderBufferType::Pixel);
 				break;
 			case ESCUnit_TextureLayerFlag::Effect:
 				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Effect);
 				CreateNewAnimLayer(ESCUnit_TextureLayer::Effect);
-				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Effect, (int)EShaderBufferType::Pixel);
+				//m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Effect, (int)EShaderBufferType::Pixel);
 				break;
 
 			case ESCUnit_TextureLayerFlag::Booster:
 				m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::Booster);
 				CreateNewAnimLayer(ESCUnit_TextureLayer::Booster);
-				m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Booster, (int)EShaderBufferType::Pixel);
+				//m_MaterialSCUnit->AddTextureEmpty((int)ESCUnit_TextureLayer::Booster, (int)EShaderBufferType::Pixel);
 				break;
 
 			case ESCUnit_TextureLayerFlag::UseShadowSprite:
@@ -179,7 +191,7 @@ bool CSCUnitSpriteComponent::CDOPreload()
 
 	m_SBufferInfo = new CSharedStructuredBuffer<SCUnit_SBuffer>;
 
-	m_SBufferInfo->Init("SCUnit_SBuffer", 400, 6, (int)EShaderBufferType::Vertex);
+	m_SBufferInfo->Init("SCUnit_SBuffer", 400, 6, true, (int)EShaderBufferType::Vertex);
 
 	//인스턴싱으로 유닛을 출력하려면 딱 한번만 구조화버퍼에 등록해놓으면 됨
 	CRenderManager::GetInst()->AddInstancingMap(this);
@@ -236,8 +248,19 @@ void CSCUnitSpriteComponent::Update(float DeltaTime)
 		{
 			m_vecAnimLayer[i]->Update(DeltaTime);
 
+			//방향에 따라서 회전 처리
+			unsigned int RenderFlag = m_CBuffer->GetRenderFlags();
+			int Dir = (int)m_SCUnitRoot->GetDirection();
+			if (Dir > 16)
+			{
+				Dir = 31 - Dir;
+				m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitMainXFlip;
+			}
+
 			const Animation2DFrameData* Data =
-				m_vecAnimLayer[i]->GetCurrentAnimationFrameDataSCUnit(m_SCUnitRoot->GetDirection());
+				m_vecAnimLayer[i]->GetCurrentAnimationFrameDataSCUnit(Dir);
+
+
 
 			//출력할 애니메이션이 있는지 확인하고 있을 경우 그려내야할 텍스처 번호를 등록
 			//없으면 그냥 지나가면됨
@@ -268,16 +291,6 @@ void CSCUnitSpriteComponent::PostUpdate(float DeltaTime)
 
 	m_PrivateSBuffer.Pivot = m_Transform->GetPivot();
 	m_PrivateSBuffer.MeshSize = m_Transform->GetMeshSize();
-
-
-	//방향에 따라서 회전 처리
-	unsigned int RenderFlag = m_CBuffer->GetRenderFlags();
-	int Dir = (int)m_SCUnitRoot->GetDirection();
-	if (Dir > 16)
-	{
-		Dir = 31 - Dir;
-		m_PrivateSBuffer.SCUnit_SBufferFlag |= ESCUnit_SBufferFlag::ESCUnitMainXFlip;
-	}
 
 	//현재 액션에 따라서 렌더플래그 계산(임시)
 	//TurnOnSBufferFlag(ESCUnitFlagAll);
@@ -332,14 +345,14 @@ void CSCUnitSpriteComponent::RenderInstanced()
 
 	CComponent::Render();
 
-	m_MaterialSCUnit->SetMaterial();
+	m_MaterialSCUnit->SetMaterialInstanced();
 	m_SBufferInfo->UpdateBuffer();
 	m_SBufferInfo->SetShader();
 
 	m_Mesh->RenderInstancing(m_SBufferInfo->GetInstancingBufferCount());
 
 	m_SBufferInfo->ResetShader();
-	m_MaterialSCUnit->ResetMaterial();
+	m_MaterialSCUnit->ResetMaterialInstanced();
 }
 
 CSCUnitSpriteComponent* CSCUnitSpriteComponent::Clone() const
@@ -359,7 +372,7 @@ void CSCUnitSpriteComponent::Load(FILE* File)
 
 bool CSCUnitSpriteComponent::SetTexture(CTexture* Texture, int Index)
 {
-	m_MaterialSCUnit->SetTexture(Texture, Index);
+	m_MaterialSCUnit->SetTextureSCUnit(Texture,Index);
 
 	return true;
 }
@@ -427,7 +440,17 @@ void CSCUnitSpriteComponent::AddActionAnimation(ESCUnit_Actions ENumAction, cons
 
 	//텍스처를 재질에 등록
 	CTexture* Tex = Seq->GetTexture();
-	m_MaterialSCUnit->AddTexture(Bind.TexLayer, (int)EShaderBufferType::Pixel, Bind.AnimName, Tex);
+
+	if ((int)ESCUnit_TextureLayer::MainShadow == Bind.TexLayer &&
+		EImageType::Array == Tex->GetImageType() &&
+		1 < Tex->GetImageCount()
+		)
+	{
+		m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::UseShadowSprite);
+	}
+	
+	m_MaterialSCUnit->SetTextureSCUnit(Tex, Bind.TexLayer);
+	//m_MaterialSCUnit->AddTexture(Bind.TexLayer, (int)EShaderBufferType::Pixel, Bind.AnimName, Tex);
 
 	//바인딩을 등록
 	m_vecActionAnimBind[Bind.ActionNum] = Bind;
@@ -484,6 +507,7 @@ void CSCUnitSpriteComponent::CreateNewAnimLayer(ESCUnit_TextureLayer Layer)
 
 	m_vecAnimLayer[L] = new CAnimation2D;
 	m_vecAnimLayer[L]->Init();
+	m_vecAnimLayer[L]->SetInstancing(true);
 }
 
 void CSCUnitSpriteComponent::RegisterSequence()

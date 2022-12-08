@@ -32,6 +32,7 @@ void CEngineSetting::Init()
 	CCDO::AddResourceType(SHADER, EResourceType::Shader);
 	CCDO::AddResourceType(CBUFFER, EResourceType::CBuffer);
 	CCDO::AddResourceType(TEXTURE, EResourceType::Texture);
+	CCDO::AddResourceType(TEXTUREARRAY, EResourceType::TextureArray);
 	CCDO::AddResourceType(MATERIAL, EResourceType::Material);
 	CCDO::AddResourceType(ANIMATION, EResourceType::Animation);
 	CCDO::AddResourceType(SOUND, EResourceType::Sound);

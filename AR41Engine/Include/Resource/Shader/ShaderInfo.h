@@ -20,6 +20,7 @@ struct SCUnit_CBuffer
 	//한 유닛이 '공통적으로' 어떤 텍스처 파트를 사용하고 있는지 등에 대한 정보를 저장
 	//ESCUnit_TextureLayerFlags를 사용
 	unsigned int RenderFlags;
+	Vector3 Empty;
 
 	//유닛별로 사용하는 텍스처의 전체 사이즈는 상수버퍼에 저장
 	//텍스처의 '출력 부분'은 구조화 버퍼에 저장

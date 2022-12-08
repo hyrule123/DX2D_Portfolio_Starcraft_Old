@@ -149,6 +149,7 @@ bool CCDO::LoadMetaData()
 
 bool CCDO::CDOPreload()
 {
+	std::unordered_map<std::string, std::vector<const TCHAR*>> mapTexArray;
 
 	if (!m_vecRequiredResource.empty())
 	{
@@ -169,6 +170,28 @@ bool CCDO::CDOPreload()
 				CResourceManager::GetInst()->LoadTexture(m_vecRequiredResource[i].Name, m_vecRequiredResource[i].FileName.c_str(), TEXTURE_PATH);
 				break;
 			}
+
+			//일단 데이터를 삽입만 하고 순회가 끝나면 일괄적으로 생성
+			case EResourceType::TextureArray:
+			{
+				const std::string& Name = m_vecRequiredResource[i].Name;
+
+				auto iter = mapTexArray.find(Name);
+
+				//없으면 맵 정보를 새로 생성
+				if (iter == mapTexArray.end())
+				{
+					std::vector<const TCHAR*> vecNames;
+					vecNames.push_back(m_vecRequiredResource[i].FileName.c_str());
+					mapTexArray.insert(std::make_pair(Name, vecNames));
+				}
+				else
+					iter->second.push_back(m_vecRequiredResource[i].FileName.c_str());
+
+				
+
+				break;
+			}
 			case EResourceType::Material:
 				break;
 			case EResourceType::Animation:
@@ -187,9 +210,20 @@ bool CCDO::CDOPreload()
 				break;
 			default:
 				break;
+			}
+		}
+
+
+		
+		if (false == mapTexArray.empty())
+		{
+			for (auto& iter : mapTexArray)
+			{
+				CResourceManager::GetInst()->LoadTextureArray(iter.first, iter.second, TEXTURE_PATH);
+			}
 		}
 	}
-}
+
 
 	m_ObjStatus = EObjStatus::PLO;
 

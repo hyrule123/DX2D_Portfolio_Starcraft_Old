@@ -220,6 +220,9 @@ inline ID3D11Buffer* CSharedStructuredBuffer<T>::GetBuffer()	const
 template<typename T>
 inline void CSharedStructuredBuffer<T>::AddBuffer(const T& BufferData)
 {
+	if (m_InstancingBufferQueue.size() <= (size_t)m_InstancingBufferCount)
+		return;
+
 	m_InstancingBufferQueue[m_InstancingBufferCount] = BufferData;
 	++m_InstancingBufferCount;
 }
@@ -306,7 +309,7 @@ void CSharedStructuredBuffer<T>::ResetShader()
 		CDevice::GetInst()->GetContext()->CSSetUnorderedAccessViews(m_Register, 1, &UAV, &Count);
 	}
 
-
+	m_InstancingBufferCount = 0;
 }
 
 template <typename T>

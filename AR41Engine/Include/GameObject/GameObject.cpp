@@ -130,7 +130,10 @@ CComponent* CGameObject::FindComponent(const std::string& Name)
 
 void CGameObject::Start()
 {
-	m_Start = true;
+	if (false == m_Start)
+		m_Start = true;
+	else
+		return;
 
 	if (m_RootComponent)
 		m_RootComponent->Start();

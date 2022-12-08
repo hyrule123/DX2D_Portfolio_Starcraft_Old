@@ -96,8 +96,9 @@ public:
     void AddTextureEmpty(int Register, int ShaderBufferType);
 
     //애니메이션용 텍스처 지정
-    void SetTexture(const std::string& TexName, int Index);
-    void SetTexture(class CTexture* Tex, int Index);
+    void SetTextureSCUnit(const std::string& TexName, int Index);
+    void SetTextureSCUnit(class CTexture* Tex, int Index);
+    void ReservevecTexInfo(int MaxIndex);
 
 
 
@@ -133,6 +134,11 @@ public:
     void SetShader(const std::string& Name);
     void SetMaterial();
     void ResetMaterial();
+    
+    void SetTexBuffer();
+    void ResetTexBuffer();
+    void SetMaterialInstanced();
+    void ResetMaterialInstanced();
     CMaterial* Clone()  const;
     virtual void Save(FILE* File);
     virtual void Load(FILE* File);

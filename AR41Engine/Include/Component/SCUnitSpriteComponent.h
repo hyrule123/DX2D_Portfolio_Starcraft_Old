@@ -95,11 +95,14 @@ protected:
 
     //유닛에 지정된 액션과 애니메이션을 연결
     void AddActionAnimation(ESCUnit_Actions ENumAction, const std::string& AnimationName);
-    void ChangeAnimationByAction(ESCUnit_Actions ENumAction);
+    
     void CreateNewAnimLayer(ESCUnit_TextureLayer Layer);
 
     //유닛 정보 구조체를 통해서 애니메이션의 재생시간 계산 및 들어가야 할 레이어를 분류하여 삽입한다.
     void RegisterSequence();
+
+public:
+    void ChangeAnimationByAction(ESCUnit_Actions ENumAction);
 
 public:
     class CAnimation2D* GetUnitAnimLayer(int Index);

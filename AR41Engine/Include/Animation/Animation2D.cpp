@@ -7,14 +7,16 @@
 
 CAnimation2D::CAnimation2D() :
 	m_Owner(nullptr),
-	m_Play(true)
+	m_Play(true),
+	m_UseInstancing(false)
 {
 	m_ClassName = "Animation2D";
 }
 
 CAnimation2D::CAnimation2D(const CAnimation2D& Anim) :
 	CRef(Anim),
-	m_Play(Anim.m_Play)
+	m_Play(Anim.m_Play),
+	m_UseInstancing(Anim.m_UseInstancing)
 {
 	m_mapAnimation.clear();
 
@@ -204,7 +206,7 @@ void CAnimation2D::SetCurrentAnimation(const std::string& Name)
 
 void CAnimation2D::ChangeAnimation(const std::string& Name)
 {
-	if (m_CurAnimation->GetName() == Name)
+	if (nullptr != m_CurAnimation && m_CurAnimation->GetName() == Name)
 		return;
 
 	m_CurAnimation->SetInitialValue();
@@ -214,7 +216,7 @@ void CAnimation2D::ChangeAnimation(const std::string& Name)
 	m_CurAnimation->m_Frame = 0;
 	m_CurAnimation->m_Time = 0.f;
 
-	if (m_Owner)
+	if (m_Owner && false == m_UseInstancing)
 	{
 		m_Owner->SetTexture(m_CurAnimation->GetTexture(), m_CurAnimation->GetMaterialTextureInfoPreset());
 		m_Owner->SetTextureFrameIndex(0);

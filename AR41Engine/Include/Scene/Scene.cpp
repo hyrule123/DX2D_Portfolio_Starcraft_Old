@@ -73,7 +73,10 @@ CScene::~CScene()
 
 void CScene::Start()
 {
-	m_Start = true;
+	if (false == m_Start)
+		m_Start = true;
+	else
+		return;
 
 	auto	iter = m_ObjList.begin();
 	auto	iterEnd = m_ObjList.end();

@@ -35,7 +35,7 @@ protected:
     class CAnimation2DData* m_CurAnimation;
 	
 	bool	m_Play;
-
+	bool	m_UseInstancing;
 
 
 public:
@@ -46,7 +46,7 @@ public:
 	class CAnimation2DData* GetCurrentAnimation() const;
 	int GetCurAnimMaterialTextureInfoPreset() const;
 	inline bool IsPlaying() const;
-
+	void SetInstancing(bool b) { m_UseInstancing = b; }
 
 	void SetOwner(class CSpriteComponent* Owner);
 

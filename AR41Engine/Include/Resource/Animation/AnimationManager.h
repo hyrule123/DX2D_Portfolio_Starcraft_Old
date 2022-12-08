@@ -34,8 +34,9 @@ public:
 
 	bool AddAnimationSequence2DFrameByTileNumber(const std::string& Name, EAnimation2DType Type,
 		int TileRowNum, int TileColNum,
-		int ColStart = -1, int ColSize = -1,
-		int RowStart = -1, int RowSize = -1
+		int RowStart = -1, int RowSize = -1,
+		int ColStart = -1, int ColSize = -1
+		
 		);
 
 	//bool SetAnimationSequence2DFrameAllByTileNumber(const std::string& Name,

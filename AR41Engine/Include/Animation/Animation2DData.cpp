@@ -73,7 +73,7 @@ void CAnimation2DData::Update(float DeltaTime)
 
 			if (m_Frame == m_Sequence->GetFrameCount())
 			{
-				m_Frame = m_Sequence->GetFrameCount();
+				m_Frame = m_Sequence->GetFrameCount() - 1;
 				AnimEnd = true;
 			}
 				

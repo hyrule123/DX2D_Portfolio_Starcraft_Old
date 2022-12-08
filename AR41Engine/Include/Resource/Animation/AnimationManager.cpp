@@ -174,15 +174,16 @@ bool CAnimationManager::AddSequence2DFrame(const std::string& Name, float StartX
 
 bool CAnimationManager::AddAnimationSequence2DFrameByTileNumber(const std::string& Name, EAnimation2DType Type,
 	int TileRowNum, int TileColNum,
-	int ColStart, int ColSize,
-	int RowStart, int RowSize
+	int RowStart, int RowSize,
+	int ColStart, int ColSize
+	
 )
 {
 	CAnimationSequence2D* Anim = FindAnimationSequence2D(Name);
 	if (!Anim)
 		return false;
 
-	Anim->AddFrameByTileNumber(TileRowNum, TileColNum, ColStart, ColSize, RowStart, RowSize);
+	Anim->AddFrameByTileNumber(TileRowNum, TileColNum, RowStart, RowSize, ColStart, ColSize);
 
 	return true;
 }

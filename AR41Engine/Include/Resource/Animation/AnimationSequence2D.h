@@ -100,8 +100,8 @@ public:
     void AddFrameByTileNumber
     (
         int TileRowNum, int TileColNum,
-        int ColStart = -1, int ColSize = -1,
         int RowStart = -1, int RowSize = -1,
+        int ColStart = -1, int ColSize = -1,
         EAnimSeqArrayIndexMainAxis MainAxis = EAnimSeqArrayIndexMainAxis::Y 
     );
 

@@ -47,6 +47,9 @@ CMaterial::CMaterial(const CMaterial& Material)	:
 
 	for (; iter != iterEnd; ++iter)
 	{
+		if (nullptr == (*iter))
+			continue;
+
 		MaterialTextureInfo* Info = new MaterialTextureInfo;
 
 		Info->Name = (*iter)->Name;
@@ -375,20 +378,33 @@ void CMaterial::AddTextureEmpty(int Register, int ShaderBufferType)
 	m_vecTextureInfo.push_back(Info);
 }
 
-void CMaterial::SetTexture(const std::string& TexName, int Index)
+void CMaterial::SetTextureSCUnit(const std::string& TexName, int Index)
 {
 	if (m_vecTextureInfo.size() <= Index)
 		return;
 
 	m_vecTextureInfo[Index]->Texture = CResourceManager::GetInst()->FindTexture(TexName);
+	m_vecTextureInfo[Index]->Register = Index;
 }
 
-void CMaterial::SetTexture(CTexture* Tex, int Index)
+void CMaterial::SetTextureSCUnit(CTexture* Tex, int Index)
 {
 	if (m_vecTextureInfo.size() <= Index)
 		return;
 
+	if (nullptr == m_vecTextureInfo[Index])
+		m_vecTextureInfo[Index] = new MaterialTextureInfo;
+	else
+		return;
+
 	m_vecTextureInfo[Index]->Texture = Tex;
+	m_vecTextureInfo[Index]->Register = Index;
+
+}
+
+void CMaterial::ReservevecTexInfo(int MaxIndex)
+{
+	m_vecTextureInfo.resize(MaxIndex);
 }
 
 
@@ -602,14 +618,7 @@ void CMaterial::SetMaterial()
 
 	m_CBuffer->UpdateBuffer();
 
-	size_t	Size = m_vecTextureInfo.size();
-
-	for (size_t i = 0; i < Size; ++i)
-	{
-		m_vecTextureInfo[i]->Texture->SetShader(m_vecTextureInfo[i]->Register,
-			m_vecTextureInfo[i]->ShaderBufferType, 
-			m_vecTextureInfo[i]->Index);
-	}
+	SetTexBuffer();
 }
 
 void CMaterial::ResetMaterial()
@@ -620,13 +629,66 @@ void CMaterial::ResetMaterial()
 			m_RenderState[i]->ResetState();
 	}
 
+	ResetTexBuffer();
+}
+
+void CMaterial::SetTexBuffer()
+{
 	size_t	Size = m_vecTextureInfo.size();
 
 	for (size_t i = 0; i < Size; ++i)
 	{
-		m_vecTextureInfo[i]->Texture->ResetShader(m_vecTextureInfo[i]->Register,
-			m_vecTextureInfo[i]->ShaderBufferType);
+		if (nullptr == m_vecTextureInfo[i])
+			continue;
+
+		//텍스처가 등록되어있을 경우 해당 레지스터 인덱스와 같은 번호의 레지스터 번호로 텍스처를 등록
+		if (nullptr != m_vecTextureInfo[i]->Texture)
+			m_vecTextureInfo[i]->Texture->SetShader(m_vecTextureInfo[i]->Register,
+				m_vecTextureInfo[i]->ShaderBufferType,
+				m_vecTextureInfo[i]->Index);
 	}
+}
+
+void CMaterial::ResetTexBuffer()
+{
+	size_t	Size = m_vecTextureInfo.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		if (nullptr == m_vecTextureInfo[i])
+			continue;
+
+		if (nullptr != m_vecTextureInfo[i]->Texture)
+			m_vecTextureInfo[i]->Texture->ResetShader(m_vecTextureInfo[i]->Register,
+				m_vecTextureInfo[i]->ShaderBufferType);
+	}
+}
+
+void CMaterial::SetMaterialInstanced()
+{
+	if (m_Shader)
+		m_Shader->SetShader();
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (m_RenderState[i])
+			m_RenderState[i]->SetState();
+	}
+
+	m_CBuffer->UpdateBuffer();
+
+	SetTexBuffer();
+}
+
+void CMaterial::ResetMaterialInstanced()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		if (m_RenderState[i])
+			m_RenderState[i]->ResetState();
+	}
+
+	ResetTexBuffer();
 }
 
 CMaterial* CMaterial::Clone() const
