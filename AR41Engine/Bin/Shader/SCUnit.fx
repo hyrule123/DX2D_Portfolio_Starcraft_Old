@@ -126,7 +126,7 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
     //무조건 AtlasIndexed임을 상정하고 계산한다.
     if (g_UnitInfoArray[input.InstanceID].SCUnit_SBufferFlag & ESCUnitMainXFlip)
     {
-        if (output.UV.x == 0.f)
+        if (input.UV.x == 0.f)
         {
             output.UV.x =
             g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].End.x
@@ -141,7 +141,7 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
     }
     else
     {
-        if (output.UV.x == 0.f)
+        if (input.UV.x == 0.f)
         {
             output.UV.x = 
             g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].Start.x
@@ -156,7 +156,7 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
             
     }
         
-    if (output.UV.y == 0.f)
+    if (input.UV.y == 0.f)
         output.UV.y = 
         g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].Start.y
         / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Height;
@@ -180,7 +180,16 @@ PS_OUTPUT_SINGLE SCUnitPS(VS_OUTPUT_UV input)
     
 	//TextureColor = g_UnitMainTexture.Sample(g_PointSmp, input.UV);
     
-    output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb; //input.Color.rgb;
+    if (
+        TextureColor.r == 0.f &&
+        TextureColor.g == 0.f &&
+        TextureColor.b == 0.f
+        )
+    {
+        discard;
+    }
+    
+        output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb; //input.Color.rgb;
 
     output.Color.a = TextureColor.a;
     

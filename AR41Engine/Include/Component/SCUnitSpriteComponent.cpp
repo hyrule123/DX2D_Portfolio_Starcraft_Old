@@ -345,6 +345,7 @@ void CSCUnitSpriteComponent::RenderInstanced()
 
 	CComponent::Render();
 
+	m_CBuffer->UpdateBuffer();
 	m_MaterialSCUnit->SetMaterialInstanced();
 	m_SBufferInfo->UpdateBuffer();
 	m_SBufferInfo->SetShader();
@@ -436,18 +437,25 @@ void CSCUnitSpriteComponent::AddActionAnimation(ESCUnit_Actions ENumAction, cons
 	if (nullptr == Seq)
 		return;
 
-	m_vecAnimLayer[Bind.TexLayer]->AddAnimation(Bind.AnimName, Seq);
+	m_vecAnimLayer[Bind.TexLayer]->AddAnimation(Bind.AnimName, Seq, 1.f, 1.f,  EAnimLoopMethod::NormalLoop);
 
 	//텍스처를 재질에 등록
 	CTexture* Tex = Seq->GetTexture();
 
 	if ((int)ESCUnit_TextureLayer::MainShadow == Bind.TexLayer &&
-		EImageType::Array == Tex->GetImageType() &&
-		1 < Tex->GetImageCount()
+		EImageType::Array == Tex->GetImageType()
 		)
 	{
-		m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::UseShadowSprite);
+		const unsigned int& TexWidth = Tex->GetWidth();
+		const unsigned int& TexHeight = Tex->GetHeight();
+
+		
+		m_CBuffer->SetTextureSize((ESCUnit_TextureLayer)Bind.TexLayer, (float)TexWidth, (float)TexHeight);
+
+		if(1 < Tex->GetImageCount())
+			m_CBuffer->TurnOnRenderFlags(ESCUnit_TextureLayerFlag::UseShadowSprite);
 	}
+	
 	
 	m_MaterialSCUnit->SetTextureSCUnit(Tex, Bind.TexLayer);
 	//m_MaterialSCUnit->AddTexture(Bind.TexLayer, (int)EShaderBufferType::Pixel, Bind.AnimName, Tex);
