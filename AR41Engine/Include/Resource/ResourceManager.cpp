@@ -256,7 +256,6 @@ bool CResourceManager::LoadTexture(const std::string& Name,
 	const std::vector<const TCHAR*>& vecFileName, const std::string& PathName)
 {
 	CTexture* Texture = m_TextureManager->LoadTexture(Name, vecFileName, PathName);
-
 	if (Texture)
 	{
 		CSceneManager::GetInst()->AddSceneResource(static_cast<CGameResource*>(Texture));

@@ -82,23 +82,22 @@ struct SCUnit_SBuffer
 };
 
 
-#define SCUnitShadowRender 1 << 0
+	//SCUnitShadowXFlip = 1 << 1,
+#define	ESCUnitSelectedCircleRender 1u << 0u
 
-#define SCUnitMainRender 1 << 5
-#define SCUnitMainXFlip 1 << 6
-#define SCUnitCloaked 1 << 7
+#define	ESCUnitMainRender  1u << 5u
+#define	ESCUnitMainXFlip  1u << 6u
 
-#define SCUnitTopRender 1 << 10
-#define SCUnitTopXFlip 1 << 11
+#define	ESCUnitTopRender  1u << 10u
+#define	ESCUnitTopXFlip  1u << 11u
 
-#define SCUnitEffectRender 1 << 15
-//#define SCUnitEffectXFlip 1 << 16
+#define	ESCUnitEffectRender 1u << 15u
+	//SCUnitEffectXFlip = 1 << 16,
 
-#define SCUnitBoosterRender 1 << 20
-//#define SCUnitBoosterXFlip 1 << 21
+#define	ESCUnitBoosterRender  1u << 20u
+	//SCUnitBoosterXFlip = 1 << 21,
 
-#define SCUnitAttackRender 1 << 25
-//#define SCUnitAttackXFlip 1 << 26
+#define	ESCUnitFlagAll  0xffffffff
 
 
 
@@ -120,31 +119,53 @@ VS_OUTPUT_UV SCUnitVS(VS_INPUT_UV input)
     
     output.Pos = mul(float4(Pos, 1.f), g_UnitInfoArray[input.InstanceID].matWVP);
     
-    ////애니메이션 계산. 무조건 ArrayIndexed 텍스처를 사용했다고 가정하고 계산한다.
-    //float2 Result = (float2) 0;
     
-    ////무조건 AtlasIndexed임을 상정하고 계산한다.
-    //if (g_UnitInfoArray[input.InstanceID].SCUnit_SBufferFlag & SCUnitMainXFlip)
-    //{
-    //    if (output.UV.x == 0.f)
-    //        output.UV.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
-    //    else
-    //        output.UV.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
-    //}
-    //else
-    //{
-    //    if (output.UV.x == 0.f)
-    //        output.UV.x = g_Anim2DFrameStart.x / g_Anim2DImageWidth;
-    //    else
-    //        output.UV.x = g_Anim2DFrameEnd.x / g_Anim2DImageWidth;
-    //}
+    
+    //애니메이션 계산. 무조건 ArrayIndexed 텍스처를 사용했다고 가정하고 계산한다.
+    
+    //무조건 AtlasIndexed임을 상정하고 계산한다.
+    if (g_UnitInfoArray[input.InstanceID].SCUnit_SBufferFlag & ESCUnitMainXFlip)
+    {
+        if (output.UV.x == 0.f)
+        {
+            output.UV.x =
+            g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].End.x
+            / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Width;
+        }
+        else
+        {
+            output.UV.x = 
+            g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].Start.x
+            / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Width;
+        }
+    }
+    else
+    {
+        if (output.UV.x == 0.f)
+        {
+            output.UV.x = 
+            g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].Start.x
+            / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Width;
+        }  
+        else
+        {
+            output.UV.x =
+            g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].End.x
+            / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Width;
+        }
+            
+    }
         
-    //if (output.UV.y == 0.f)
-    //    output.UV.y = g_Anim2DFrameStart.y / g_Anim2DImageHeight;
-    //else
-    //    output.UV.y = g_Anim2DFrameEnd.y / g_Anim2DImageHeight;
+    if (output.UV.y == 0.f)
+        output.UV.y = 
+        g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].Start.y
+        / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Height;
+    else
+        output.UV.y = 
+        g_UnitInfoArray[input.InstanceID].SCUnit_SBufferTexFrameInfo[ESCUnit_TextureLayer_MainShadow].End.y
+        / SCUnit_CBufferTexSizeInfo[ESCUnit_TextureLayer_MainShadow].Height;
     
-    output.UV = input.UV;
+    //output.UV = input.UV;
     
 	return output;
 }
@@ -159,9 +180,30 @@ PS_OUTPUT_SINGLE SCUnitPS(VS_OUTPUT_UV input)
     
 	//TextureColor = g_UnitMainTexture.Sample(g_PointSmp, input.UV);
     
-	output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb * input.Color.rgb;
+    output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb; //input.Color.rgb;
 
     output.Color.a = TextureColor.a;
+    
+    
+    
+    //PS_OUTPUT_SINGLE output = (PS_OUTPUT_SINGLE) 0;
+
+    //float4 TextureColor = (float4) 0.f;
+    
+    //if (input.TextureType != 2)
+    //    TextureColor = g_BaseTexture.Sample(g_PointSmp, input.UV);
+    //else
+    //    TextureColor = g_TileTextureArray.Sample(g_PointSmp, float3(input.UV, input.Frame));
+    
+    
+    //output.Color.rgb = TextureColor.rgb * g_MtrlBaseColor.rgb * input.Color.rgb;
+
+    //output.Color.a = TextureColor.a * input.Opacity;
+    
+    
+    //return output;
+    
+    
     
 	return output;
 }
